@@ -1,0 +1,45 @@
+{
+    "model_name": "LinearSVM",
+    "pair_count": 400000,
+    "model_params": {
+        "C": 5.0,
+        "class_weight": "balanced",
+        "dual": true,
+        "fit_intercept": true,
+        "intercept_scaling": 1,
+        "loss": "squared_hinge",
+        "max_iter": 5000,
+        "multi_class": "ovr",
+        "penalty": "l2",
+        "random_state": 42,
+        "tol": 0.0001,
+        "verbose": 0
+    },
+    "tfidf_params": {
+        "analyzer": "word",
+        "binary": false,
+        "decode_error": "strict",
+        "dtype": "<class 'numpy.float64'>",
+        "encoding": "utf-8",
+        "input": "content",
+        "lowercase": true,
+        "max_df": 0.95,
+        "max_features": null,
+        "min_df": 2,
+        "ngram_range": [
+            1,
+            2
+        ],
+        "norm": "l2",
+        "preprocessor": null,
+        "smooth_idf": true,
+        "stop_words": null,
+        "strip_accents": null,
+        "sublinear_tf": false,
+        "token_pattern": "[^ ]+",
+        "tokenizer": null,
+        "use_idf": true,
+        "vocabulary": null
+    },
+    "num_features": 867
+}

@@ -1,0 +1,2 @@
+Notes:
+It is better than the exp_001, it shows that we need more data to overcome overfitting.

@@ -1,0 +1,2 @@
+Notes:
+It is the best model on the RF, there is no overfitting and it is faster also.

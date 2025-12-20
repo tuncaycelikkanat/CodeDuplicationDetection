@@ -1,0 +1,2 @@
+Notes:
+1 million pairs of code make a good effect for the accuracies but the trade ofs term of resource usage and speed are worse than.
