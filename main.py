@@ -95,7 +95,6 @@ print("Test size:", X_test.shape)
 #model = build_linear_svm(RANDOM_STATE)
 #model_name = "LinearSVM"
 
-
 ''' XGBOOST '''
 print("---> Training model")
 model = build_xgboost(RANDOM_STATE)
