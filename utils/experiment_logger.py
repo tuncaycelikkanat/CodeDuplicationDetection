@@ -2,6 +2,7 @@ import os
 import json
 import re
 import matplotlib.pyplot as plt
+import pickle
 
 from sklearn.metrics import (
     accuracy_score,
@@ -105,5 +106,12 @@ def save_experiment(
     # ================= NOTES =================
     with open(os.path.join(exp_dir, "notes.txt"), "w") as f:
         f.write("Notes:\n")
+
+    # ================= SERIALIZATION =================
+    with open(os.path.join(exp_dir, "model.pkl"), "wb") as f:
+        pickle.dump(model, f)
+
+    with open(os.path.join(exp_dir, "tfidf.pkl"), "wb") as f:
+        pickle.dump(vectorizer, f)
 
     print(f"✅ Experiment saved: {exp_dir}")

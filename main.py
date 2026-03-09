@@ -23,7 +23,6 @@ RANDOM_STATE = 42
 
 random.seed(RANDOM_STATE)
 
-
 # <----------> LOAD DATA <---------->
 print("---> Loading dataset...")
 
