@@ -214,3 +214,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific
+experiments/*/model.pkl
+experiments/*/tfidf.pkl
+data/
+.gemini/

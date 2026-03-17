@@ -6,21 +6,25 @@ import pickle
 
 from sklearn.metrics import (
     accuracy_score,
+    f1_score,
+    roc_auc_score,
     classification_report,
     confusion_matrix,
     ConfusionMatrixDisplay
 )
 
 
-def _make_json_serializable(d):
-    safe = {}
-    for k, v in d.items():
-        try:
-            json.dumps(v)
-            safe[k] = v
-        except TypeError:
-            safe[k] = str(v)
-    return safe
+def _make_json_serializable(obj):
+    """Recursively convert an object to a JSON-serializable form."""
+    if isinstance(obj, dict):
+        return {k: _make_json_serializable(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_make_json_serializable(item) for item in obj]
+    try:
+        json.dumps(obj)
+        return obj
+    except (TypeError, ValueError):
+        return str(obj)
 
 
 def generate_experiment_name(model_name, pair_count, base_dir="experiments"):
@@ -40,6 +44,17 @@ def generate_experiment_name(model_name, pair_count, base_dir="experiments"):
     return f"exp_{next_id:03d}_{model_name}_{pair_count//1000}k"
 
 
+def _compute_metrics(y_true, y_pred, y_prob=None):
+    """Compute accuracy, F1, and optionally AUC-ROC."""
+    metrics = {
+        "accuracy": accuracy_score(y_true, y_pred),
+        "f1_score": f1_score(y_true, y_pred),
+    }
+    if y_prob is not None:
+        metrics["auc_roc"] = roc_auc_score(y_true, y_prob)
+    return metrics
+
+
 def save_experiment(
     exp_name,
     model_name,
@@ -52,7 +67,8 @@ def save_experiment(
     X_test,
     y_test,
     y_test_pred,
-    base_dir="experiments"
+    base_dir="experiments",
+    extra_vectorizers=None
 ):
     exp_dir = os.path.join(base_dir, exp_name)
     os.makedirs(exp_dir, exist_ok=True)
@@ -69,14 +85,15 @@ def save_experiment(
     with open(os.path.join(exp_dir, "config.json"), "w") as f:
         json.dump(config, f, indent=4)
 
-    # ================= METRICS =================
-    train_metrics = {
-        "accuracy": accuracy_score(y_train, y_train_pred)
-    }
+    # ================= PROBABILITIES =================
+    y_train_prob = None
+    y_test_prob = None
+    if hasattr(model, "predict_proba"):
+        y_test_prob = model.predict_proba(X_test)[:, 1]
 
-    test_metrics = {
-        "accuracy": accuracy_score(y_test, y_test_pred)
-    }
+    # ================= METRICS =================
+    train_metrics = _compute_metrics(y_train, y_train_pred)
+    test_metrics = _compute_metrics(y_test, y_test_pred, y_test_prob)
 
     with open(os.path.join(exp_dir, "metrics_train.json"), "w") as f:
         json.dump(train_metrics, f, indent=4)
@@ -85,11 +102,19 @@ def save_experiment(
         json.dump(test_metrics, f, indent=4)
 
     # ================= REPORTS =================
-    with open(os.path.join(exp_dir, "classification_report_train.txt"), "w") as f:
-        f.write(classification_report(y_train, y_train_pred))
+    for split, y_true, y_pred in [
+        ("train", y_train, y_train_pred),
+        ("test", y_test, y_test_pred)
+    ]:
+        # Text report
+        report_txt = classification_report(y_true, y_pred)
+        with open(os.path.join(exp_dir, f"classification_report_{split}.txt"), "w") as f:
+            f.write(report_txt)
 
-    with open(os.path.join(exp_dir, "classification_report_test.txt"), "w") as f:
-        f.write(classification_report(y_test, y_test_pred))
+        # JSON report
+        report_dict = classification_report(y_true, y_pred, output_dict=True)
+        with open(os.path.join(exp_dir, f"classification_report_{split}.json"), "w") as f:
+            json.dump(report_dict, f, indent=4)
 
     # ================= CONFUSION MATRICES =================
     for split, y_true, y_pred in [
@@ -114,4 +139,14 @@ def save_experiment(
     with open(os.path.join(exp_dir, "tfidf.pkl"), "wb") as f:
         pickle.dump(vectorizer, f)
 
-    print(f"✅ Experiment saved: {exp_dir}")
+    if extra_vectorizers:
+        for name, vec in extra_vectorizers.items():
+            with open(os.path.join(exp_dir, f"{name}.pkl"), "wb") as f:
+                pickle.dump(vec, f)
+
+    # ================= SUMMARY =================
+    print(f"\n✅ Experiment saved: {exp_dir}")
+    print(f"   Accuracy : {test_metrics['accuracy']:.4f}")
+    print(f"   F1 Score : {test_metrics['f1_score']:.4f}")
+    if "auc_roc" in test_metrics:
+        print(f"   AUC-ROC  : {test_metrics['auc_roc']:.4f}")

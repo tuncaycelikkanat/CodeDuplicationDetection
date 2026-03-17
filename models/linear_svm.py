@@ -1,7 +1,9 @@
 from sklearn.svm import LinearSVC
+from sklearn.calibration import CalibratedClassifierCV
+
 
 def build_linear_svm(random_state):
-    model = LinearSVC(
+    base = LinearSVC(
         C=5.0,
         penalty="l2",
         loss="squared_hinge",
@@ -10,4 +12,4 @@ def build_linear_svm(random_state):
         class_weight="balanced",
         random_state=random_state
     )
-    return model
+    return CalibratedClassifierCV(base, cv=3)
