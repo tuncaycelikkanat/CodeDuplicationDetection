@@ -54,12 +54,20 @@ class SparseDataset(torch.utils.data.Dataset):
 
 
 class PyTorchClassifier:
-    def __init__(self, random_state=42, epochs=5, batch_size=256, lr=0.001):
+    def __init__(self, random_state=42, epochs=5, batch_size=256, lr=0.001, device="cpu"):
         self.random_state = random_state
         self.epochs = epochs
         self.batch_size = batch_size
         self.lr = lr
-        self.device = torch.device('xpu' if HAS_IPEX and hasattr(torch, 'xpu') and torch.xpu.is_available() else 'cpu')
+        
+        # Standard device mapping
+        if device == "cuda":
+            self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        elif device == "xpu":
+            self.device = torch.device('xpu' if HAS_IPEX and hasattr(torch, 'xpu') and torch.xpu.is_available() else 'cpu')
+        else:
+            self.device = torch.device('cpu')
+            
         self.model = None
 
     def fit(self, X, y):
@@ -136,5 +144,5 @@ class PyTorchClassifier:
         return np.concatenate(predictions)
 
 
-def build_dl_model(random_state=42):
-    return PyTorchClassifier(random_state=random_state)
+def build_dl_model(random_state=42, device="cpu"):
+    return PyTorchClassifier(random_state=random_state, device=device)

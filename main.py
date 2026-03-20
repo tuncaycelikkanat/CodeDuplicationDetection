@@ -1,15 +1,21 @@
+# import os and gc at top
 import os
 import gc
 import argparse
 import random
 
-# Optimize threads for Intel Core Ultra 5 125H (P-Cores)
-os.environ["OMP_NUM_THREADS"] = "8"
-os.environ["MKL_NUM_THREADS"] = "8"
-
-# Enable Intel scikit-learn optimizations (Must be before other sklearn imports)
-from sklearnex import patch_sklearn
-patch_sklearn()
+def apply_intel_optimizations():
+    # Optimize threads for Intel processors (P-Cores)
+    os.environ["OMP_NUM_THREADS"] = "8"
+    os.environ["MKL_NUM_THREADS"] = "8"
+    
+    # Enable Intel scikit-learn optimizations (Must be before other sklearn imports)
+    try:
+        from sklearnex import patch_sklearn
+        patch_sklearn()
+        print("---> Intel scikit-learn optimizations enabled.")
+    except ImportError:
+        print("---> sklearnex not found, skipping Intel scikit-learn optimizations.")
 
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -49,6 +55,9 @@ def parse_args():
                         help="Run Optuna hyperparameter tuning before training")
     parser.add_argument("--tune-trials", type=int, default=30,
                         help="Number of Optuna trials (default: 30)")
+    parser.add_argument("--device", type=str, default="auto",
+                        choices=["cpu", "cuda", "xpu", "auto"],
+                        help="Device to use for training (default: auto)")
     return parser.parse_args()
 
 
@@ -60,6 +69,22 @@ def main():
     NUM_PAIRS = args.pairs
     TEST_SIZE = args.test_size
     RANDOM_STATE = args.seed
+
+    # <----------> DEVICE SELECTION <---------->
+    if args.device == "auto":
+        import torch
+        if torch.cuda.is_available():
+            args.device = "cuda"
+        elif hasattr(torch, "xpu") and torch.xpu.is_available():
+            args.device = "xpu"
+        else:
+            args.device = "cpu"
+    
+    print(f"---> Using device: {args.device}")
+
+    # Only apply Intel optimizations for CPU or XPU
+    if args.device in ["cpu", "xpu"]:
+        apply_intel_optimizations()
 
     random.seed(RANDOM_STATE)
 
@@ -201,13 +226,16 @@ def main():
         best_params, best_score = tune_hyperparameters(
             args.model, X_train, y_train,
             random_state=RANDOM_STATE,
-            n_trials=args.tune_trials
+            n_trials=args.tune_trials,
+            device=args.device
         )
 
         # Build model with best params
         if args.model == "xgboost":
             from xgboost import XGBClassifier
-            model = XGBClassifier(**best_params, random_state=RANDOM_STATE, n_jobs=-1)
+            # Configure XGBoost device
+            xgb_device = args.device if args.device != "xpu" else "cpu" # XGBoost doesn't natively support XPU yet in standard pip
+            model = XGBClassifier(**best_params, random_state=RANDOM_STATE, n_jobs=-1, device=xgb_device)
         elif args.model == "random_forest":
             from sklearn.ensemble import RandomForestClassifier
             model = RandomForestClassifier(**best_params, random_state=RANDOM_STATE, n_jobs=-1)
@@ -218,7 +246,11 @@ def main():
                 LinearSVC(**best_params, random_state=RANDOM_STATE), cv=3
             )
     else:
-        model = build_fn(RANDOM_STATE)
+        # Pass device to builders that support it
+        if args.model in ["xgboost", "dl_model"]:
+            model = build_fn(RANDOM_STATE, device=args.device)
+        else:
+            model = build_fn(RANDOM_STATE)
 
     # <----------> TRAIN <---------->
     print(f"---> Training {model_name}...")

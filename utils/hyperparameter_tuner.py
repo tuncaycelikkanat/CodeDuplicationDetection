@@ -14,7 +14,7 @@ from sklearn.calibration import CalibratedClassifierCV
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 
-def _xgboost_objective(trial, X, y, random_state):
+def _xgboost_objective(trial, X, y, random_state, device="cpu"):
     params = {
         'n_estimators': trial.suggest_int('n_estimators', 500, 2000),
         'max_depth': trial.suggest_int('max_depth', 5, 12),
@@ -28,7 +28,8 @@ def _xgboost_objective(trial, X, y, random_state):
         'scale_pos_weight': trial.suggest_float('scale_pos_weight', 0.8, 1.2),
         'eval_metric': 'logloss',
         'random_state': random_state,
-        'n_jobs': -1
+        'n_jobs': -1,
+        'device': device if device == "cuda" else "cpu"
     }
 
     model = XGBClassifier(**params)
@@ -80,7 +81,7 @@ _OBJECTIVES = {
 }
 
 
-def tune_hyperparameters(model_name, X, y, random_state=42, n_trials=30):
+def tune_hyperparameters(model_name, X, y, random_state=42, n_trials=30, device="cpu"):
     """
     Run Optuna hyperparameter tuning.
 
@@ -88,8 +89,9 @@ def tune_hyperparameters(model_name, X, y, random_state=42, n_trials=30):
         model_name: one of 'xgboost', 'random_forest', 'linear_svm'
         X: training feature matrix
         y: training labels
-        random_state: random seed
+        random_state: random_state
         n_trials: number of Optuna trials
+        device: device to use (for XGBoost)
 
     Returns:
         best_params: dict of the best hyperparameters
@@ -103,7 +105,7 @@ def tune_hyperparameters(model_name, X, y, random_state=42, n_trials=30):
     )
 
     study.optimize(
-        lambda trial: objective_fn(trial, X, y, random_state),
+        lambda trial: objective_fn(trial, X, y, random_state) if model_name != "xgboost" else _xgboost_objective(trial, X, y, random_state, device=device),
         n_trials=n_trials,
         show_progress_bar=True,
         gc_after_trial=True

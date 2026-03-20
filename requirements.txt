@@ -11,10 +11,12 @@ shap>=0.42.0
 
 pydantic
 rapidfuzz>=3.0.0
-scikit-learn-intelex>=2024.1.0
 
-# Deep Learning (Intel Arc Accelerated)
+# GPU Support (NVIDIA/Intel)
 torch
 torchvision
 torchaudio
-intel-extension-for-pytorch
+
+# Intel-specific Optimizations (Optional, for Laptop)
+scikit-learn-intelex>=2024.1.0
+# intel-extension-for-pytorch # Uncomment on Laptop for Intel Arc
