@@ -1,3 +1,4 @@
+# Python Version: 3.11.x (Recommended: 3.11.9)
 scikit-learn>=1.3.0
 scipy>=1.11.0
 xgboost>=2.0.0
@@ -12,11 +13,11 @@ shap>=0.42.0
 pydantic
 rapidfuzz>=3.0.0
 
-# GPU Support (NVIDIA/Intel)
-torch
-torchvision
-torchaudio
+# Deep Learning & GPU (NVIDIA/Intel)
+torch>=2.1.0
+torchvision>=0.16.0
+torchaudio>=2.1.0
 
-# Intel-specific Optimizations (Optional, for Laptop)
+# Hardware-specific Optimizations
 scikit-learn-intelex>=2024.1.0
-# intel-extension-for-pytorch # Uncomment on Laptop for Intel Arc
+# intel-extension-for-pytorch # Required for Intel Arc GPUs (Laptop)
