@@ -9,8 +9,8 @@ from preprocessing.code_features import cf_pattern_similarity
 
 
 def generate_pairs(X_token, labels, num_pairs, processed_codes,
-                   X_char=None, code_features=None, cf_patterns=None,
-                   raw_codes=None, random_state=42):
+                   code_features=None, cf_patterns=None,
+                   random_state=42):
     """
     Generate pairs of code samples for clone detection.
 
@@ -20,15 +20,9 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
     Features per pair:
         - |TF-IDF_token_diff|        (sparse)
         - cosine_similarity(token)   (1 feature)
-        - token_overlap (Jaccard)    (1 feature)
         - length_ratio               (1 feature)
-        - cosine_similarity(char)    (1 feature, if X_char provided)
-        - |TF-IDF_char_diff|         (sparse, if X_char provided)
         - AST feature ratios         (5 features, if code_features provided)
         - CF pattern similarity      (1 feature, if cf_patterns provided)
-        - edit_distance_ratio        (1 feature, if raw_codes provided)
-        - line_count_ratio           (1 feature, if raw_codes provided)
-        - char_length_ratio          (1 feature, if raw_codes provided)
     """
 
 
@@ -144,29 +138,9 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
 
     del X_i_token, X_j_token
 
-    # ---- Step 4: Batch Jaccard overlap & length ratio (parallelized) ----
-    print("  → Computing Jaccard overlap & length ratio (parallel batch)...")
-    token_sets = [set(code.split()) for code in processed_codes]
+    # ---- Step 4: Batch length ratio ----
+    print("  → Computing length ratio...")
     token_lengths = np.array([len(code.split()) for code in processed_codes], dtype=np.float32)
-
-    def _jaccard_chunk(start, end, sets_list, idx_i, idx_j):
-        result = np.empty(end - start, dtype=np.float32)
-        for k in range(end - start):
-            p = start + k
-            si, sj = sets_list[idx_i[p]], sets_list[idx_j[p]]
-            union = len(si | sj)
-            result[k] = len(si & sj) / union if union > 0 else 0.0
-        return result
-
-    CHUNK = 100_000
-    chunks = [(s, min(s + CHUNK, num_pairs)) for s in range(0, num_pairs, CHUNK)]
-    jaccard_results = Parallel(n_jobs=-1, backend='loky')(
-        delayed(_jaccard_chunk)(s, e, token_sets, all_i, all_j)
-        for s, e in chunks
-    )
-    overlap_arr = np.concatenate(jaccard_results)
-
-    del token_sets, jaccard_results
 
     len_i = token_lengths[all_i]
     len_j = token_lengths[all_j]
@@ -177,29 +151,8 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
 
     # ---- Step 5: Build extra features array ----
     extra_cols = [cos_token.reshape(-1, 1),
-                  overlap_arr.reshape(-1, 1),
                   length_ratio.reshape(-1, 1)]
-    del cos_token, overlap_arr, length_ratio
-
-    # ---- Step 6: Batch char TF-IDF cosine + diff (if provided) ----
-    if X_char is not None:
-        print("  → Computing char cosine similarity + diff (batch)...")
-        X_i_char = X_char[all_i]
-        X_j_char = X_char[all_j]
-        cos_char = np.array(X_i_char.multiply(X_j_char).sum(axis=1)).ravel()
-        norm_ci = np.sqrt(np.array(X_i_char.multiply(X_i_char).sum(axis=1)).ravel())
-        norm_cj = np.sqrt(np.array(X_j_char.multiply(X_j_char).sum(axis=1)).ravel())
-        denom_c = norm_ci * norm_cj
-        denom_c[denom_c == 0] = 1.0
-        cos_char = cos_char / denom_c
-        extra_cols.append(cos_char.reshape(-1, 1))
-
-        # Char TF-IDF diff (sparse) — will be added to final matrix
-        char_diff_matrix = abs(X_i_char - X_j_char)
-
-        del X_i_char, X_j_char, cos_char, norm_ci, norm_cj, denom_c
-    else:
-        char_diff_matrix = None
+    del cos_token, length_ratio
 
     # ---- Step 7: AST feature ratios (if provided) ----
     if code_features is not None:
@@ -253,63 +206,14 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
         extra_cols.append(cf_sim.reshape(-1, 1))
         del cf_sim, all_bigrams, cf_results
 
-    # ---- Step 9: New features — edit distance, line count, char length ----
-    if raw_codes is not None:
-        print("  → Computing edit distance ratio (parallel batch)...")
-        line_counts = np.array([c.count('\n') + 1 for c in raw_codes], dtype=np.float32)
-        char_lengths = np.array([len(c) for c in raw_codes], dtype=np.float32)
-
-        # Pre-truncate codes for edit distance (300 chars for speed)
-        truncated_codes = [c[:200] for c in raw_codes]
-
-        def _edit_dist_chunk(start, end, codes, idx_i, idx_j):
-            result = np.empty(end - start, dtype=np.float32)
-            for k in range(end - start):
-                p = start + k
-                result[k] = Levenshtein.normalized_similarity(
-                    codes[idx_i[p]], codes[idx_j[p]]
-                )
-            return result
-
-        CHUNK = 100_000
-        chunks = [(s, min(s + CHUNK, num_pairs)) for s in range(0, num_pairs, CHUNK)]
-        edit_results = Parallel(n_jobs=-1, backend='loky')(
-            delayed(_edit_dist_chunk)(s, e, truncated_codes, all_i, all_j)
-            for s, e in chunks
-        )
-        edit_dist = np.concatenate(edit_results)
-        extra_cols.append(edit_dist.reshape(-1, 1))
-        del edit_dist, truncated_codes, edit_results
-
-        # Line count ratio
-        lc_i = line_counts[all_i]
-        lc_j = line_counts[all_j]
-        max_lc = np.maximum(lc_i, lc_j)
-        max_lc[max_lc == 0] = 1.0
-        line_ratio = np.minimum(lc_i, lc_j) / max_lc
-        extra_cols.append(line_ratio.reshape(-1, 1))
-        del lc_i, lc_j, max_lc, line_ratio, line_counts
-
-        # Char length ratio
-        cl_i = char_lengths[all_i]
-        cl_j = char_lengths[all_j]
-        max_cl = np.maximum(cl_i, cl_j)
-        max_cl[max_cl == 0] = 1.0
-        char_ratio = np.minimum(cl_i, cl_j) / max_cl
-        extra_cols.append(char_ratio.reshape(-1, 1))
-        del cl_i, cl_j, max_cl, char_ratio, char_lengths
-
     # ---- Step 10: Combine all features ----
     print("  → Combining features...")
     extra_matrix = csr_matrix(np.hstack(extra_cols))
     del extra_cols
 
-    sparse_parts = [diff_matrix]
-    if char_diff_matrix is not None:
-        sparse_parts.append(char_diff_matrix)
-    sparse_parts.append(extra_matrix)
+    sparse_parts = [diff_matrix, extra_matrix]
 
     result = hstack(sparse_parts, format='csr')
-    del diff_matrix, char_diff_matrix, extra_matrix
-
+    del diff_matrix, extra_matrix
+    
     return result, pairs_y

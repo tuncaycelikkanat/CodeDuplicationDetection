@@ -138,8 +138,6 @@ def main():
     test_labels = [labels[i] for i in test_idx]
     train_codes = [processed_codes[i] for i in train_idx]
     test_codes = [processed_codes[i] for i in test_idx]
-    train_raw_codes = [all_codes[i] for i in train_idx]
-    test_raw_codes = [all_codes[i] for i in test_idx]
 
     # Free full lists — we have train/test copies now
     del processed_codes, all_codes
@@ -157,20 +155,13 @@ def main():
 
     print(f"Train codes: {len(train_idx)}, Test codes: {len(test_idx)}")
 
-    # <----------> TF-IDF (Token + Char) <---------->
     print("---> Vectorizing with Token TF-IDF...")
     vectorizer = build_tfidf_vectorizer()
     X_train_token = vectorizer.fit_transform(train_codes)
     X_test_token = vectorizer.transform(test_codes)
     print(f"Token TF-IDF shape: {X_train_token.shape}")
 
-    print("---> Vectorizing with Char TF-IDF...")
-    char_vectorizer = build_char_tfidf_vectorizer()
-    X_train_char = char_vectorizer.fit_transform(train_codes)
-    X_test_char = char_vectorizer.transform(test_codes)
-    print(f"Char TF-IDF shape: {X_train_char.shape}")
-
-    print(f"Total feature count: {X_train_token.shape[1]} (token) + {X_train_char.shape[1]} (char)")
+    print(f"Total feature count: {X_train_token.shape[1]} (token)")
 
     # <----------> PAIRS (from separate splits) <---------->
     num_train_pairs = int(NUM_PAIRS * (1 - TEST_SIZE))
@@ -179,30 +170,30 @@ def main():
     print(f"---> Generating {num_train_pairs} train pairs...")
     X_train, y_train = generate_pairs(
         X_train_token, train_labels, num_train_pairs, train_codes,
-        X_char=X_train_char,
         code_features=train_code_features,
         cf_patterns=train_cf_patterns,
-        raw_codes=train_raw_codes,
         random_state=RANDOM_STATE
     )
 
+    X_train = X_train.astype(np.float32)
+
     # Free train intermediate data
-    del X_train_token, X_train_char, train_code_features, train_cf_patterns, train_codes, train_raw_codes
+    del X_train_token, train_code_features, train_cf_patterns, train_codes
     gc.collect()
     print("---> Freed train intermediate data.")
 
     print(f"---> Generating {num_test_pairs} test pairs...")
     X_test, y_test = generate_pairs(
         X_test_token, test_labels, num_test_pairs, test_codes,
-        X_char=X_test_char,
         code_features=test_code_features,
         cf_patterns=test_cf_patterns,
-        raw_codes=test_raw_codes,
         random_state=RANDOM_STATE + 1
     )
 
+    X_test = X_test.astype(np.float32)
+
     # Free test intermediate data
-    del X_test_token, X_test_char, test_code_features, test_cf_patterns, test_codes, test_raw_codes
+    del X_test_token, test_code_features, test_cf_patterns, test_codes
     gc.collect()
     print("---> Freed test intermediate data.")
 
@@ -277,8 +268,7 @@ def main():
         y_train_pred=y_train_pred,
         X_test=X_test,
         y_test=y_test,
-        y_test_pred=y_test_pred,
-        extra_vectorizers={"char_tfidf": char_vectorizer}
+        y_test_pred=y_test_pred
     )
 
 

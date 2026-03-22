@@ -7,8 +7,9 @@ def build_linear_svm(random_state):
         C=5.0,
         penalty="l2",
         loss="squared_hinge",
-        dual=True,
+        dual=False,
         max_iter=5000,
+        tol=1e-3,
         class_weight="balanced",
         random_state=random_state
     )

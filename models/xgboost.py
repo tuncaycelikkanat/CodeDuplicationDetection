@@ -15,5 +15,7 @@ def build_xgboost(random_state, device="cpu"):
         eval_metric="logloss",
         random_state=random_state,
         n_jobs=-1,
-        device=xgb_device
+        device=xgb_device,
+        max_bin=64,
+        tree_method="hist"
     )

@@ -29,7 +29,9 @@ def _xgboost_objective(trial, X, y, random_state, device="cpu"):
         'eval_metric': 'logloss',
         'random_state': random_state,
         'n_jobs': -1,
-        'device': device if device == "cuda" else "cpu"
+        'device': device if device == "cuda" else "cpu",
+        'max_bin': 64,
+        'tree_method': 'hist'
     }
 
     model = XGBClassifier(**params)
@@ -41,10 +43,11 @@ def _xgboost_objective(trial, X, y, random_state, device="cpu"):
 
 def _random_forest_objective(trial, X, y, random_state):
     params = {
-        'n_estimators': trial.suggest_int('n_estimators', 200, 800),
-        'max_depth': trial.suggest_int('max_depth', 10, 30),
-        'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 10),
+        'n_estimators': trial.suggest_int('n_estimators', 100, 300),
+        'max_depth': trial.suggest_int('max_depth', 10, 20),
+        'min_samples_leaf': trial.suggest_int('min_samples_leaf', 2, 10),
         'max_features': trial.suggest_categorical('max_features', ['sqrt', 'log2']),
+        'max_samples': trial.suggest_float('max_samples', 0.3, 0.8),
         'class_weight': 'balanced',
         'n_jobs': -1,
         'random_state': random_state
@@ -57,12 +60,12 @@ def _random_forest_objective(trial, X, y, random_state):
 
 
 def _linear_svm_objective(trial, X, y, random_state):
-    loss = trial.suggest_categorical('loss', ['hinge', 'squared_hinge'])
     params = {
         'C': trial.suggest_float('C', 0.1, 50.0, log=True),
-        'loss': loss,
-        'dual': True if loss == 'hinge' else trial.suggest_categorical('dual', [True, False]),
+        'loss': 'squared_hinge',
+        'dual': False,
         'max_iter': 5000,
+        'tol': 1e-3,
         'class_weight': 'balanced',
         'random_state': random_state
     }
