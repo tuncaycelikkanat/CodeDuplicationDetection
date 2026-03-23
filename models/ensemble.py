@@ -10,17 +10,18 @@ def build_voting_ensemble(random_state=42):
     Optimized for speed: hist tree method, reduced RF trees, reduced SVM CV folds.
     """
     xgb = XGBClassifier(
-        n_estimators=500,
-        max_depth=8,
-        learning_rate=0.05,
-        subsample=0.7,
-        colsample_bytree=0.7,
-        min_child_weight=8,
-        gamma=0.1,
-        reg_alpha=0.01,
-        reg_lambda=1.0,
+        n_estimators=1808,
+        max_depth=12,
+        learning_rate=0.08741808323698248,
+        subsample=0.8260575232041659,
+        colsample_bytree=0.8478684057508008,
+        min_child_weight=3,
+        gamma=0.0469390212265333,
+        reg_alpha=0.028217344413071523,
+        reg_lambda=0.1389890374632879,
+        scale_pos_weight=0.8861939156810622,
         eval_metric="logloss",
-        tree_method='hist',          # histogram-based: 3-5x faster
+        tree_method='hist',
         random_state=random_state,
         n_jobs=-1
     )
