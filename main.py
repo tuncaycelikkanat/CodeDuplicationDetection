@@ -147,22 +147,29 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
 
         # Evaluate
         from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
+        y_train_pred = model.predict(X_train)
         y_pred = model.predict(X_test)
 
         fold_result = {
+            "train_accuracy": accuracy_score(y_train, y_train_pred),
+            "train_f1_score": f1_score(y_train, y_train_pred),
             "accuracy": accuracy_score(y_test, y_pred),
             "f1_score": f1_score(y_test, y_pred),
         }
 
         if hasattr(model, "predict_proba"):
+            y_train_prob = model.predict_proba(X_train)[:, 1]
             y_prob = model.predict_proba(X_test)[:, 1]
+            fold_result["train_auc_roc"] = roc_auc_score(y_train, y_train_prob)
             fold_result["auc_roc"] = roc_auc_score(y_test, y_prob)
 
         fold_metrics.append(fold_result)
-        print(f"  → Fold {fold_idx + 1}: Acc={fold_result['accuracy']:.4f}, "
-              f"F1={fold_result['f1_score']:.4f}", end="")
+        print(f"  → Fold {fold_idx + 1}: "
+              f"Train Acc={fold_result['train_accuracy']:.4f}, "
+              f"Test Acc={fold_result['accuracy']:.4f}, "
+              f"Test F1={fold_result['f1_score']:.4f}", end="")
         if "auc_roc" in fold_result:
-            print(f", AUC={fold_result['auc_roc']:.4f}")
+            print(f", Test AUC={fold_result['auc_roc']:.4f}")
         else:
             print()
 
