@@ -150,3 +150,99 @@ def save_experiment(
     print(f"   F1 Score : {test_metrics['f1_score']:.4f}")
     if "auc_roc" in test_metrics:
         print(f"   AUC-ROC  : {test_metrics['auc_roc']:.4f}")
+
+
+def save_cv_results(
+    model_name,
+    fold_metrics,
+    pair_count,
+    cv_folds,
+    base_dir="experiments"
+):
+    """
+    Save cross-validation results to experiments directory.
+
+    Args:
+        model_name: Name of the model
+        fold_metrics: List of dicts, each with 'accuracy', 'f1_score', 'auc_roc'
+        pair_count: Total number of pairs used
+        cv_folds: Number of CV folds
+        base_dir: Base directory for experiments
+    """
+    import numpy as np
+
+    exp_name = generate_experiment_name(
+        model_name=f"{model_name}_CV{cv_folds}",
+        pair_count=pair_count
+    )
+    exp_dir = os.path.join(base_dir, exp_name)
+    os.makedirs(exp_dir, exist_ok=True)
+
+    # ================= PER-FOLD METRICS =================
+    with open(os.path.join(exp_dir, "cv_fold_metrics.json"), "w") as f:
+        json.dump(fold_metrics, f, indent=4)
+
+    # ================= SUMMARY (mean ± std) =================
+    metric_names = list(fold_metrics[0].keys())
+    summary = {}
+    for m in metric_names:
+        values = [fold[m] for fold in fold_metrics if fold.get(m) is not None]
+        if values:
+            summary[m] = {
+                "mean": float(np.mean(values)),
+                "std": float(np.std(values)),
+                "per_fold": values
+            }
+
+    with open(os.path.join(exp_dir, "cv_summary.json"), "w") as f:
+        json.dump(summary, f, indent=4)
+
+    # ================= CONFIG =================
+    config = {
+        "model_name": model_name,
+        "pair_count": pair_count,
+        "cv_folds": cv_folds,
+        "mode": "cross_validation"
+    }
+    with open(os.path.join(exp_dir, "config.json"), "w") as f:
+        json.dump(config, f, indent=4)
+
+    # ================= CONSOLE OUTPUT =================
+    print(f"\n{'='*60}")
+    print(f"  Cross-Validation Results ({cv_folds}-Fold)")
+    print(f"{'='*60}")
+    print(f"  {'Fold':<8}", end="")
+    for m in metric_names:
+        print(f"{m:<14}", end="")
+    print()
+    print(f"  {'-'*8}", end="")
+    for _ in metric_names:
+        print(f"{'-'*14}", end="")
+    print()
+
+    for i, fold in enumerate(fold_metrics):
+        print(f"  {'Fold '+str(i+1):<8}", end="")
+        for m in metric_names:
+            val = fold.get(m)
+            print(f"{val:<14.4f}" if val is not None else f"{'N/A':<14}", end="")
+        print()
+
+    print(f"  {'-'*8}", end="")
+    for _ in metric_names:
+        print(f"{'-'*14}", end="")
+    print()
+
+    print(f"  {'Mean':<8}", end="")
+    for m in metric_names:
+        if m in summary:
+            print(f"{summary[m]['mean']:<14.4f}", end="")
+    print()
+
+    print(f"  {'Std':<8}", end="")
+    for m in metric_names:
+        if m in summary:
+            print(f"{summary[m]['std']:<14.4f}", end="")
+    print()
+
+    print(f"{'='*60}")
+    print(f"\n✅ CV results saved: {exp_dir}")

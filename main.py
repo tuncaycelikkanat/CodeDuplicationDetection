@@ -18,7 +18,7 @@ def apply_intel_optimizations():
         print("---> sklearnex not found, skipping Intel scikit-learn optimizations.")
 
 import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold
 from tqdm import tqdm
 
 from models.linear_svm import build_linear_svm
@@ -33,7 +33,8 @@ from models.dl_model import build_dl_model
 
 from utils.experiment_logger import (
     generate_experiment_name,
-    save_experiment
+    save_experiment,
+    save_cv_results
 )
 
 
@@ -58,7 +59,124 @@ def parse_args():
     parser.add_argument("--device", type=str, default="auto",
                         choices=["cpu", "cuda", "xpu", "auto"],
                         help="Device to use for training (default: auto)")
+    parser.add_argument("--cv", action="store_true",
+                        help="Run Stratified K-Fold cross-validation instead of single train/test split")
+    parser.add_argument("--cv-folds", type=int, default=5,
+                        help="Number of CV folds (default: 5)")
+    parser.add_argument("--cv-pairs", type=int, default=None,
+                        help="Pairs per fold for CV (default: uses --pairs value)")
     return parser.parse_args()
+
+
+def run_cross_validation(args, all_codes, labels, processed_codes,
+                         code_features_all, cf_patterns_all,
+                         model_name, build_fn):
+    """
+    Run Stratified K-Fold cross-validation.
+    Splits at the CODE level to prevent data leakage.
+    """
+    cv_pairs = args.cv_pairs if args.cv_pairs is not None else args.pairs
+    cv_folds = args.cv_folds
+
+    skf = StratifiedKFold(n_splits=cv_folds, shuffle=True, random_state=args.seed)
+    fold_metrics = []
+
+    print(f"\n{'='*60}")
+    print(f"  Starting {cv_folds}-Fold Cross-Validation")
+    print(f"  Pairs per fold: {cv_pairs}")
+    print(f"{'='*60}")
+
+    for fold_idx, (train_idx, test_idx) in enumerate(skf.split(processed_codes, labels)):
+        print(f"\n--- Fold {fold_idx + 1}/{cv_folds} ---")
+        print(f"  Train codes: {len(train_idx)}, Test codes: {len(test_idx)}")
+
+        # Split data for this fold
+        train_labels = [labels[i] for i in train_idx]
+        test_labels = [labels[i] for i in test_idx]
+        train_codes = [processed_codes[i] for i in train_idx]
+        test_codes = [processed_codes[i] for i in test_idx]
+
+        train_code_features = code_features_all[train_idx]
+        test_code_features = code_features_all[test_idx]
+        train_cf_patterns = [cf_patterns_all[i] for i in train_idx]
+        test_cf_patterns = [cf_patterns_all[i] for i in test_idx]
+
+        # TF-IDF: fit on train, transform both
+        print("  → Vectorizing with Token TF-IDF...")
+        vectorizer = build_tfidf_vectorizer()
+        X_train_token = vectorizer.fit_transform(train_codes)
+        X_test_token = vectorizer.transform(test_codes)
+
+        # Generate pairs
+        test_ratio = len(test_idx) / (len(train_idx) + len(test_idx))
+        num_train_pairs = int(cv_pairs * (1 - test_ratio))
+        num_test_pairs = int(cv_pairs * test_ratio)
+
+        print(f"  → Generating {num_train_pairs} train pairs...")
+        X_train, y_train = generate_pairs(
+            X_train_token, train_labels, num_train_pairs, train_codes,
+            code_features=train_code_features,
+            cf_patterns=train_cf_patterns,
+            random_state=args.seed + fold_idx
+        )
+        X_train = X_train.astype(np.float32)
+
+        del X_train_token, train_code_features, train_cf_patterns, train_codes
+        gc.collect()
+
+        print(f"  → Generating {num_test_pairs} test pairs...")
+        X_test, y_test = generate_pairs(
+            X_test_token, test_labels, num_test_pairs, test_codes,
+            code_features=test_code_features,
+            cf_patterns=test_cf_patterns,
+            random_state=args.seed + fold_idx + 1000
+        )
+        X_test = X_test.astype(np.float32)
+
+        del X_test_token, test_code_features, test_cf_patterns, test_codes
+        gc.collect()
+
+        # Build & train model
+        if args.model in ["xgboost", "dl_model"]:
+            model = build_fn(args.seed, device=args.device)
+        else:
+            model = build_fn(args.seed)
+
+        print(f"  → Training {model_name}...")
+        model.fit(X_train, y_train)
+
+        # Evaluate
+        from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
+        y_pred = model.predict(X_test)
+
+        fold_result = {
+            "accuracy": accuracy_score(y_test, y_pred),
+            "f1_score": f1_score(y_test, y_pred),
+        }
+
+        if hasattr(model, "predict_proba"):
+            y_prob = model.predict_proba(X_test)[:, 1]
+            fold_result["auc_roc"] = roc_auc_score(y_test, y_prob)
+
+        fold_metrics.append(fold_result)
+        print(f"  → Fold {fold_idx + 1}: Acc={fold_result['accuracy']:.4f}, "
+              f"F1={fold_result['f1_score']:.4f}", end="")
+        if "auc_roc" in fold_result:
+            print(f", AUC={fold_result['auc_roc']:.4f}")
+        else:
+            print()
+
+        # Free fold data
+        del X_train, y_train, X_test, y_test, model
+        gc.collect()
+
+    # Save CV results
+    save_cv_results(
+        model_name=model_name,
+        fold_metrics=fold_metrics,
+        pair_count=cv_pairs,
+        cv_folds=cv_folds
+    )
 
 
 def main():
@@ -123,7 +241,25 @@ def main():
     # Keep raw codes split for new features (edit distance, line/char ratios)
     # They will be freed after pair generation
 
-    # <----------> SPLIT CODES FIRST (prevents data leakage) <---------->
+    # <---------> CROSS-VALIDATION MODE <---------->
+    if args.cv:
+        MODEL_BUILDERS = {
+            "random_forest": ("RandomForest", build_random_forest),
+            "linear_svm": ("LinearSVM", build_linear_svm),
+            "xgboost": ("XGBoost", build_xgboost),
+            "ensemble": ("Ensemble", build_voting_ensemble),
+            "dl_model": ("DeepLearning", build_dl_model),
+        }
+        model_name, build_fn = MODEL_BUILDERS[args.model]
+
+        run_cross_validation(
+            args, all_codes, labels, processed_codes,
+            code_features_all, cf_patterns_all,
+            model_name, build_fn
+        )
+        return
+
+    # <---------> SPLIT CODES FIRST (prevents data leakage) <---------->
     print("---> Splitting codes into train/test...")
 
     indices = list(range(len(processed_codes)))
