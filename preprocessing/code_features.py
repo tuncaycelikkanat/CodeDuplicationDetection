@@ -19,6 +19,13 @@ _FUNC_CALL_RE = re.compile(r'\b([a-zA-Z_]\w*)\s*\(')
 _OPERATOR_RE = re.compile(r'[+\-*/%]')
 _CF_RE = re.compile(r'\b(for|while|do|if|else|switch|case|return|break|continue)\b')
 
+# TYPE-4 BEHAVIORAL FEATURES: These extract algorithm-level fingerprints
+# that remain consistent across iterative vs recursive implementations.
+_RETURN_RE = re.compile(r'\breturn\b')
+_ACCUMULATOR_RE = re.compile(r'(\+=|-=|\*=|/=|%=|\b\w+\s*=\s*\w+\s*[+\-*/])')
+_PARAM_RE = re.compile(r'\b\w+\s*\(([^)]*)\)')  # captures content inside first function parens
+_MATH_OP_RE = re.compile(r'([+\-*/%])')  # individual math operators for skeleton
+
 _FUNC_CALL_KEYWORDS = {
     'for', 'while', 'if', 'else', 'switch', 'case', 'return',
     'sizeof', 'typedef', 'do', 'defined', 'main'
@@ -82,6 +89,50 @@ def _compute_nesting_depth(code):
 def _count_operators(code):
     """Count arithmetic and comparison operators."""
     return len(_OPERATOR_RE.findall(code))
+
+
+def _count_returns(code):
+    """Count return statements."""
+    return len(_RETURN_RE.findall(code))
+
+
+def _detect_accumulator(code):
+    """
+    Detect accumulator patterns (+=, -=, x = x + y, etc.).
+    Returns 1 if found, 0 otherwise.
+    Both iterative (s += i) and recursive (return n + sum(n-1)) use accumulation.
+    """
+    # Direct accumulator operators
+    if _ACCUMULATOR_RE.search(code):
+        return 1
+    # Recursive accumulation pattern: return <expr> + func(...)
+    if re.search(r'return\s+\w+\s*[+\-*/]\s*\w+\s*\(', code):
+        return 1
+    return 0
+
+
+def _count_params(code):
+    """
+    Count parameters in the first function definition.
+    Iterative and recursive versions of the same algorithm
+    typically have the same number of parameters.
+    """
+    # Match function definitions (not calls): type name(params)
+    func_def = re.search(r'\b(?:int|void|float|double|long|char|bool|string|auto)\s+\w+\s*\(([^)]*)\)', code)
+    if func_def:
+        params = func_def.group(1).strip()
+        if not params or params == 'void':
+            return 0
+        return len(params.split(','))
+    return 0
+
+
+def _math_op_set(code):
+    """
+    Extract the SET of unique math operators used.
+    Both iterative sum and recursive sum use {+}, giving Jaccard=1.0.
+    """
+    return set(_MATH_OP_RE.findall(code))
 
 
 # ================= CONTROL FLOW PATTERNS =================
@@ -174,8 +225,10 @@ def cf_pattern_similarity(pattern1, pattern2):
 
 FEATURE_NAMES = [
     'loop_count', 'branch_count', 'func_call_count',
-    'loop_call_combined', # TYPE-4 FIX: Combines loop and recursive call count to maintain 1.0 ratio
+    'loop_call_combined',
     'nesting_depth', 'operator_count',
+    # Algorithmic behavior features (TYPE-4 bridge)
+    'return_count', 'accumulator_pattern', 'param_count', 'math_op_set_size',
     # pseudo/true IR features
     'ir_load_count', 'ir_store_count', 'ir_cmp_count',
     'ir_math_count', 'ir_bitwise_count', 'ir_br_count', 'ir_alloc_count',
@@ -195,6 +248,11 @@ def _extract_single(code):
         _count_loops(clean_code) + _count_func_calls(clean_code), # loop_call_combined
         _compute_nesting_depth(clean_code),
         _count_operators(clean_code),
+        # Algorithmic behavior features
+        _count_returns(clean_code),
+        _detect_accumulator(clean_code),
+        _count_params(clean_code),
+        len(_math_op_set(clean_code)),  # math_op_set_size
     ]
     
     # ATTEMPT TRUE LLVM IR

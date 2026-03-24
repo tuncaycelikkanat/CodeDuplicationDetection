@@ -9,7 +9,7 @@ def build_tfidf_vectorizer():
         ngram_range=(1, 3),
         token_pattern=r"[^ ]+",
         sublinear_tf=True,
-        max_features=2000  # Select the top 2000 most important/frequent features
+        max_features=500  # Reduced from 2000: shifts feature balance toward semantic/IR features for Type-4 detection
     )
 
 
