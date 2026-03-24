@@ -7,7 +7,16 @@ No external parser needed — works with raw C/C++ code text.
 import re
 import numpy as np
 from joblib import Parallel, delayed
-from utils.llvm_compiler import extract_true_llvm_ir
+
+# True LLVM IR extraction (requires clang installed)
+# Falls back to pseudo-IR if not available
+try:
+    from utils.llvm_compiler import extract_true_llvm_ir
+    _HAS_LLVM = True
+except ImportError:
+    _HAS_LLVM = False
+    def extract_true_llvm_ir(code_str, timeout=5):
+        return None
 
 # ================= PRE-COMPILED REGEX PATTERNS =================
 

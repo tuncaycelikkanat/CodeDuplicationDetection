@@ -31,35 +31,35 @@ def build_xgboost(random_state, device="cpu"):
 
     return GPUXGBClassifier(
         # ── Tree Capacity ──
-        n_estimators=3000,          # high ceiling, early_stopping determines the actual target
-        max_depth=8,                # 12->8: reduces overfitting and fits max_bin=256 into GPU VRAM
+        n_estimators=3000,          # high ceiling, early_stopping determines actual count
+        max_depth=6,                # 8→6: shallower trees = less memorization
         
         # ── Learning ──
-        learning_rate=0.05,         # 0.087->0.05: slower learning = better generalization
+        learning_rate=0.03,         # 0.05→0.03: slower learning forces better generalization
         
         # ── Sampling (stochastic boosting) ──
-        subsample=0.8,              # row sampling - 80% of data per tree
-        colsample_bytree=0.8,       # feature sampling per tree
-        colsample_bylevel=0.7,      # feature sampling per depth level (extra variance)
+        subsample=0.7,              # 0.8→0.7: more aggressive row sampling
+        colsample_bytree=0.6,       # 0.8→0.6: forces each tree to use fewer features
+        colsample_bylevel=0.6,      # 0.7→0.6: extra feature randomness per level
         
         # ── Regularization ──
-        min_child_weight=5,         # 3->5: min samples in leaf nodes to protect against noise
-        gamma=0.1,                  # 0.047->0.1: more aggressive pruning
-        reg_alpha=0.03,             # L1 (for sparse features)
-        reg_lambda=0.15,            # L2 (weight shrinkage)
+        min_child_weight=8,         # 5→8: require more samples per leaf
+        gamma=0.3,                  # 0.1→0.3: much stricter pruning threshold
+        reg_alpha=0.1,              # 0.03→0.1: stronger L1 sparsity penalty
+        reg_lambda=1.0,             # 0.15→1.0: strong L2 weight shrinkage
         
         # ── Class Balance ──
-        scale_pos_weight=1.0,       # 0.886->1.0: balanced data, no need to heavily penalize clones
+        scale_pos_weight=1.0,
         
         # ── Early Stopping ──
-        early_stopping_rounds=50,   # stop if no improvement for 50 rounds
+        early_stopping_rounds=30,   # 50→30: stop sooner to prevent overfitting
         eval_metric="logloss",
         
         # ── System ──
         random_state=random_state,
         n_jobs=-1,
         device=xgb_device,
-        max_bin=256,                # fits in VRAM on T4 with max_depth=8
+        max_bin=256,
         tree_method="hist"
     )
 
