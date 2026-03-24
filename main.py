@@ -137,7 +137,7 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         gc.collect()
 
         # Build & train model
-        if args.model in ["xgboost", "dl_model"]:
+        if args.model in ["xgboost", "dl_model", "ensemble"]:
             model = build_fn(args.seed, device=args.device)
         else:
             model = build_fn(args.seed)
@@ -381,7 +381,7 @@ def main():
             )
     else:
         # Pass device to builders that support it
-        if args.model in ["xgboost", "dl_model"]:
+        if args.model in ["xgboost", "dl_model", "ensemble"]:
             model = build_fn(RANDOM_STATE, device=args.device)
         else:
             model = build_fn(RANDOM_STATE)

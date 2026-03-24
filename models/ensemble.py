@@ -1,15 +1,18 @@
 from sklearn.ensemble import VotingClassifier, RandomForestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.calibration import CalibratedClassifierCV
-from xgboost import XGBClassifier
+
+from models.xgboost import GPUXGBClassifier
 
 
-def build_voting_ensemble(random_state=42):
+def build_voting_ensemble(random_state=42, device="cpu"):
     """
     Soft voting ensemble of XGBoost + RandomForest + Calibrated LinearSVM.
     Optimized for speed: hist tree method, reduced RF trees, reduced SVM CV folds.
     """
-    xgb = XGBClassifier(
+    xgb_device = device if device == "cuda" else "cpu"
+
+    xgb = GPUXGBClassifier(
         n_estimators=1808,
         max_depth=12,
         learning_rate=0.08741808323698248,
@@ -23,7 +26,9 @@ def build_voting_ensemble(random_state=42):
         eval_metric="logloss",
         tree_method='hist',
         random_state=random_state,
-        n_jobs=-1
+        n_jobs=-1,
+        device=xgb_device,
+        max_bin=256
     )
 
     rf = RandomForestClassifier(
@@ -56,3 +61,4 @@ def build_voting_ensemble(random_state=42):
     )
 
     return ensemble
+
