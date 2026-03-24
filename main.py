@@ -273,16 +273,29 @@ def main():
     print("---> Splitting codes into train/test...")
 
     indices = list(range(len(processed_codes)))
-    train_idx, test_idx = train_test_split(
+    # First split: Train+Val (80%) and Test (20%)
+    train_val_idx, test_idx = train_test_split(
         indices,
         test_size=TEST_SIZE,
         random_state=RANDOM_STATE,
         stratify=labels
     )
+    
+    # Second split: Train (roughly 80% of 80% = 64% total) and Val (roughly 20% of 80% = 16% total)
+    train_val_labels = [labels[i] for i in train_val_idx]
+    train_idx, val_idx = train_test_split(
+        train_val_idx,
+        test_size=TEST_SIZE,
+        random_state=RANDOM_STATE,
+        stratify=train_val_labels
+    )
 
     train_labels = [labels[i] for i in train_idx]
+    val_labels = [labels[i] for i in val_idx]
     test_labels = [labels[i] for i in test_idx]
+    
     train_codes = [processed_codes[i] for i in train_idx]
+    val_codes = [processed_codes[i] for i in val_idx]
     test_codes = [processed_codes[i] for i in test_idx]
 
     # Free full lists — we have train/test copies now
@@ -291,27 +304,33 @@ def main():
 
     # Split structural features
     train_code_features = code_features_all[train_idx]
+    val_code_features = code_features_all[val_idx]
     test_code_features = code_features_all[test_idx]
+    
     train_cf_patterns = [cf_patterns_all[i] for i in train_idx]
+    val_cf_patterns = [cf_patterns_all[i] for i in val_idx]
     test_cf_patterns = [cf_patterns_all[i] for i in test_idx]
 
     # Free full feature arrays
     del code_features_all, cf_patterns_all
     gc.collect()
 
-    print(f"Train codes: {len(train_idx)}, Test codes: {len(test_idx)}")
+    print(f"Train codes: {len(train_idx)}, Val codes: {len(val_idx)}, Test codes: {len(test_idx)}")
 
     print("---> Vectorizing with Token TF-IDF...")
     vectorizer = build_tfidf_vectorizer()
     X_train_token = vectorizer.fit_transform(train_codes)
+    X_val_token = vectorizer.transform(val_codes)
     X_test_token = vectorizer.transform(test_codes)
     print(f"Token TF-IDF shape: {X_train_token.shape}")
 
     print(f"Total feature count: {X_train_token.shape[1]} (token)")
 
     # <----------> PAIRS (from separate splits) <---------->
-    num_train_pairs = int(NUM_PAIRS * (1 - TEST_SIZE))
-    num_test_pairs = int(NUM_PAIRS * TEST_SIZE)
+    # Distribute NUM_PAIRS across the three splits
+    num_train_pairs = int(NUM_PAIRS * 0.70)
+    num_val_pairs = int(NUM_PAIRS * 0.15)
+    num_test_pairs = NUM_PAIRS - num_train_pairs - num_val_pairs
 
     print(f"---> Generating {num_train_pairs} train pairs...")
     X_train, y_train = generate_pairs(
@@ -320,31 +339,38 @@ def main():
         cf_patterns=train_cf_patterns,
         random_state=RANDOM_STATE
     )
-
     X_train = X_train.astype(np.float32)
 
-    # Free train intermediate data
     del X_train_token, train_code_features, train_cf_patterns, train_codes
     gc.collect()
-    print("---> Freed train intermediate data.")
+
+    print(f"---> Generating {num_val_pairs} val pairs...")
+    X_val, y_val = generate_pairs(
+        X_val_token, val_labels, num_val_pairs, val_codes,
+        code_features=val_code_features,
+        cf_patterns=val_cf_patterns,
+        random_state=RANDOM_STATE + 1
+    )
+    X_val = X_val.astype(np.float32)
+
+    del X_val_token, val_code_features, val_cf_patterns, val_codes
+    gc.collect()
 
     print(f"---> Generating {num_test_pairs} test pairs...")
     X_test, y_test = generate_pairs(
         X_test_token, test_labels, num_test_pairs, test_codes,
         code_features=test_code_features,
         cf_patterns=test_cf_patterns,
-        random_state=RANDOM_STATE + 1
+        random_state=RANDOM_STATE + 2
     )
-
     X_test = X_test.astype(np.float32)
 
-    # Free test intermediate data
     del X_test_token, test_code_features, test_cf_patterns, test_codes
     gc.collect()
-    print("---> Freed test intermediate data.")
 
     print(f"Train pair matrix: {X_train.shape}")
-    print(f"Test pair matrix: {X_test.shape}")
+    print(f"Val pair matrix:   {X_val.shape}")
+    print(f"Test pair matrix:  {X_test.shape}")
 
     # <----------> HYPERPARAMETER TUNING (optional) <---------->
     MODEL_BUILDERS = {
@@ -392,7 +418,8 @@ def main():
     # <----------> TRAIN <---------->
     print(f"---> Training {model_name}...")
     if args.model == "xgboost":
-        model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=True)
+        # USE VALIDATION SET FOR EARLY STOPPING
+        model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=True)
     else:
         model.fit(X_train, y_train)
 

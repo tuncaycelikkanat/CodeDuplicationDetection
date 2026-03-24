@@ -24,6 +24,17 @@ _FUNC_CALL_KEYWORDS = {
     'sizeof', 'typedef', 'do', 'defined', 'main'
 }
 
+# ================= PSEUDO-IR OPCODE EXTRACTORS =================
+# Since clang cannot be guaranteed available on all host machines, we extract
+# LLVM IR-like pseudo-opcodes from the source statically.
+
+_IR_STORE_RE = re.compile(r'(?<![=!<>])=(?![=])')      # assignments
+_IR_CMP_RE = re.compile(r'(==|!=|<=|>=|<|>)')           # icmp / fcmp
+_IR_MATH_RE = re.compile(r'([+\-*/%])')                 # add, sub, mul, sdiv, srem
+_IR_BITWISE_RE = re.compile(r'(&&|\|\||!|&|\||\^|~|<<|>>)') # and, or, xor, shl, ashr
+_IR_ALLOC_RE = re.compile(r'\b(malloc|calloc|new|realloc|free|delete)\b') # allocations
+_IR_VAR_RE = re.compile(r'\b[A-Za-z_][A-Za-z0-9_]*\b')  # generic variables (for load estimation)
+
 
 # ================= COMMENT STRIPPING =================
 
@@ -71,6 +82,39 @@ def _compute_nesting_depth(code):
 def _count_operators(code):
     """Count arithmetic and comparison operators."""
     return len(_OPERATOR_RE.findall(code))
+
+
+def _extract_pseudo_ir_opcodes(code):
+    """
+    Extract frequency of pseudo LLVM-IR instructions.
+    This gives the model a deeper semantic signature that is often shared 
+    by Type-4 clones (e.g. iterative and recursive versions of the same algorithm
+    often share underlying math/comparison instruction frequencies).
+    """
+    # Number of var usages roughly corresponds to 'load' instructions
+    vars_found = _IR_VAR_RE.findall(code)
+    # Exclude common keywords to only count actual identifiers
+    load_count = sum(1 for v in vars_found if v not in _FUNC_CALL_KEYWORDS and v not in _CF_MAPPING)
+    
+    # Store: assignments
+    store_count = len(_IR_STORE_RE.findall(code))
+    
+    # Cmp: logical comparisons
+    cmp_count = len(_IR_CMP_RE.findall(code))
+    
+    # Math: arithmetic ops
+    math_count = len(_IR_MATH_RE.findall(code))
+    
+    # Bitwise: logical and bitwise ops
+    bitwise_count = len(_IR_BITWISE_RE.findall(code))
+    
+    # Branch: loops and branches roughly equal LLVM 'br' (branching) ops
+    br_count = len(_LOOP_RE.findall(code)) + len(_BRANCH_RE.findall(code))
+    
+    # Allocations
+    alloc_count = len(_IR_ALLOC_RE.findall(code))
+    
+    return [load_count, store_count, cmp_count, math_count, bitwise_count, br_count, alloc_count]
 
 
 # ================= CONTROL FLOW PATTERNS =================
@@ -121,22 +165,36 @@ def cf_pattern_similarity(pattern1, pattern2):
 
 # ================= PUBLIC API =================
 
+# ================= PUBLIC API =================
+
 FEATURE_NAMES = [
     'loop_count', 'branch_count', 'func_call_count',
-    'nesting_depth', 'operator_count'
+    'nesting_depth', 'operator_count',
+    # pseudo-IR features
+    'ir_load_count', 'ir_store_count', 'ir_cmp_count',
+    'ir_math_count', 'ir_bitwise_count', 'ir_br_count', 'ir_alloc_count'
 ]
 
 
 def _extract_single(code):
     """Extract features for a single code sample."""
+def _extract_single(code):
+    """Extract features for a single code sample."""
     clean_code = _strip_comments(code)
-    feats = [
+    
+    ast_feats = [
         _count_loops(clean_code),
         _count_branches(clean_code),
         _count_func_calls(clean_code),
         _compute_nesting_depth(clean_code),
         _count_operators(clean_code),
     ]
+    
+    ir_feats = _extract_pseudo_ir_opcodes(clean_code)
+    feats = ast_feats + ir_feats
+    
+    cf = _extract_cf_pattern(clean_code)
+    return feats, cf
     cf = _extract_cf_pattern(clean_code)
     return feats, cf
 
