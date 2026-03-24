@@ -12,17 +12,19 @@ def build_voting_ensemble(random_state=42, device="cpu"):
     """
     xgb_device = device if device == "cuda" else "cpu"
 
+    # NOTE: These are generic defaults. After adding new features (e.g. True LLVM IR),
+    # re-run `--tune` to find optimal hyperparameters for the updated feature set.
     xgb = GPUXGBClassifier(
-        n_estimators=1808,
-        max_depth=12,
-        learning_rate=0.08741808323698248,
-        subsample=0.8260575232041659,
-        colsample_bytree=0.8478684057508008,
+        n_estimators=1500,
+        max_depth=10,
+        learning_rate=0.05,
+        subsample=0.8,
+        colsample_bytree=0.8,
         min_child_weight=3,
-        gamma=0.0469390212265333,
-        reg_alpha=0.028217344413071523,
-        reg_lambda=0.1389890374632879,
-        scale_pos_weight=0.8861939156810622,
+        gamma=0.05,
+        reg_alpha=0.03,
+        reg_lambda=0.15,
+        scale_pos_weight=1.0,
         eval_metric="logloss",
         tree_method='hist',
         random_state=random_state,

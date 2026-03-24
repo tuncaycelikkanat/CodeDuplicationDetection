@@ -14,7 +14,7 @@ from sklearn.calibration import CalibratedClassifierCV
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 
-def _xgboost_objective(trial, X, y, random_state, device="cpu"):
+def _xgboost_objective(trial, X, y, random_state, device="cpu", feature_weights=None):
     params = {
         'n_estimators': trial.suggest_int('n_estimators', 500, 2000),
         'max_depth': trial.suggest_int('max_depth', 5, 12),
@@ -33,6 +33,10 @@ def _xgboost_objective(trial, X, y, random_state, device="cpu"):
         'max_bin': 64,
         'tree_method': 'hist'
     }
+
+    # Apply Type-4 semantic feature weights if provided
+    if feature_weights is not None:
+        params['feature_weights'] = feature_weights
 
     model = XGBClassifier(**params)
     # n_jobs=1 for CV to avoid double parallelism (XGBoost already uses n_jobs=-1)
@@ -84,7 +88,7 @@ _OBJECTIVES = {
 }
 
 
-def tune_hyperparameters(model_name, X, y, random_state=42, n_trials=30, device="cpu"):
+def tune_hyperparameters(model_name, X, y, random_state=42, n_trials=30, device="cpu", feature_weights=None):
     """
     Run Optuna hyperparameter tuning.
 
@@ -95,6 +99,7 @@ def tune_hyperparameters(model_name, X, y, random_state=42, n_trials=30, device=
         random_state: random_state
         n_trials: number of Optuna trials
         device: device to use (for XGBoost)
+        feature_weights: optional array of feature weights for XGBoost Type-4 tuning
 
     Returns:
         best_params: dict of the best hyperparameters
@@ -107,12 +112,20 @@ def tune_hyperparameters(model_name, X, y, random_state=42, n_trials=30, device=
         sampler=optuna.samplers.TPESampler(seed=random_state)
     )
 
-    study.optimize(
-        lambda trial: objective_fn(trial, X, y, random_state) if model_name != "xgboost" else _xgboost_objective(trial, X, y, random_state, device=device),
-        n_trials=n_trials,
-        show_progress_bar=True,
-        gc_after_trial=True
-    )
+    if model_name == "xgboost":
+        study.optimize(
+            lambda trial: _xgboost_objective(trial, X, y, random_state, device=device, feature_weights=feature_weights),
+            n_trials=n_trials,
+            show_progress_bar=True,
+            gc_after_trial=True
+        )
+    else:
+        study.optimize(
+            lambda trial: objective_fn(trial, X, y, random_state),
+            n_trials=n_trials,
+            show_progress_bar=True,
+            gc_after_trial=True
+        )
 
     print(f"\n🏆 Best F1: {study.best_value:.4f}")
     print(f"   Best params: {study.best_params}")

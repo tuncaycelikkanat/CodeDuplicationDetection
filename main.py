@@ -383,6 +383,14 @@ def main():
 
     model_name, build_fn = MODEL_BUILDERS[args.model]
 
+    # Pre-compute feature weights for Type-4 semantic feature prioritization
+    feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
+    from preprocessing.code_features import FEATURE_NAMES
+    num_cf = 1
+    num_extra = 2 + len(FEATURE_NAMES) + num_cf  # cos, length, ast+ir, cf
+    if num_extra > 0:
+        feature_weights[-num_extra:] = 1000.0
+
     if args.tune:
         print(f"\n---> Tuning {model_name} with Optuna ({args.tune_trials} trials)...")
         from utils.hyperparameter_tuner import tune_hyperparameters
@@ -390,7 +398,8 @@ def main():
             args.model, X_train, y_train,
             random_state=RANDOM_STATE,
             n_trials=args.tune_trials,
-            device=args.device
+            device=args.device,
+            feature_weights=feature_weights if args.model == "xgboost" else None
         )
 
         # Build model with best params
@@ -418,17 +427,11 @@ def main():
     # <----------> TRAIN <---------->
     print(f"---> Training {model_name}...")
     if args.model == "xgboost":
-        # Force Semantic (Type-4) features to be 1000x more likely to split at root
-        feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
-        from preprocessing.code_features import FEATURE_NAMES
-        num_cf = 1 if args.cf_patterns else 0
-        num_extra = 2 + len(FEATURE_NAMES) + num_cf  # cos, length, ast+ir, cf
+        # Apply pre-computed Type-4 semantic feature weights
+        model.set_params(feature_weights=feature_weights)
         
-        if num_extra > 0:
-            feature_weights[-num_extra:] = 1000.0
-            
         # USE VALIDATION SET FOR EARLY STOPPING
-        model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=True, feature_weights=feature_weights)
+        model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=True)
     else:
         model.fit(X_train, y_train)
 

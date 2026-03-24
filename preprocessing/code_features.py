@@ -7,7 +7,7 @@ No external parser needed — works with raw C/C++ code text.
 import re
 import numpy as np
 from joblib import Parallel, delayed
-
+from utils.llvm_compiler import extract_true_llvm_ir
 
 # ================= PRE-COMPILED REGEX PATTERNS =================
 
@@ -84,6 +84,16 @@ def _count_operators(code):
     return len(_OPERATOR_RE.findall(code))
 
 
+# ================= CONTROL FLOW PATTERNS =================
+
+_CF_MAPPING = {
+    'for': 'F', 'while': 'W', 'do': 'D',
+    'if': 'I', 'else': 'E',
+    'switch': 'S', 'case': 'C',
+    'return': 'R', 'break': 'B', 'continue': 'N'
+}
+
+
 def _extract_pseudo_ir_opcodes(code):
     """
     Extract frequency of pseudo LLVM-IR instructions.
@@ -108,23 +118,20 @@ def _extract_pseudo_ir_opcodes(code):
     # Bitwise: logical and bitwise ops
     bitwise_count = len(_IR_BITWISE_RE.findall(code))
     
-    # Branch: loops and branches roughly equal LLVM 'br' (branching) ops
-    br_count = len(_LOOP_RE.findall(code)) + len(_BRANCH_RE.findall(code))
+    # Branch: LLVM 'br' ops change instruction pointer.
+    # Loops, conditions, and function calls (recursion) all represent branching.
+    br_count = len(_LOOP_RE.findall(code)) + len(_BRANCH_RE.findall(code)) + len(_FUNC_CALL_RE.findall(code))
     
     # Allocations
     alloc_count = len(_IR_ALLOC_RE.findall(code))
     
-    return [load_count, store_count, cmp_count, math_count, bitwise_count, br_count, alloc_count]
+    # Pseudo doesn't easily distinguish SSA phi and gep, so they default to 0.
+    # Call is just the AST func call count.
+    call_count = len(_FUNC_CALL_RE.findall(code))
+    
+    return [load_count, store_count, cmp_count, math_count, bitwise_count, br_count, alloc_count, 0, 0, call_count]
 
 
-# ================= CONTROL FLOW PATTERNS =================
-
-_CF_MAPPING = {
-    'for': 'F', 'while': 'W', 'do': 'D',
-    'if': 'I', 'else': 'E',
-    'switch': 'S', 'case': 'C',
-    'return': 'R', 'break': 'B', 'continue': 'N'
-}
 
 
 def _extract_cf_pattern(code):
@@ -165,19 +172,18 @@ def cf_pattern_similarity(pattern1, pattern2):
 
 # ================= PUBLIC API =================
 
-# ================= PUBLIC API =================
-
 FEATURE_NAMES = [
     'loop_count', 'branch_count', 'func_call_count',
+    'loop_call_combined', # TYPE-4 FIX: Combines loop and recursive call count to maintain 1.0 ratio
     'nesting_depth', 'operator_count',
-    # pseudo-IR features
+    # pseudo/true IR features
     'ir_load_count', 'ir_store_count', 'ir_cmp_count',
-    'ir_math_count', 'ir_bitwise_count', 'ir_br_count', 'ir_alloc_count'
+    'ir_math_count', 'ir_bitwise_count', 'ir_br_count', 'ir_alloc_count',
+    # True exclusive SSA/DataFlow IR features
+    'ir_phi_count', 'ir_gep_count', 'ir_call_count'
 ]
 
 
-def _extract_single(code):
-    """Extract features for a single code sample."""
 def _extract_single(code):
     """Extract features for a single code sample."""
     clean_code = _strip_comments(code)
@@ -186,15 +192,33 @@ def _extract_single(code):
         _count_loops(clean_code),
         _count_branches(clean_code),
         _count_func_calls(clean_code),
+        _count_loops(clean_code) + _count_func_calls(clean_code), # loop_call_combined
         _compute_nesting_depth(clean_code),
         _count_operators(clean_code),
     ]
     
-    ir_feats = _extract_pseudo_ir_opcodes(clean_code)
+    # ATTEMPT TRUE LLVM IR
+    true_ir_dict = extract_true_llvm_ir(code) # pass raw code, not clean_code, because compiler handles comments and needs standard raw syntax
+    
+    if true_ir_dict is not None:
+        ir_feats = [
+            true_ir_dict.get('load', 0),
+            true_ir_dict.get('store', 0),
+            true_ir_dict.get('cmp', 0),
+            true_ir_dict.get('math', 0),
+            true_ir_dict.get('bitwise', 0),
+            true_ir_dict.get('br', 0),
+            true_ir_dict.get('alloc', 0),
+            true_ir_dict.get('phi', 0),
+            true_ir_dict.get('gep', 0),
+            true_ir_dict.get('call', 0)
+        ]
+    else:
+        # FALLBACK TO PSEUDO-IR if code is not compilable
+        ir_feats = _extract_pseudo_ir_opcodes(clean_code)
+        
     feats = ast_feats + ir_feats
     
-    cf = _extract_cf_pattern(clean_code)
-    return feats, cf
     cf = _extract_cf_pattern(clean_code)
     return feats, cf
 
@@ -205,7 +229,7 @@ def extract_all_features(raw_codes):
     Parallelized with joblib for speed.
 
     Returns:
-        features: np.ndarray of shape (n_codes, 5)
+        features: np.ndarray of shape (n_codes, num_features)
         cf_patterns: list of control flow pattern strings
     """
     print("Extracting code features (parallel)...")

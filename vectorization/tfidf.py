@@ -9,7 +9,7 @@ def build_tfidf_vectorizer():
         ngram_range=(1, 3),
         token_pattern=r"[^ ]+",
         sublinear_tf=True,
-        max_features=2000  # En önemli/frekansı en yüksek 2000 feature seçilecek
+        max_features=2000  # Select the top 2000 most important/frequent features
     )
 
 

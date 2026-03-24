@@ -581,6 +581,31 @@
                 grid-template-columns: 110px 1fr 54px;
             }
         }
+
+        /* ===== SHOW MORE BUTTON ===== */
+        .shap-btn-wrap {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .btn-show-more {
+            background: none;
+            border: 1px dashed var(--border-focus);
+            color: var(--accent);
+            padding: 8px 24px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-show-more:hover {
+            background: var(--accent-soft);
+            box-shadow: var(--shadow);
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 
@@ -673,6 +698,11 @@
             }
         }
 
+        let shapFeaturesGlobal = [];
+        let shapMaxAbsGlobal = 0.001;
+        let shapRenderCount = 0;
+        const SHAP_BATCH_SIZE = 15;
+
         function renderResult(d) {
             const pct = (d.probability * 100).toFixed(1);
             const isDup = d.prediction === "Duplicated";
@@ -695,33 +725,92 @@
             return h;
         }
 
+        function getShapButtonsHtml() {
+            let html = "";
+            if (shapRenderCount > SHAP_BATCH_SIZE) {
+                html += `<button onclick="showLessShap()" class="btn-show-more">Show Less Features ⬆️</button>`;
+            }
+            if (shapRenderCount > SHAP_BATCH_SIZE && shapRenderCount < shapFeaturesGlobal.length) {
+                html += `<span style="margin: 0 8px;"></span>`;
+            }
+            if (shapRenderCount < shapFeaturesGlobal.length) {
+                html += `<button onclick="showMoreShap()" class="btn-show-more">Show More Features ⬇️</button>`;
+            }
+            return html;
+        }
+
         function renderSHAP(s) {
-            const maxAbs = Math.max(...s.features.map(f => Math.abs(f.shap_value)), 0.001);
-            let rows = "";
-            s.features.forEach((f, i) => {
-                const pos = f.shap_value >= 0;
-                const w = (Math.abs(f.shap_value) / maxAbs) * 48;
-                const sign = pos ? "+" : "";
-                const style = pos ? `left:50%;width:${w}%` : `right:50%;width:${w}%`;
-                const delay = i * 0.04;
-                rows += `
-            <div class="wf-row">
-                <div class="wf-name" title="${f.feature}">${f.feature}</div>
-                <div class="bar-wrap"><div class="bar-mid"></div><div class="bar ${pos ? 'pos' : 'neg'}" style="${style};animation-delay:${delay}s"></div></div>
-                <div class="wf-val ${pos ? 'pos' : 'neg'}">${sign}${f.shap_value.toFixed(3)}</div>
-            </div>`;
-            });
+            shapFeaturesGlobal = s.features;
+            shapMaxAbsGlobal = Math.max(...s.features.map(f => Math.abs(f.shap_value)), 0.001);
+            shapRenderCount = Math.min(SHAP_BATCH_SIZE, shapFeaturesGlobal.length);
+
+            let rows = generateShapRows(0, shapRenderCount);
+            let btnHtml = getShapButtonsHtml();
+
             return `
         <div class="shap-card">
             <div class="shap-title">🔍 SHAP Feature Importance</div>
             <div class="shap-subtitle">Top features influencing the prediction (XGBoost TreeExplainer)</div>
-            <div class="waterfall-chart">${rows}</div>
+            <div class="waterfall-chart" id="shapChartContainer">${rows}</div>
+            <div id="shapBtnContainer" class="shap-btn-wrap">${btnHtml}</div>
             <div class="shap-footer">
                 <div class="legend-item"><span class="leg-dot r"></span> Towards Duplicated</div>
                 <div class="legend-item"><span class="leg-dot b"></span> Towards Not Duplicated</div>
             </div>
             <div class="base-info">Base value: ${s.base_value}</div>
         </div>`;
+        }
+
+        function generateShapRows(start, end) {
+            let rows = "";
+            for (let i = start; i < end; i++) {
+                const f = shapFeaturesGlobal[i];
+                const pos = f.shap_value >= 0;
+                const w = (Math.abs(f.shap_value) / shapMaxAbsGlobal) * 48;
+                const sign = pos ? "+" : "";
+                const style = pos ? `left:50%;width:${w}%` : `right:50%;width:${w}%`;
+                const delay = (i - start) * 0.04;
+                rows += `
+            <div class="wf-row">
+                <div class="wf-name" title="${f.feature}">${f.feature}</div>
+                <div class="bar-wrap"><div class="bar-mid"></div><div class="bar ${pos ? 'pos' : 'neg'}" style="${style};animation-delay:${delay}s"></div></div>
+                <div class="wf-val ${pos ? 'pos' : 'neg'}">${sign}${f.shap_value.toFixed(3)}</div>
+            </div>`;
+            }
+            return rows;
+        }
+
+        function showMoreShap() {
+            const container = document.getElementById("shapChartContainer");
+            const btnContainer = document.getElementById("shapBtnContainer");
+            if (!container) return;
+
+            let nextCount = Math.min(shapRenderCount + SHAP_BATCH_SIZE, shapFeaturesGlobal.length);
+            let newRows = generateShapRows(shapRenderCount, nextCount);
+            container.insertAdjacentHTML('beforeend', newRows);
+            shapRenderCount = nextCount;
+
+            btnContainer.innerHTML = getShapButtonsHtml();
+        }
+
+        function showLessShap() {
+            const container = document.getElementById("shapChartContainer");
+            const btnContainer = document.getElementById("shapBtnContainer");
+            if (!container || shapRenderCount <= SHAP_BATCH_SIZE) return;
+
+            let removeCount = shapRenderCount % SHAP_BATCH_SIZE;
+            if (removeCount === 0) {
+                removeCount = SHAP_BATCH_SIZE;
+            }
+            
+            for (let i = 0; i < removeCount; i++) {
+                if (container.lastElementChild) {
+                    container.removeChild(container.lastElementChild);
+                }
+            }
+            
+            shapRenderCount -= removeCount;
+            btnContainer.innerHTML = getShapButtonsHtml();
         }
     </script>
 

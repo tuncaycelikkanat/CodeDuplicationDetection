@@ -245,8 +245,8 @@ def predict(pair: CodePair):
                 explainer.expected_value, (list, np.ndarray)
             ) else float(explainer.expected_value)
 
-            # Top-15 features by absolute SHAP value
-            top_k = 15
+            # Top-100 features by absolute SHAP value
+            top_k = 100
             abs_sv = np.abs(sv)
             top_indices = np.argsort(abs_sv)[-top_k:][::-1]
 

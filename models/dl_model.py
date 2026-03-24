@@ -11,7 +11,7 @@ try:
 except ImportError:
     HAS_IPEX = False
 
-# 1. Matris çarpımlarını optimize et (AVX/VNNI DL Boost için)
+# Optimize matrix multiplications for AVX/VNNI DL Boost
 torch.set_float32_matmul_precision('high')
 
 
