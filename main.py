@@ -418,8 +418,17 @@ def main():
     # <----------> TRAIN <---------->
     print(f"---> Training {model_name}...")
     if args.model == "xgboost":
+        # Force Semantic (Type-4) features to be 1000x more likely to split at root
+        feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
+        from preprocessing.code_features import FEATURE_NAMES
+        num_cf = 1 if args.cf_patterns else 0
+        num_extra = 2 + len(FEATURE_NAMES) + num_cf  # cos, length, ast+ir, cf
+        
+        if num_extra > 0:
+            feature_weights[-num_extra:] = 1000.0
+            
         # USE VALIDATION SET FOR EARLY STOPPING
-        model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=True)
+        model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=True, feature_weights=feature_weights)
     else:
         model.fit(X_train, y_train)
 
@@ -451,4 +460,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-# başka ml modeller, bir tane dl model, ensemble, tune, future engineering
+# other ML models, one DL model, ensemble, hyperparameter tuning, feature engineering

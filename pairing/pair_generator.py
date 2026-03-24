@@ -92,21 +92,12 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
             all_j[slots] = idxs_j[np_rng.randint(0, len(idxs_j), size=count)]
     pairs_y[neg_indices_mask] = 0
 
-    # ---- Hard Negative Mining: replace 30% of easy negatives ----
-    print("  → Hard negative mining (vectorized)...")
-    neg_indices = neg_indices_mask
-    num_hard = int(len(neg_indices) * 0.30)
+    # ---- Hard Mining Preparations ----
+    num_hard_neg = int(len(neg_indices_mask) * 0.30)
+    num_hard_pos = int(len(pos_indices) * 0.30)
 
-    if num_hard > 0:
+    if num_hard_neg > 0 or num_hard_pos > 0:
         code_lengths = np.array([len(c.split()) for c in processed_codes])
-        hard_slots = np_rng.choice(neg_indices, size=min(num_hard, len(neg_indices)), replace=False)
-
-        # Vectorized hard negative mining
-        src_indices = all_i[hard_slots]
-        src_labels_arr = np.array([labels[idx] for idx in src_indices])
-        src_lengths = code_lengths[src_indices]
-
-        # Pre-compute per-label candidate lengths for fast lookup
         label_cand_lengths = {}
         label_cand_indices = {}
         for lbl in unique_labels:
@@ -114,12 +105,39 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
             label_cand_lengths[lbl] = code_lengths[idxs]
             label_cand_indices[lbl] = idxs
 
+    # ---- Hard Negative Mining: replace 30% of easy negatives ----
+    if num_hard_neg > 0:
+        print("  → Hard negative mining (vectorized)...")
+        hard_slots = np_rng.choice(neg_indices_mask, size=min(num_hard_neg, len(neg_indices_mask)), replace=False)
+        src_indices = all_i[hard_slots]
+        src_labels_arr = np.array([labels[idx] for idx in src_indices])
+        src_lengths = code_lengths[src_indices]
+
         for k, p in enumerate(hard_slots):
             src_lbl = src_labels_arr[k]
             other_lbl = unique_labels[(unique_labels.index(src_lbl) + np_rng.randint(1, n_labels)) % n_labels]
             cand_lengths = label_cand_lengths[other_lbl]
             closest = np.argmin(np.abs(cand_lengths - src_lengths[k]))
             all_j[p] = label_cand_indices[other_lbl][closest]
+
+    # ---- Hard Positive Mining: replace 30% of easy positives ----
+    if num_hard_pos > 0:
+        print("  → Hard positive mining (vectorized)...")
+        hard_pos_slots = np_rng.choice(pos_indices, size=min(num_hard_pos, len(pos_indices)), replace=False)
+        src_indices = all_i[hard_pos_slots]
+        src_labels_arr = np.array([labels[idx] for idx in src_indices])
+        src_lengths = code_lengths[src_indices]
+
+        for k, p in enumerate(hard_pos_slots):
+            src_lbl = src_labels_arr[k]
+            cand_lengths = label_cand_lengths[src_lbl]
+            cand_indices = label_cand_indices[src_lbl]
+            
+            # Find the MOST DIFFERENT length (farthest) in the SAME class
+            # to force the model to learn from positive structural anomalies (Type-4 Code Clones)
+            if len(cand_lengths) > 1:
+                farthest = np.argmax(np.abs(cand_lengths - src_lengths[k]))
+                all_j[p] = cand_indices[farthest]
 
     # ---- Step 2: Batch token TF-IDF diff (sparse, vectorized) ----
     print("  → Computing token TF-IDF diff (batch)...")

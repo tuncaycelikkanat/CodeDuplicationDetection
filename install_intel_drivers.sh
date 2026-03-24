@@ -1,6 +1,6 @@
 #!/bin/bash
 # Intel GPU Sürücüleri (Level Zero, OpenCL) Kurulum Betiği
-# Bu betik Intel Arc GPU'nun Linux üzerinde PyTorch (IPEX) tarafından tanınması için gereklidir.
+# This script is required for the Intel Arc GPU to be recognized by PyTorch (IPEX) on Linux.
 
 echo "Intel GPU Repo Anahtarları ekleniyor..."
 wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | sudo gpg --dearmor --yes --output /usr/share/keyrings/intel-graphics.gpg

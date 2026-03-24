@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import pickle
+
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -10,17 +11,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.sparse import hstack, csr_matrix
 import shap
+from rapidfuzz.distance import Levenshtein
 
 # Ensure project root is on sys.path for imports
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-from preprocessing.tokenizer import tokenize, normalize_tokens
+from preprocessing.tokenizer import normalize_tokens, tokenize
 from preprocessing.code_features import (
-    _count_loops, _count_branches, _count_func_calls,
-    _compute_nesting_depth, _count_operators,
-    _extract_cf_pattern, cf_pattern_similarity
+    _extract_single, cf_pattern_similarity, FEATURE_NAMES as AST_FEATURE_NAMES
 )
 
 # ================= APP =================
@@ -36,12 +36,26 @@ app.add_middleware(
 )
 
 
-# ================= AUTO-DETECT LATEST EXPERIMENT =================
-def get_latest_experiment(base_dir="experiments"):
-    """Find the experiment with the highest number."""
+# ================= EXPERIMENT SELECTION =================
+def get_experiment_path(base_dir="experiments"):
+    """Find the specified experiment or fallback to the latest one."""
     if not os.path.isabs(base_dir):
         base_dir = os.path.join(_PROJECT_ROOT, base_dir)
 
+    exp_id_env = os.environ.get("EXP_ID")
+    if exp_id_env:
+        try:
+            target_id = int(exp_id_env)
+        except ValueError:
+            raise RuntimeError("EXP_ID environment variable must be an integer.")
+            
+        for name in os.listdir(base_dir):
+            m = re.match(r"exp_(\d+)_", name)
+            if m and int(m.group(1)) == target_id:
+                return os.path.join(base_dir, name)
+        raise RuntimeError(f"Experiment ID {target_id} not found in {base_dir}")
+
+    # Auto-detect latest
     exp_nums = []
     for name in os.listdir(base_dir):
         m = re.match(r"exp_(\d+)_", name)
@@ -55,7 +69,7 @@ def get_latest_experiment(base_dir="experiments"):
     return os.path.join(base_dir, latest_name)
 
 
-EXP_PATH = get_latest_experiment()
+EXP_PATH = get_experiment_path()
 print(f"📦 Loading experiment: {EXP_PATH}")
 
 with open(f"{EXP_PATH}/model.pkl", "rb") as f:
@@ -87,27 +101,17 @@ def _build_feature_names():
 
     # Extra features (always in this order)
     names.append("cosine_similarity_token")
-    names.append("jaccard_overlap")
     names.append("length_ratio")
 
     if char_vectorizer is not None:
         names.append("cosine_similarity_char")
 
-    # AST feature ratios
-    names.append("loop_ratio")
-    names.append("branch_ratio")
-    names.append("func_call_ratio")
-    names.append("nesting_depth_ratio")
-    names.append("operator_ratio")
+    # AST + IR feature ratios dynamically generated
+    for feat_name in AST_FEATURE_NAMES:
+        names.append(f"{feat_name}_ratio")
 
     # CF pattern similarity
     names.append("cf_pattern_similarity")
-
-    # New features (edit distance, line/char ratios)
-    names.append("edit_distance_ratio")
-    names.append("line_count_ratio")
-    names.append("char_length_ratio")
-
     return names
 
 
@@ -135,16 +139,9 @@ def preprocess(code: str) -> str:
 
 
 def extract_features_for_code(raw_code):
-    """Extract AST + control flow features for a single code."""
-    features = [
-        _count_loops(raw_code),
-        _count_branches(raw_code),
-        _count_func_calls(raw_code),
-        _compute_nesting_depth(raw_code),
-        _count_operators(raw_code)
-    ]
-    cf_pattern = _extract_cf_pattern(raw_code)
-    return features, cf_pattern
+    """Extract AST + control flow + IR features for a single code."""
+    # _extract_single returns (feats_list, cf_pattern)
+    return _extract_single(raw_code)
 
 
 def _build_pair_vector(raw1, raw2):
@@ -159,18 +156,12 @@ def _build_pair_vector(raw1, raw2):
     diff = abs(X1 - X2)
     cos_token = cosine_similarity(X1, X2)[0][0]
 
-    # Jaccard overlap
-    tokens1 = set(code1.split())
-    tokens2 = set(code2.split())
-    union = len(tokens1 | tokens2)
-    overlap = len(tokens1 & tokens2) / union if union > 0 else 0.0
-
     # Length ratio
     len1 = len(code1.split())
     len2 = len(code2.split())
     length_ratio = min(len1, len2) / max(len1, len2) if max(len1, len2) > 0 else 1.0
 
-    extra = [cos_token, overlap, length_ratio]
+    extra = [cos_token, length_ratio]
 
     # Char TF-IDF cosine + diff
     char_diff = None
@@ -193,23 +184,6 @@ def _build_pair_vector(raw1, raw2):
     # CF pattern similarity
     cf_sim = cf_pattern_similarity(cf1, cf2)
     extra.append(cf_sim)
-
-    # Edit distance ratio (truncated to 500 chars for speed)
-    from pairing.pair_generator import _edit_distance_ratio
-    edit_dist = _edit_distance_ratio(raw1[:500], raw2[:500])
-    extra.append(edit_dist)
-
-    # Line count ratio
-    lc1 = raw1.count('\n') + 1
-    lc2 = raw2.count('\n') + 1
-    max_lc = max(lc1, lc2)
-    extra.append(min(lc1, lc2) / max_lc if max_lc > 0 else 1.0)
-
-    # Char length ratio
-    cl1 = len(raw1)
-    cl2 = len(raw2)
-    max_cl = max(cl1, cl2)
-    extra.append(min(cl1, cl2) / max_cl if max_cl > 0 else 1.0)
 
     # Combine
     extra_features = csr_matrix([extra])

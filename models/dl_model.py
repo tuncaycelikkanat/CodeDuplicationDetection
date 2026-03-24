@@ -43,7 +43,7 @@ class SparseDataset(torch.utils.data.Dataset):
         return self.X.shape[0]
 
     def __getitem__(self, idx):
-        # Sadece istendiğinde bu satırı dense matrix haline getir. Bellek dostu.
+        # Convert this row to a dense matrix only when requested. Memory friendly.
         x_val = self.X[idx].toarray()[0] if self.is_sparse else self.X[idx]
         x_tensor = torch.tensor(x_val, dtype=torch.float32)
 
@@ -75,7 +75,7 @@ class PyTorchClassifier:
         
         dataset = SparseDataset(X, y)
         
-        # 3. Veri yükleme optimizasyonu (num_workers=8, pin_memory=True)
+        # 3. Data loading optimization (num_workers=8, pin_memory=True)
         # Note: Depending on OS/RAM, num_workers=8 might need tuning, but matches user's P-Core count
         loader = DataLoader(
             dataset, batch_size=self.batch_size, shuffle=True, 
@@ -90,7 +90,7 @@ class PyTorchClassifier:
 
         print(f"\n[PyTorch] Training on device: {self.device} (IPEX: {HAS_IPEX})")
         
-        # 2. XPU (Intel Arc) Hızlandırması & Mixed Precision
+        # 2. XPU (Intel Arc) Acceleration & Mixed Precision
         if HAS_IPEX and self.device.type == 'xpu':
             self.model, optimizer = ipex.optimize(self.model, optimizer=optimizer, dtype=torch.bfloat16)
         
@@ -103,7 +103,7 @@ class PyTorchClassifier:
                 optimizer.zero_grad(set_to_none=True)
                 
                 if self.device.type == 'xpu':
-                    # Mixed precision (BF16) kullanımı → Eğitim süresini ciddi kısaltır
+                    # Using mixed precision (BF16) -> Significantly reduces training time
                     with torch.xpu.amp.autocast(enabled=True, dtype=torch.bfloat16):
                         outputs = self.model(batch_X)
                         loss = criterion(outputs, batch_y)
