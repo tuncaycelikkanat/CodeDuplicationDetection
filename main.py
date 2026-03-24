@@ -143,7 +143,10 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
             model = build_fn(args.seed)
 
         print(f"  → Training {model_name}...")
-        model.fit(X_train, y_train)
+        if args.model == "xgboost":
+            model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
+        else:
+            model.fit(X_train, y_train)
 
         # Evaluate
         from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
@@ -388,7 +391,10 @@ def main():
 
     # <----------> TRAIN <---------->
     print(f"---> Training {model_name}...")
-    model.fit(X_train, y_train)
+    if args.model == "xgboost":
+        model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=True)
+    else:
+        model.fit(X_train, y_train)
 
     # <----------> EVALUATION <---------->
     y_train_pred = model.predict(X_train)
