@@ -4,6 +4,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 import scipy.sparse as sp
+import os
 
 try:
     import intel_extension_for_pytorch as ipex
@@ -75,11 +76,11 @@ class PyTorchClassifier:
         
         dataset = SparseDataset(X, y)
         
-        # 3. Data loading optimization (num_workers=8, pin_memory=True)
-        # Note: Depending on OS/RAM, num_workers=8 might need tuning, but matches user's P-Core count
+        # Data loading optimization
+        n_workers = min(4, os.cpu_count() or 1)
         loader = DataLoader(
             dataset, batch_size=self.batch_size, shuffle=True, 
-            num_workers=8, pin_memory=True, drop_last=False
+            num_workers=n_workers, pin_memory=True, drop_last=False
         )
 
         input_dim = X.shape[1]
@@ -125,7 +126,7 @@ class PyTorchClassifier:
         dataset = SparseDataset(X)
         loader = DataLoader(
             dataset, batch_size=self.batch_size * 2, shuffle=False,
-            num_workers=4, pin_memory=True
+            num_workers=min(4, os.cpu_count() or 1), pin_memory=True
         )
         
         predictions = []
@@ -142,6 +143,41 @@ class PyTorchClassifier:
                 predictions.append(preds.cpu().numpy().astype(int))
 
         return np.concatenate(predictions)
+
+    def predict_proba(self, X):
+        """Return probability estimates for each class [P(0), P(1)]."""
+        self.model.eval()
+
+        dataset = SparseDataset(X)
+        loader = DataLoader(
+            dataset, batch_size=self.batch_size * 2, shuffle=False,
+            num_workers=min(4, os.cpu_count() or 1), pin_memory=True
+        )
+
+        probas = []
+        with torch.no_grad():
+            for (batch_X,) in loader:
+                batch_X = batch_X.to(self.device)
+                if self.device.type == 'xpu':
+                    with torch.xpu.amp.autocast(enabled=True, dtype=torch.bfloat16):
+                        outputs = self.model(batch_X)
+                else:
+                    outputs = self.model(batch_X)
+                pos_proba = torch.sigmoid(outputs).cpu().numpy()
+                probas.append(pos_proba)
+
+        pos = np.concatenate(probas)
+        return np.column_stack([1 - pos, pos])
+
+    def get_params(self, deep=True):
+        """Return model parameters (sklearn-compatible interface)."""
+        return {
+            'random_state': self.random_state,
+            'epochs': self.epochs,
+            'batch_size': self.batch_size,
+            'lr': self.lr,
+            'device': str(self.device),
+        }
 
 
 def build_dl_model(random_state=42, device="cpu"):

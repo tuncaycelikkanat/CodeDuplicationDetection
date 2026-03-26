@@ -68,7 +68,8 @@ def save_experiment(
     y_test,
     y_test_pred,
     base_dir="experiments",
-    extra_vectorizers=None
+    extra_vectorizers=None,
+    timing_info=None
 ):
     exp_dir = os.path.join(base_dir, exp_name)
     os.makedirs(exp_dir, exist_ok=True)
@@ -128,9 +129,21 @@ def save_experiment(
         plt.savefig(os.path.join(exp_dir, f"confusion_matrix_{split}.png"))
         plt.close()
 
-    # ================= NOTES =================
+    # ================= NOTES (with timing) =================
     with open(os.path.join(exp_dir, "notes.txt"), "w") as f:
-        f.write("Notes:\n")
+        f.write("Notes:\n\n")
+        if timing_info:
+            from datetime import datetime
+            f.write(f"Experiment Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"{'='*55}\n")
+            f.write(f"  TIMING SUMMARY\n")
+            f.write(f"{'='*55}\n")
+            for phase, secs in timing_info.items():
+                mins = secs / 60
+                if phase == 'TOTAL':
+                    f.write(f"  {'─'*51}\n")
+                f.write(f"  {phase:<40} {mins:>6.2f} min ({secs:.1f}s)\n")
+            f.write(f"{'='*55}\n")
 
     # ================= SERIALIZATION =================
     with open(os.path.join(exp_dir, "model.pkl"), "wb") as f:

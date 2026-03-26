@@ -1,6 +1,7 @@
 # import os and gc at top
 import os
 import gc
+import time
 import argparse
 import random
 
@@ -151,7 +152,18 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
 
         print(f"  → Training {model_name}...")
         if args.model == "xgboost":
-            model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
+            # Apply feature_weights for Type-4 semantic feature prioritization
+            from preprocessing.code_features import FEATURE_NAMES
+            feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
+            num_cf = 1
+            num_semantic = 6
+            num_extra = 2 + len(FEATURE_NAMES) + num_cf + num_semantic
+            if num_extra > 0:
+                feature_weights[-num_extra:] = 1000.0
+            model.set_params(feature_weights=feature_weights)
+            # NOTE: No eval_set in CV to prevent data leakage
+            # (test fold must not influence training)
+            model.fit(X_train, y_train, verbose=False)
         else:
             model.fit(X_train, y_train)
 
@@ -225,6 +237,8 @@ def main():
 
     # <----------> LOAD DATA <---------->
     print("---> Loading dataset...")
+    t_start_total = time.time()
+    t_phase = time.time()
 
     all_codes = []
     labels = []
@@ -241,9 +255,11 @@ def main():
                     labels.append(label)
 
     print(f"---> Total codes: {len(all_codes)}")
+    t_load = time.time() - t_phase
 
     # <----------> PREPROCESS <---------->
     print("---> Preprocessing codes...")
+    t_phase = time.time()
 
     processed_codes = []
     for code in tqdm(all_codes, desc="Tokenizing"):
@@ -251,9 +267,13 @@ def main():
         norm_tokens = normalize_tokens(tokens)
         processed_codes.append(" ".join(norm_tokens))
 
+    t_preprocess = time.time() - t_phase
+
     # <----------> CODE FEATURES (AST + Control Flow + Semantic) <---------->
     print("---> Extracting structural and semantic features...")
+    t_phase = time.time()
     code_features_all, cf_patterns_all, semantic_features_all = extract_all_features(all_codes)
+    t_features = time.time() - t_phase
 
     # Keep raw codes split for new features (edit distance, line/char ratios)
     # They will be freed after pair generation
@@ -279,6 +299,7 @@ def main():
 
     # <---------> SPLIT CODES FIRST (prevents data leakage) <---------->
     print("---> Splitting codes into train/test...")
+    t_phase = time.time()
 
     indices = list(range(len(processed_codes)))
     # First split: Train+Val (80%) and Test (20%)
@@ -338,6 +359,7 @@ def main():
     print(f"Token TF-IDF shape: {X_train_token.shape}")
 
     print(f"Total feature count: {X_train_token.shape[1]} (token)")
+    t_split_tfidf = time.time() - t_phase
 
     # <----------> PAIRS (from separate splits) <---------->
     # Distribute NUM_PAIRS across the three splits
@@ -346,6 +368,7 @@ def main():
     num_test_pairs = NUM_PAIRS - num_train_pairs - num_val_pairs
 
     print(f"---> Generating {num_train_pairs} train pairs...")
+    t_phase = time.time()
     X_train, y_train = generate_pairs(
         X_train_token, train_labels, num_train_pairs, train_codes,
         code_features=train_code_features,
@@ -387,6 +410,7 @@ def main():
     print(f"Train pair matrix: {X_train.shape}")
     print(f"Val pair matrix:   {X_val.shape}")
     print(f"Test pair matrix:  {X_test.shape}")
+    t_pairs = time.time() - t_phase
 
     # <----------> HYPERPARAMETER TUNING (optional) <---------->
     MODEL_BUILDERS = {
@@ -410,6 +434,7 @@ def main():
 
     if args.tune:
         print(f"\n---> Tuning {model_name} with Optuna ({args.tune_trials} trials)...")
+        t_phase = time.time()
         from utils.hyperparameter_tuner import tune_hyperparameters
         best_params, best_score = tune_hyperparameters(
             args.model, X_train, y_train,
@@ -434,7 +459,9 @@ def main():
             model = CalibratedClassifierCV(
                 LinearSVC(**best_params, random_state=RANDOM_STATE), cv=3
             )
+        t_tune = time.time() - t_phase
     else:
+        t_tune = 0.0
         # Pass device to builders that support it
         if args.model in ["xgboost", "dl_model", "ensemble"]:
             model = build_fn(RANDOM_STATE, device=args.device)
@@ -443,6 +470,7 @@ def main():
 
     # <----------> TRAIN <---------->
     print(f"---> Training {model_name}...")
+    t_phase = time.time()
     if args.model == "xgboost":
         # Apply pre-computed Type-4 semantic feature weights
         model.set_params(feature_weights=feature_weights)
@@ -451,10 +479,37 @@ def main():
         model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=True)
     else:
         model.fit(X_train, y_train)
+    t_train = time.time() - t_phase
 
     # <----------> EVALUATION <---------->
+    t_phase = time.time()
     y_train_pred = model.predict(X_train)
     y_test_pred = model.predict(X_test)
+    t_eval = time.time() - t_phase
+    t_total = time.time() - t_start_total
+
+    # <----------> TIMING SUMMARY <---------->
+    timing_info = {
+        'Data Loading': t_load,
+        'Preprocessing (Tokenization)': t_preprocess,
+        'Feature Extraction (AST+IR+A1+A2+B3)': t_features,
+        'Split + TF-IDF Vectorization': t_split_tfidf,
+        'Pair Generation (train+val+test)': t_pairs,
+        'Hyperparameter Tuning': t_tune,
+        'Model Training': t_train,
+        'Evaluation (Prediction)': t_eval,
+        'TOTAL': t_total,
+    }
+
+    print(f"\n{'='*55}")
+    print(f"  TIMING SUMMARY")
+    print(f"{'='*55}")
+    for phase, secs in timing_info.items():
+        mins = secs / 60
+        if phase == 'TOTAL':
+            print(f"  {'─'*51}")
+        print(f"  {phase:<40} {mins:>6.2f} min ({secs:.1f}s)")
+    print(f"{'='*55}")
 
     # <----------> SAVE EXPERIMENT <---------->
     exp_name = generate_experiment_name(
@@ -473,11 +528,10 @@ def main():
         y_train_pred=y_train_pred,
         X_test=X_test,
         y_test=y_test,
-        y_test_pred=y_test_pred
+        y_test_pred=y_test_pred,
+        timing_info=timing_info
     )
 
 
 if __name__ == "__main__":
     main()
-
-# other ML models, one DL model, ensemble, hyperparameter tuning, feature engineering
