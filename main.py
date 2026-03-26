@@ -70,6 +70,7 @@ def parse_args():
 
 def run_cross_validation(args, all_codes, labels, processed_codes,
                          code_features_all, cf_patterns_all,
+                         semantic_features_all,
                          model_name, build_fn):
     """
     Run Stratified K-Fold cross-validation.
@@ -101,6 +102,10 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         train_cf_patterns = [cf_patterns_all[i] for i in train_idx]
         test_cf_patterns = [cf_patterns_all[i] for i in test_idx]
 
+        # Split semantic features
+        train_semantic = {k: [v[i] for i in train_idx] for k, v in semantic_features_all.items()}
+        test_semantic = {k: [v[i] for i in test_idx] for k, v in semantic_features_all.items()}
+
         # TF-IDF: fit on train, transform both
         print("  → Vectorizing with Token TF-IDF...")
         vectorizer = build_tfidf_vectorizer()
@@ -117,11 +122,12 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
             X_train_token, train_labels, num_train_pairs, train_codes,
             code_features=train_code_features,
             cf_patterns=train_cf_patterns,
+            semantic_features=train_semantic,
             random_state=args.seed + fold_idx
         )
         X_train = X_train.astype(np.float32)
 
-        del X_train_token, train_code_features, train_cf_patterns, train_codes
+        del X_train_token, train_code_features, train_cf_patterns, train_codes, train_semantic
         gc.collect()
 
         print(f"  → Generating {num_test_pairs} test pairs...")
@@ -129,11 +135,12 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
             X_test_token, test_labels, num_test_pairs, test_codes,
             code_features=test_code_features,
             cf_patterns=test_cf_patterns,
+            semantic_features=test_semantic,
             random_state=args.seed + fold_idx + 1000
         )
         X_test = X_test.astype(np.float32)
 
-        del X_test_token, test_code_features, test_cf_patterns, test_codes
+        del X_test_token, test_code_features, test_cf_patterns, test_codes, test_semantic
         gc.collect()
 
         # Build & train model
@@ -244,9 +251,9 @@ def main():
         norm_tokens = normalize_tokens(tokens)
         processed_codes.append(" ".join(norm_tokens))
 
-    # <----------> CODE FEATURES (AST + Control Flow) <---------->
-    print("---> Extracting structural features...")
-    code_features_all, cf_patterns_all = extract_all_features(all_codes)
+    # <----------> CODE FEATURES (AST + Control Flow + Semantic) <---------->
+    print("---> Extracting structural and semantic features...")
+    code_features_all, cf_patterns_all, semantic_features_all = extract_all_features(all_codes)
 
     # Keep raw codes split for new features (edit distance, line/char ratios)
     # They will be freed after pair generation
@@ -265,6 +272,7 @@ def main():
         run_cross_validation(
             args, all_codes, labels, processed_codes,
             code_features_all, cf_patterns_all,
+            semantic_features_all,
             model_name, build_fn
         )
         return
@@ -311,8 +319,13 @@ def main():
     val_cf_patterns = [cf_patterns_all[i] for i in val_idx]
     test_cf_patterns = [cf_patterns_all[i] for i in test_idx]
 
+    # Split semantic features
+    train_semantic = {k: [v[i] for i in train_idx] for k, v in semantic_features_all.items()}
+    val_semantic = {k: [v[i] for i in val_idx] for k, v in semantic_features_all.items()}
+    test_semantic = {k: [v[i] for i in test_idx] for k, v in semantic_features_all.items()}
+
     # Free full feature arrays
-    del code_features_all, cf_patterns_all
+    del code_features_all, cf_patterns_all, semantic_features_all
     gc.collect()
 
     print(f"Train codes: {len(train_idx)}, Val codes: {len(val_idx)}, Test codes: {len(test_idx)}")
@@ -337,11 +350,12 @@ def main():
         X_train_token, train_labels, num_train_pairs, train_codes,
         code_features=train_code_features,
         cf_patterns=train_cf_patterns,
+        semantic_features=train_semantic,
         random_state=RANDOM_STATE
     )
     X_train = X_train.astype(np.float32)
 
-    del X_train_token, train_code_features, train_cf_patterns, train_codes
+    del X_train_token, train_code_features, train_cf_patterns, train_codes, train_semantic
     gc.collect()
 
     print(f"---> Generating {num_val_pairs} val pairs...")
@@ -349,11 +363,12 @@ def main():
         X_val_token, val_labels, num_val_pairs, val_codes,
         code_features=val_code_features,
         cf_patterns=val_cf_patterns,
+        semantic_features=val_semantic,
         random_state=RANDOM_STATE + 1
     )
     X_val = X_val.astype(np.float32)
 
-    del X_val_token, val_code_features, val_cf_patterns, val_codes
+    del X_val_token, val_code_features, val_cf_patterns, val_codes, val_semantic
     gc.collect()
 
     print(f"---> Generating {num_test_pairs} test pairs...")
@@ -361,11 +376,12 @@ def main():
         X_test_token, test_labels, num_test_pairs, test_codes,
         code_features=test_code_features,
         cf_patterns=test_cf_patterns,
+        semantic_features=test_semantic,
         random_state=RANDOM_STATE + 2
     )
     X_test = X_test.astype(np.float32)
 
-    del X_test_token, test_code_features, test_cf_patterns, test_codes
+    del X_test_token, test_code_features, test_cf_patterns, test_codes, test_semantic
     gc.collect()
 
     print(f"Train pair matrix: {X_train.shape}")
@@ -387,7 +403,8 @@ def main():
     feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
     from preprocessing.code_features import FEATURE_NAMES
     num_cf = 1
-    num_extra = 2 + len(FEATURE_NAMES) + num_cf  # cos, length, ast+ir, cf
+    num_semantic = 6  # 6 new semantic pair-level features (A1+A2+B3)
+    num_extra = 2 + len(FEATURE_NAMES) + num_cf + num_semantic  # cos, length, ast+ir+a1, cf, semantic
     if num_extra > 0:
         feature_weights[-num_extra:] = 1000.0
 

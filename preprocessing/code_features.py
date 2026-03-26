@@ -1,12 +1,21 @@
 """
 Structural code feature extraction using regex-based analysis.
-Extracts AST-like features and control flow patterns from source code.
-No external parser needed — works with raw C/C++ code text.
+Extracts AST-like features, control flow patterns, algorithmic fingerprints,
+opcode n-gram profiles, and AST subtree hashes from source code.
 """
 
 import re
+import hashlib
+from collections import Counter
 import numpy as np
 from joblib import Parallel, delayed
+
+# pycparser for AST subtree kernel (B3)
+try:
+    import pycparser
+    _HAS_PYCPARSER = True
+except ImportError:
+    _HAS_PYCPARSER = False
 
 # True LLVM IR extraction (requires clang installed)
 # Falls back to pseudo-IR if not available
@@ -40,6 +49,60 @@ _FUNC_CALL_KEYWORDS = {
     'sizeof', 'typedef', 'do', 'defined', 'main'
 }
 
+# ================= A1: ALGORITHMIC FINGERPRINT PATTERNS =================
+
+# Known library/standard functions in C/C++ (for library call set extraction)
+_KNOWN_LIBRARY_FUNCS = {
+    # I/O
+    'printf', 'scanf', 'puts', 'gets', 'getchar', 'putchar',
+    'fprintf', 'fscanf', 'fgets', 'fputs', 'fread', 'fwrite',
+    'fopen', 'fclose', 'fflush', 'fseek', 'ftell', 'rewind',
+    'sscanf', 'sprintf', 'snprintf',
+    # Math
+    'sqrt', 'pow', 'abs', 'fabs', 'ceil', 'floor', 'round',
+    'log', 'log2', 'log10', 'exp', 'sin', 'cos', 'tan',
+    'asin', 'acos', 'atan', 'atan2', 'hypot', 'fmod',
+    # String
+    'strlen', 'strcmp', 'strncmp', 'strcpy', 'strncpy', 'strcat',
+    'strncat', 'strstr', 'strchr', 'strrchr', 'strtok', 'atoi',
+    'atof', 'atol', 'strtol', 'strtod', 'tolower', 'toupper',
+    'isdigit', 'isalpha', 'isalnum', 'isspace', 'isupper', 'islower',
+    # Memory
+    'malloc', 'calloc', 'realloc', 'free', 'memset', 'memcpy',
+    'memmove', 'memcmp',
+    # Sorting/searching
+    'qsort', 'bsearch', 'sort', 'stable_sort', 'partial_sort',
+    'lower_bound', 'upper_bound', 'binary_search', 'nth_element',
+    'min_element', 'max_element', 'next_permutation', 'prev_permutation',
+    # Container operations (C++)
+    'push_back', 'pop_back', 'push_front', 'pop_front',
+    'insert', 'erase', 'find', 'count', 'begin', 'end',
+    'rbegin', 'rend', 'size', 'empty', 'clear', 'resize',
+    'front', 'back', 'top', 'push', 'pop', 'swap',
+    'make_pair', 'first', 'second',
+    # Algorithm
+    'min', 'max', 'accumulate', 'reverse', 'unique', 'fill',
+    'copy', 'transform', 'for_each', 'count_if', 'find_if',
+    # Utility
+    'srand', 'rand', 'time', 'clock', 'exit', 'assert',
+}
+
+# Data structure detection patterns
+_ARRAY_DECL_RE = re.compile(r'\b\w+\s*\[')       # array declaration/access
+_LINKED_LIST_RE = re.compile(r'\b(struct\s+\w+\s*\*|->\s*next|->\s*prev|->\s*left|->\s*right|node\s*\*)', re.IGNORECASE)
+_STACK_RE = re.compile(r'\b(stack|push|pop|top)\b')
+_QUEUE_RE = re.compile(r'\b(queue|deque|priority_queue|front|back)\b')
+_MAP_SET_RE = re.compile(r'\b(map|set|unordered_map|unordered_set|multimap|multiset)\s*<')
+_VECTOR_RE = re.compile(r'\bvector\s*<')
+_STRING_TYPE_RE = re.compile(r'\bstring\b')
+_MATRIX_RE = re.compile(r'\w+\s*\[\s*\w+\s*\]\s*\[\s*\w+\s*\]')  # 2D array
+
+# IO pattern extraction
+_IO_INPUT_RE = re.compile(r'\b(scanf|cin|getchar|gets|fgets|fscanf|fread)\b')
+_IO_OUTPUT_RE = re.compile(r'\b(printf|cout|putchar|puts|fputs|fprintf|fwrite)\b')
+_INCLUDE_RE = re.compile(r'^\s*#\s*include\s*[<"].*?[>"]', re.MULTILINE)
+_PREPROCESSOR_RE = re.compile(r'^\s*#.*$', re.MULTILINE)
+
 # ================= PSEUDO-IR OPCODE EXTRACTORS =================
 # Since clang cannot be guaranteed available on all host machines, we extract
 # LLVM IR-like pseudo-opcodes from the source statically.
@@ -50,6 +113,201 @@ _IR_MATH_RE = re.compile(r'([+\-*/%])')                 # add, sub, mul, sdiv, s
 _IR_BITWISE_RE = re.compile(r'(&&|\|\||!|&|\||\^|~|<<|>>)') # and, or, xor, shl, ashr
 _IR_ALLOC_RE = re.compile(r'\b(malloc|calloc|new|realloc|free|delete)\b') # allocations
 _IR_VAR_RE = re.compile(r'\b[A-Za-z_][A-Za-z0-9_]*\b')  # generic variables (for load estimation)
+
+
+# ================= A1: ALGORITHMIC FINGERPRINTING =================
+
+def _extract_library_calls(code):
+    """
+    Extract the set of recognized library/standard functions used in code.
+    Two codes solving the same problem often use similar library functions
+    even if their structure is completely different (Type-4 signal).
+    """
+    calls = _FUNC_CALL_RE.findall(code)
+    return frozenset(c for c in calls if c in _KNOWN_LIBRARY_FUNCS)
+
+
+def _extract_data_structures(code):
+    """
+    Detect which data structure types are used in the code.
+    Same-problem solutions often use similar data structures.
+    Returns a frozenset of detected types.
+    """
+    structs = set()
+    if _MATRIX_RE.search(code):
+        structs.add('matrix')
+    elif _ARRAY_DECL_RE.search(code):
+        structs.add('array')
+    if _LINKED_LIST_RE.search(code):
+        structs.add('linked_list')
+    if _STACK_RE.search(code):
+        structs.add('stack')
+    if _QUEUE_RE.search(code):
+        structs.add('queue')
+    if _MAP_SET_RE.search(code):
+        structs.add('map_set')
+    if _VECTOR_RE.search(code):
+        structs.add('vector')
+    if _STRING_TYPE_RE.search(code):
+        structs.add('string')
+    return frozenset(structs)
+
+
+def _extract_io_pattern(code):
+    """
+    Extract a compact string encoding the I/O pattern of the code.
+    Scans code line by line and records I (input) and O (output) operations.
+    Same-problem solutions share similar I/O sequences even with different algorithms.
+    Example: "IIIOIO" = read, read, read, write, read, write
+    """
+    pattern = []
+    for line in code.splitlines():
+        line_stripped = line.strip()
+        has_input = bool(_IO_INPUT_RE.search(line_stripped))
+        has_output = bool(_IO_OUTPUT_RE.search(line_stripped))
+        if has_input:
+            pattern.append('I')
+        if has_output:
+            pattern.append('O')
+    return ''.join(pattern)
+
+
+# ================= A2: N-GRAM OPCODE PROFILING =================
+
+# Ordered mapping from source patterns to pseudo-opcodes
+_OPCODE_PATTERNS = [
+    (_IR_STORE_RE, 'store'),
+    (_IR_CMP_RE, 'cmp'),
+    (_IR_MATH_RE, 'math'),
+    (_IR_BITWISE_RE, 'bitwise'),
+    (_IR_ALLOC_RE, 'alloc'),
+    (_LOOP_RE, 'br'),
+    (_BRANCH_RE, 'br'),
+    (_FUNC_CALL_RE, 'call'),
+]
+
+
+def _extract_opcode_sequence(code):
+    """
+    Extract an ordered sequence of pseudo-IR opcodes from the code.
+    Unlike counting, this preserves the ORDER of operations,
+    which is a stronger semantic signal for Type-4 clone detection.
+    """
+    # Build (position, opcode) tuples
+    events = []
+    for regex, opcode in _OPCODE_PATTERNS:
+        for m in regex.finditer(code):
+            events.append((m.start(), opcode))
+    # Sort by position in source
+    events.sort(key=lambda x: x[0])
+    return [op for _, op in events]
+
+
+def _compute_opcode_ngrams(opcode_seq, n=2):
+    """
+    Compute n-gram frequency profile from an opcode sequence.
+    Returns a Counter of opcode n-grams.
+    Example: ['store','cmp','math','br'] with n=2 →
+             Counter({'store-cmp': 1, 'cmp-math': 1, 'math-br': 1})
+    """
+    if len(opcode_seq) < n:
+        return Counter()
+    ngrams = []
+    for i in range(len(opcode_seq) - n + 1):
+        ngrams.append('-'.join(opcode_seq[i:i+n]))
+    return Counter(ngrams)
+
+
+# ================= B3: AST SUBTREE KERNEL =================
+
+def _strip_preprocessor(code):
+    """
+    Remove #include, #define and other preprocessor directives
+    so pycparser can parse the code.
+    """
+    return _PREPROCESSOR_RE.sub('', code)
+
+
+def _parse_ast_safe(code):
+    """
+    Attempt to parse code into a pycparser AST.
+    Returns the AST root node or None if parsing fails.
+    Strips preprocessor directives and handles common parse errors gracefully.
+    """
+    if not _HAS_PYCPARSER:
+        return None
+    try:
+        clean = _strip_preprocessor(code)
+        # Remove 'using namespace std;' and similar C++ that pycparser can't handle
+        clean = re.sub(r'using\s+namespace\s+\w+\s*;', '', clean)
+        # Replace cout/cin stream operators that pycparser can't handle
+        clean = re.sub(r'\bcout\s*<<', 'printf(', clean)
+        clean = re.sub(r'\bcin\s*>>', 'scanf(', clean)
+        clean = re.sub(r'\bendl\b', '"\\n")', clean)
+        parser = pycparser.CParser()
+        ast = parser.parse(clean, filename='<code>')
+        return ast
+    except Exception:
+        return None
+
+
+def _hash_ast_node(node):
+    """
+    Compute a structural hash for an AST node (excluding identifiers/literals).
+    This captures the "shape" of the code, not specific variable names.
+    """
+    if node is None:
+        return 'None'
+    node_type = node.__class__.__name__
+    # Only use structure, not specific identifiers or values
+    return node_type
+
+
+def _extract_subtree_hashes(ast_node, max_depth=4):
+    """
+    Extract a set of structural subtree hashes from an AST.
+    Uses a Weisfeiler-Lehman inspired approach: each subtree is hashed
+    by combining its node type with the hashes of its children.
+    
+    max_depth limits the depth of subtrees to keep the feature space manageable.
+    """
+    if ast_node is None:
+        return frozenset()
+    
+    subtree_hashes = set()
+    
+    def _wl_hash(node, depth):
+        if depth > max_depth or node is None:
+            return ''
+        
+        node_type = node.__class__.__name__
+        
+        # Get children
+        children = node.children() if hasattr(node, 'children') else []
+        if not children:
+            h = node_type
+            subtree_hashes.add(h)
+            return h
+        
+        child_hashes = []
+        for child_name, child_node in children:
+            ch = _wl_hash(child_node, depth + 1)
+            if ch:
+                child_hashes.append(ch)
+        
+        # Sort child hashes for order-invariance within siblings
+        child_hashes.sort()
+        combined = f"{node_type}({','.join(child_hashes)})"
+        
+        # Hash long strings to keep them manageable
+        if len(combined) > 64:
+            combined = hashlib.md5(combined.encode()).hexdigest()[:16]
+        
+        subtree_hashes.add(combined)
+        return combined
+    
+    _wl_hash(ast_node, 0)
+    return frozenset(subtree_hashes)
 
 
 # ================= COMMENT STRIPPING =================
@@ -233,8 +491,7 @@ def cf_pattern_similarity(pattern1, pattern2):
 # ================= PUBLIC API =================
 
 FEATURE_NAMES = [
-    'loop_count', 'branch_count', 'func_call_count',
-    'loop_call_combined',
+    'branch_count', 'loop_call_combined',
     'nesting_depth', 'operator_count',
     # Algorithmic behavior features (TYPE-4 bridge)
     'return_count', 'accumulator_pattern', 'param_count', 'math_op_set_size',
@@ -242,7 +499,9 @@ FEATURE_NAMES = [
     'ir_load_count', 'ir_store_count', 'ir_cmp_count',
     'ir_math_count', 'ir_bitwise_count', 'ir_br_count', 'ir_alloc_count',
     # True exclusive SSA/DataFlow IR features
-    'ir_phi_count', 'ir_gep_count', 'ir_call_count'
+    'ir_phi_count', 'ir_gep_count', 'ir_call_count',
+    # A1: Algorithmic fingerprint numeric features
+    'library_call_count', 'data_struct_count', 'io_pattern_length',
 ]
 
 
@@ -251,10 +510,9 @@ def _extract_single(code):
     clean_code = _strip_comments(code)
     
     ast_feats = [
-        _count_loops(clean_code),
         _count_branches(clean_code),
-        _count_func_calls(clean_code),
-        _count_loops(clean_code) + _count_func_calls(clean_code), # loop_call_combined
+        # loop_call_combined: loops + recursive calls = unified repetition metric
+        _count_loops(clean_code) + _count_func_calls(clean_code),
         _compute_nesting_depth(clean_code),
         _count_operators(clean_code),
         # Algorithmic behavior features
@@ -283,21 +541,60 @@ def _extract_single(code):
     else:
         # FALLBACK TO PSEUDO-IR if code is not compilable
         ir_feats = _extract_pseudo_ir_opcodes(clean_code)
-        
-    feats = ast_feats + ir_feats
+    
+    # A1: Algorithmic fingerprint features
+    lib_calls = _extract_library_calls(clean_code)
+    data_structs = _extract_data_structures(clean_code)
+    io_pattern = _extract_io_pattern(clean_code)
+    math_ops = _math_op_set(clean_code)
+    
+    a1_numeric = [
+        len(lib_calls),      # library_call_count
+        len(data_structs),   # data_struct_count
+        len(io_pattern),     # io_pattern_length
+    ]
+    
+    # A2: Opcode sequence + n-grams
+    opcode_seq = _extract_opcode_sequence(clean_code)
+    opcode_ngrams = _compute_opcode_ngrams(opcode_seq, n=2)
+    
+    # B3: AST subtree hashes
+    ast_tree = _parse_ast_safe(code)  # pass raw code, strip is done inside
+    subtree_hashes = _extract_subtree_hashes(ast_tree, max_depth=4)
+    
+    feats = ast_feats + ir_feats + a1_numeric
     
     cf = _extract_cf_pattern(clean_code)
-    return feats, cf
+    
+    # Semantic features dict (per-code, will be compared at pair level)
+    semantic = {
+        'library_calls': lib_calls,      # frozenset
+        'data_structs': data_structs,     # frozenset
+        'io_pattern': io_pattern,         # str
+        'math_ops': math_ops,             # set
+        'opcode_ngrams': opcode_ngrams,   # Counter
+        'subtree_hashes': subtree_hashes, # frozenset
+    }
+    
+    return feats, cf, semantic
 
 
 def extract_all_features(raw_codes):
     """
-    Extract per-code numeric features and control flow patterns.
+    Extract per-code numeric features, control flow patterns,
+    and semantic features for Type-4 clone detection.
     Parallelized with joblib for speed.
 
     Returns:
         features: np.ndarray of shape (n_codes, num_features)
         cf_patterns: list of control flow pattern strings
+        semantic_features: dict with keys:
+            'library_calls':   list of frozenset
+            'data_structs':    list of frozenset
+            'io_patterns':     list of str
+            'math_ops':        list of set
+            'opcode_ngrams':   list of Counter
+            'subtree_hashes':  list of frozenset
     """
     print("Extracting code features (parallel)...")
     results = Parallel(n_jobs=-1, backend='loky')(
@@ -306,5 +603,15 @@ def extract_all_features(raw_codes):
 
     features = np.array([r[0] for r in results], dtype=np.float32)
     cf_patterns = [r[1] for r in results]
+    
+    # Aggregate semantic features into per-key lists
+    semantic_features = {
+        'library_calls':  [r[2]['library_calls'] for r in results],
+        'data_structs':   [r[2]['data_structs'] for r in results],
+        'io_patterns':    [r[2]['io_pattern'] for r in results],
+        'math_ops':       [r[2]['math_ops'] for r in results],
+        'opcode_ngrams':  [r[2]['opcode_ngrams'] for r in results],
+        'subtree_hashes': [r[2]['subtree_hashes'] for r in results],
+    }
 
-    return features, cf_patterns
+    return features, cf_patterns, semantic_features

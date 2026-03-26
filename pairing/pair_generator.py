@@ -1,4 +1,6 @@
 import numpy as np
+import math
+from collections import Counter
 from scipy.sparse import hstack, csr_matrix
 from tqdm import tqdm
 from rapidfuzz.distance import Levenshtein
@@ -7,9 +9,55 @@ from joblib import Parallel, delayed
 from preprocessing.code_features import cf_pattern_similarity
 
 
+# ================= SEMANTIC SIMILARITY HELPERS =================
+
+def _jaccard_sim(set_a, set_b):
+    """Jaccard similarity between two sets. Returns 1.0 if both empty."""
+    if not set_a and not set_b:
+        return 1.0
+    if not set_a or not set_b:
+        return 0.0
+    union = len(set_a | set_b)
+    return len(set_a & set_b) / union if union > 0 else 1.0
+
+
+def _counter_cosine_sim(c1, c2):
+    """
+    Cosine similarity between two Counter objects (sparse vectors).
+    Returns 1.0 if both empty.
+    """
+    if not c1 and not c2:
+        return 1.0
+    if not c1 or not c2:
+        return 0.0
+    # Get all keys
+    all_keys = set(c1.keys()) | set(c2.keys())
+    dot = sum(c1.get(k, 0) * c2.get(k, 0) for k in all_keys)
+    norm1 = math.sqrt(sum(v * v for v in c1.values()))
+    norm2 = math.sqrt(sum(v * v for v in c2.values()))
+    denom = norm1 * norm2
+    return dot / denom if denom > 0 else 0.0
+
+
+def _string_bigram_jaccard(s1, s2):
+    """Bigram Jaccard similarity between two strings."""
+    if not s1 and not s2:
+        return 1.0
+    if not s1 or not s2:
+        return 0.0
+    def _bg(s):
+        if len(s) < 2:
+            return {s}
+        return set(s[i:i+2] for i in range(len(s) - 1))
+    bg1, bg2 = _bg(s1), _bg(s2)
+    union = len(bg1 | bg2)
+    return len(bg1 & bg2) / union if union > 0 else 1.0
+
+
 
 def generate_pairs(X_token, labels, num_pairs, processed_codes,
                    code_features=None, cf_patterns=None,
+                   semantic_features=None,
                    random_state=42):
     """
     Generate pairs of code samples for clone detection.
@@ -21,8 +69,14 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
         - |TF-IDF_token_diff|        (sparse)
         - cosine_similarity(token)   (1 feature)
         - length_ratio               (1 feature)
-        - AST feature ratios         (5 features, if code_features provided)
+        - AST feature ratios         (N features, if code_features provided)
         - CF pattern similarity      (1 feature, if cf_patterns provided)
+        - library_call_jaccard       (1 feature, if semantic_features provided)
+        - data_struct_jaccard        (1 feature, if semantic_features provided)
+        - io_pattern_similarity      (1 feature, if semantic_features provided)
+        - math_op_jaccard            (1 feature, if semantic_features provided)
+        - opcode_ngram_cosine        (1 feature, if semantic_features provided)
+        - subtree_hash_jaccard       (1 feature, if semantic_features provided)
     """
 
 
@@ -223,6 +277,52 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
         cf_sim = np.concatenate(cf_results)
         extra_cols.append(cf_sim.reshape(-1, 1))
         del cf_sim, all_bigrams, cf_results
+
+    # ---- Step 9: Semantic similarity features (A1, A2, B3) ----
+    if semantic_features is not None:
+        print("  → Computing semantic similarity features (A1+A2+B3)...")
+
+        lib_calls = semantic_features['library_calls']
+        data_structs = semantic_features['data_structs']
+        io_patterns = semantic_features['io_patterns']
+        math_ops = semantic_features['math_ops']
+        opcode_ngrams = semantic_features['opcode_ngrams']
+        subtree_hashes = semantic_features['subtree_hashes']
+
+        # Vectorize Jaccard/cosine computations using chunked parallel processing
+        def _semantic_sim_chunk(start, end, idx_i, idx_j,
+                                lib_calls, data_structs, io_patterns,
+                                math_ops, opcode_ngrams, subtree_hashes):
+            size = end - start
+            result = np.empty((size, 6), dtype=np.float32)
+            for k in range(size):
+                p = start + k
+                ii, jj = idx_i[p], idx_j[p]
+                # A1: Library call Jaccard
+                result[k, 0] = _jaccard_sim(lib_calls[ii], lib_calls[jj])
+                # A1: Data structure Jaccard
+                result[k, 1] = _jaccard_sim(data_structs[ii], data_structs[jj])
+                # A1: IO pattern bigram Jaccard
+                result[k, 2] = _string_bigram_jaccard(io_patterns[ii], io_patterns[jj])
+                # A1: Math op Jaccard
+                result[k, 3] = _jaccard_sim(math_ops[ii], math_ops[jj])
+                # A2: Opcode n-gram cosine
+                result[k, 4] = _counter_cosine_sim(opcode_ngrams[ii], opcode_ngrams[jj])
+                # B3: Subtree hash Jaccard
+                result[k, 5] = _jaccard_sim(subtree_hashes[ii], subtree_hashes[jj])
+            return result
+
+        CHUNK = 100_000
+        chunks = [(s, min(s + CHUNK, num_pairs)) for s in range(0, num_pairs, CHUNK)]
+        sem_results = Parallel(n_jobs=-1, backend='loky')(
+            delayed(_semantic_sim_chunk)(s, e, all_i, all_j,
+                                        lib_calls, data_structs, io_patterns,
+                                        math_ops, opcode_ngrams, subtree_hashes)
+            for s, e in chunks
+        )
+        sem_matrix = np.vstack(sem_results)
+        extra_cols.append(sem_matrix)
+        del sem_results, sem_matrix
 
     # ---- Step 10: Combine all features ----
     print("  → Combining features...")
