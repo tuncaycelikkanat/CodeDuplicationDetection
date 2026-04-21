@@ -6,6 +6,7 @@ import re
 import pickle
 import numpy as np
 import math
+import argparse
 from tqdm import tqdm
 
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -14,13 +15,23 @@ if _PROJECT_ROOT not in sys.path:
 
 from utils.feature_pipeline import build_pair_vector
 
-def get_latest_experiment(base_dir="experiments"):
+def get_experiment_path(exp_id=None, base_dir="experiments"):
     if not os.path.isabs(base_dir):
         base_dir = os.path.join(_PROJECT_ROOT, base_dir)
     
-    exp_nums = []
     if not os.path.exists(base_dir):
         return None
+
+    if exp_id is not None:
+        for name in os.listdir(base_dir):
+            m = re.match(r"exp_(\d+)_", name)
+            if m and int(m.group(1)) == exp_id:
+                return os.path.join(base_dir, name)
+        print(f"❌ Experiment ID {exp_id} not found.")
+        return None
+
+    # Fallback to latest
+    exp_nums = []
     for name in os.listdir(base_dir):
         m = re.match(r"exp_(\d+)_", name)
         if m:
@@ -88,13 +99,13 @@ def load_pairs(dir_path, label):
             continue
     return pairs
 
-def run_automation(test_dir="test_clones", threshold=0.95, experiment_path=None):
+def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
     if not os.path.isabs(test_dir):
         test_dir = os.path.join(_PROJECT_ROOT, test_dir)
 
-    exp_path = experiment_path or get_latest_experiment()
+    exp_path = get_experiment_path(exp_id=exp_id)
     if not exp_path:
-        print("❌ No experiments found.")
+        print("❌ No experiments found or specified experiment missing.")
         return
 
     print(f"📦 Loading experiment: {exp_path}")
@@ -102,12 +113,26 @@ def run_automation(test_dir="test_clones", threshold=0.95, experiment_path=None)
         model = pickle.load(f)
     with open(os.path.join(exp_path, "tfidf.pkl"), "rb") as f:
         vectorizer = pickle.load(f)
-    
+
     char_vectorizer = None
     char_tfidf_path = os.path.join(exp_path, "char_tfidf.pkl")
     if os.path.exists(char_tfidf_path):
         with open(char_tfidf_path, "rb") as f:
             char_vectorizer = pickle.load(f)
+
+    # Bug #4 düzeltildi: cos_token feature'sının indeksi char_vectorizer'a göre hesapla.
+    # build_pair_vector() çıktısı yapısı: [token_diff | char_diff? | extra...]
+    # extra'nın ilk feature'sı her zaman cos_token'dur.
+    _token_feat_count = len(vectorizer.vocabulary_)
+    _char_feat_count  = len(char_vectorizer.vocabulary_) if char_vectorizer is not None else 0
+    COS_TOKEN_IDX     = _token_feat_count + _char_feat_count  # cos_token'un gerçek sütun indeksi
+
+    def _get_scalar(mat, col_idx):
+        """csr_matrix[0, col] sparse veya scalar döndürebilir — ikisini de float'a çevirir."""
+        val = mat[0, col_idx]
+        if hasattr(val, 'toarray'):
+            return float(val.toarray().ravel()[0])
+        return float(val)
 
     # Load negative pairs once
     negatives = load_pairs(os.path.join(test_dir, "negatives"), label=0)
@@ -142,15 +167,21 @@ def run_automation(test_dir="test_clones", threshold=0.95, experiment_path=None)
 
         for p in tqdm(test_pairs, desc=t):
             X_pair = build_pair_vector(p['c1'], p['c2'], vectorizer, char_vectorizer)
-            
-            prob = 0.0
-            if hasattr(model, "predict_proba"):
-                try:
-                    prob = float(model.predict_proba(X_pair)[0][1])
-                except:
-                    prob = float(model.predict(X_pair)[0])
+
+            # cos_token: build_pair_vector'da extra'nın ilk elemanı
+            cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
+
+            # Cascade Logic
+            if "CASCADE" in exp_path and cos_token > 0.85:
+                prob = 1.0
             else:
-                prob = float(model.predict(X_pair)[0])
+                if hasattr(model, "predict_proba"):
+                    try:
+                        prob = float(model.predict_proba(X_pair)[0][1])
+                    except:
+                        prob = float(model.predict(X_pair)[0])
+                else:
+                    prob = float(model.predict(X_pair)[0])
                 
             pred = 1 if prob >= threshold else 0
             
@@ -193,7 +224,13 @@ def run_automation(test_dir="test_clones", threshold=0.95, experiment_path=None)
     neg_y_true, neg_y_prob = [], []
     for p in tqdm(negatives, desc="Global Negatives"):
         X_pair = build_pair_vector(p['c1'], p['c2'], vectorizer, char_vectorizer)
-        prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
+        cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
+
+        if "CASCADE" in exp_path and cos_token > 0.85:
+            prob = 1.0
+        else:
+            prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
+            
         pred = 1 if prob >= threshold else 0
         neg_y_true.append(0)
         neg_y_prob.append(prob)
@@ -252,4 +289,9 @@ def run_automation(test_dir="test_clones", threshold=0.95, experiment_path=None)
     print(f"\n✅ Results saved to: {out_dir}")
 
 if __name__ == "__main__":
-    run_automation()
+    parser = argparse.ArgumentParser(description="Run automation tests on code clone models.")
+    parser.add_argument("--exp-id", type=int, default=None, help="Specific experiment ID to test (e.g. 54). If not provided, uses latest.")
+    parser.add_argument("--threshold", type=float, default=0.95, help="Classification threshold (default 0.95)")
+    args = parser.parse_args()
+    
+    run_automation(threshold=args.threshold, exp_id=args.exp_id)

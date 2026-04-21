@@ -57,7 +57,20 @@ TYPE_4_PAIRS = [
      "int powerFast(int base, int exp) {\n    if (exp == 0) return 1;\n    int half = powerFast(base, exp / 2);\n    if (exp % 2 == 0) return half * half;\n    else return base * half * half;\n}"),
     # Find Max: For loop vs Recursive
     ("int findMax(int arr[], int n) {\n    int max = arr[0];\n    for (int i = 1; i < n; i++)\n        if (arr[i] > max)\n            max = arr[i];\n    return max;\n}",
-     "int findMaxRec(int arr[], int n) {\n    if (n == 1) return arr[0];\n    int m = findMaxRec(arr, n - 1);\n    return (arr[n-1] > m) ? arr[n-1] : m;\n}")
+     "int findMaxRec(int arr[], int n) {\n    if (n == 1) return arr[0];\n    int m = findMaxRec(arr, n - 1);\n    return (arr[n-1] > m) ? arr[n-1] : m;\n}"),
+    # Count Vowels: for loop vs while loop
+    ("int countVowels(char* str) {\n    int count = 0;\n    for (int i = 0; str[i] != '\\0'; i++) {\n        char c = tolower(str[i]);\n        if (c=='a'||c=='e'||c=='i'||c=='o'||c=='u') count++;\n    }\n    return count;\n}",
+     "int countVowelsW(char* s) {\n    int cnt = 0, i = 0;\n    while (s[i]) {\n        char c = tolower(s[i++]);\n        if (c=='a'||c=='e'||c=='i'||c=='o'||c=='u') cnt++;\n    }\n    return cnt;\n}"),
+    # Is Palindrome: two-pointer vs recursive
+    ("bool isPalindrome(char* str) {\n    int l = 0, r = strlen(str) - 1;\n    while (l < r) {\n        if (str[l] != str[r]) return false;\n        l++; r--;\n    }\n    return true;\n}",
+     "bool isPalRec(char* s, int l, int r) {\n    if (l >= r) return true;\n    if (s[l] != s[r]) return false;\n    return isPalRec(s, l+1, r-1);\n}"),
+    # Sum of digits: while vs recursive
+    ("int sumOfDigits(int n) {\n    int sum = 0;\n    while (n != 0) { sum += n % 10; n /= 10; }\n    return sum;\n}",
+     "int sumDigRec(int n) {\n    if (n == 0) return 0;\n    return n % 10 + sumDigRec(n / 10);\n}"),
+    # LCM: brute force vs GCD-based
+    ("int lcm(int a, int b) {\n    int max = (a > b) ? a : b;\n    while (1) { if (max % a == 0 && max % b == 0) return max; max++; }\n}",
+     "int gcdH(int a, int b) { return b == 0 ? a : gcdH(b, a % b); }\n"
+     "int lcmFast(int a, int b) { return (a / gcdH(a, b)) * b; }"),
 ]
 
 # We need 100 type 4 pairs, so we will generate variants of these base pairs by adding whitespace, comments, etc., but they will remain semantically identical but structurally different.
@@ -153,12 +166,12 @@ def generate_pairs():
 
     # Generate Type 4
     pair_idx = 1
-    # We have 10 base pairs. Create 10 variations of each pair to get 100
+    # Her base pair üzerinde 11 varyasyon oluştur (0.15 olasılıkla orijinal kod kullan)
     for base, alt in TYPE_4_PAIRS:
-        for _ in range(11): # 110 pairs
-            # Apply light type1/2 modifications to both so they aren't completely identical across pairs
-            c1 = apply_type1(apply_type2(base)) if random.random() < 0.5 else base
-            c2 = apply_type1(apply_type2(alt)) if random.random() < 0.5 else alt
+        for _ in range(11):
+            # 0.15 olasılıkla orijinal, 0.85 olasılıkla type1/2 varyasyon uy. (#16 düz.)
+            c1 = base if random.random() < 0.15 else apply_type1(apply_type2(base))
+            c2 = alt  if random.random() < 0.15 else apply_type1(apply_type2(alt))
             
             pair_dir = os.path.join(out_dir, "type4", f"pair_{pair_idx:03d}")
             os.makedirs(pair_dir)

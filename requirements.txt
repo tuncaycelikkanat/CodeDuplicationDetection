@@ -13,11 +13,17 @@ shap>=0.42.0
 pydantic
 rapidfuzz>=3.0.0
 
-# Deep Learning & GPU (NVIDIA/Intel)
-torch>=2.1.0
-torchvision>=0.16.0
-torchaudio>=2.1.0
-
 # Hardware-specific Optimizations
 scikit-learn-intelex>=2024.1.0
 # intel-extension-for-pytorch # Required for Intel Arc GPUs (Laptop)
+
+# ── Opsiyonel: GPU / Deep Learning ───────────────────────────────────────────
+# Aşağıdaki paketler yalnızca CUDA cihaz tespiti veya GPU eğitimi için gereklidir.
+# XGBoost'un kendi device parametresi (device="cuda") ile CUDA kullanılabilir.
+# Yalnızca GPU ortamlarında kurulması önerilir:
+#
+#   pip install torch>=2.1.0 torchvision>=0.16.0 torchaudio>=2.1.0
+#
+# torch>=2.1.0
+# torchvision>=0.16.0
+# torchaudio>=2.1.0

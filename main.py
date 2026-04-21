@@ -5,10 +5,14 @@ import time
 import argparse
 import random
 
+from config import (CASCADE_THRESHOLD, SVD_N_COMPONENTS, DEFAULT_PAIRS,
+                    DEFAULT_SEED, DEFAULT_TEST_SIZE, DEFAULT_CV_FOLDS,
+                    OMP_NUM_THREADS, MKL_NUM_THREADS)
+
 def apply_intel_optimizations():
     # Optimize threads for Intel processors (P-Cores)
-    os.environ["OMP_NUM_THREADS"] = "8"
-    os.environ["MKL_NUM_THREADS"] = "8"
+    os.environ["OMP_NUM_THREADS"] = str(OMP_NUM_THREADS)
+    os.environ["MKL_NUM_THREADS"] = str(MKL_NUM_THREADS)
     
     # Enable Intel scikit-learn optimizations (Must be before other sklearn imports)
     try:
@@ -215,14 +219,18 @@ def main():
 
     # <----------> DEVICE SELECTION <---------->
     if args.device == "auto":
-        import torch
-        if torch.cuda.is_available():
-            args.device = "cuda"
-        elif hasattr(torch, "xpu") and torch.xpu.is_available():
-            args.device = "xpu"
-        else:
+        try:
+            import torch
+            if torch.cuda.is_available():
+                args.device = "cuda"
+            elif hasattr(torch, "xpu") and torch.xpu.is_available():
+                args.device = "xpu"
+            else:
+                args.device = "cpu"
+        except ImportError:
+            # torch opsiyonel; kurulu değilse CPU kullan
             args.device = "cpu"
-    
+
     print(f"---> Using device: {args.device}")
 
     # Only apply Intel optimizations for CPU or XPU
@@ -230,6 +238,7 @@ def main():
         apply_intel_optimizations()
 
     random.seed(RANDOM_STATE)
+    np.random.seed(RANDOM_STATE)  # numpy global seed — tam reproducibility için
 
     # <----------> LOAD DATA <---------->
     print("---> Loading dataset...")

@@ -69,7 +69,11 @@ def save_experiment(
     y_test_pred,
     base_dir="experiments",
     extra_vectorizers=None,
-    timing_info=None
+    timing_info=None,
+    # Opsiyonel val metrikleri (#19)
+    X_val=None,
+    y_val=None,
+    y_val_pred=None,
 ):
     exp_dir = os.path.join(base_dir, exp_name)
     os.makedirs(exp_dir, exist_ok=True)
@@ -88,19 +92,28 @@ def save_experiment(
 
     # ================= PROBABILITIES =================
     y_train_prob = None
-    y_test_prob = None
+    y_test_prob  = None
+    y_val_prob   = None
     if hasattr(model, "predict_proba"):
         y_test_prob = model.predict_proba(X_test)[:, 1]
+        if y_val is not None:
+            y_val_prob = model.predict_proba(X_val)[:, 1]
 
     # ================= METRICS =================
     train_metrics = _compute_metrics(y_train, y_train_pred)
-    test_metrics = _compute_metrics(y_test, y_test_pred, y_test_prob)
+    test_metrics  = _compute_metrics(y_test, y_test_pred, y_test_prob)
 
     with open(os.path.join(exp_dir, "metrics_train.json"), "w") as f:
         json.dump(train_metrics, f, indent=4)
 
     with open(os.path.join(exp_dir, "metrics_test.json"), "w") as f:
         json.dump(test_metrics, f, indent=4)
+
+    # Val metrikleri opsiyonel olarak kaydedilir (#19)
+    if y_val is not None and y_val_pred is not None:
+        val_metrics = _compute_metrics(y_val, y_val_pred, y_val_prob)
+        with open(os.path.join(exp_dir, "metrics_val.json"), "w") as f:
+            json.dump(val_metrics, f, indent=4)
 
     # ================= REPORTS =================
     for split, y_true, y_pred in [

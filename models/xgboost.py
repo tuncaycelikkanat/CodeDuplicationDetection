@@ -32,7 +32,7 @@ def build_xgboost(random_state, device="cpu"):
     return GPUXGBClassifier(
         # ── Tree Capacity ──
         n_estimators=3000,          # high ceiling, early_stopping determines actual count
-        max_depth=6,                # 8→6: shallower trees = less memorization
+        max_depth=10,               # 6→10: deeper trees to capture complex semantic patterns for Type-4
         
         # ── Learning ──
         learning_rate=0.03,         # 0.05→0.03: slower learning forces better generalization
@@ -43,7 +43,7 @@ def build_xgboost(random_state, device="cpu"):
         colsample_bylevel=0.6,      # 0.7→0.6: extra feature randomness per level
         
         # ── Regularization ──
-        min_child_weight=8,         # 5→8: require more samples per leaf
+        min_child_weight=3,         # 8→3: allow trees to split more freely on Type-4 clusters
         gamma=0.3,                  # 0.1→0.3: much stricter pruning threshold
         reg_alpha=0.1,              # 0.03→0.1: stronger L1 sparsity penalty
         reg_lambda=1.0,             # 0.15→1.0: strong L2 weight shrinkage
@@ -52,7 +52,7 @@ def build_xgboost(random_state, device="cpu"):
         scale_pos_weight=1.0,
         
         # ── Early Stopping ──
-        early_stopping_rounds=30,   # 50→30: stop sooner to prevent overfitting
+        early_stopping_rounds=50,   # 30→50: wait longer before giving up (learning_rate is slow)
         eval_metric="logloss",
         
         # ── System ──

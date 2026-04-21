@@ -7,10 +7,13 @@ import random
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import CASCADE_THRESHOLD, SVD_N_COMPONENTS, DEFAULT_PAIRS, DEFAULT_SEED, DEFAULT_TEST_SIZE, DEFAULT_CV_FOLDS, OMP_NUM_THREADS, MKL_NUM_THREADS
+
 def apply_intel_optimizations():
     # Optimize threads for Intel processors (P-Cores)
-    os.environ["OMP_NUM_THREADS"] = "8"
-    os.environ["MKL_NUM_THREADS"] = "8"
+    os.environ["OMP_NUM_THREADS"] = str(OMP_NUM_THREADS)
+    os.environ["MKL_NUM_THREADS"] = str(MKL_NUM_THREADS)
     
     # Enable Intel scikit-learn optimizations (Must be before other sklearn imports)
     try:
@@ -40,18 +43,18 @@ from utils.experiment_logger import (
 
 # <----------> ARGUMENT PARSING <---------->
 def parse_args():
-    parser = argparse.ArgumentParser(description="Code Duplication Detection - Training Pipeline")
+    parser = argparse.ArgumentParser(description="Code Duplication Detection - Cascade Training Pipeline")
     parser.add_argument("--model", type=str, default="xgboost",
                         choices=["xgboost"],
                         help="Model to train (default: xgboost)")
     parser.add_argument("--dataset", type=str, default="data/poj104",
                         help="Path to dataset directory (default: data/poj104)")
-    parser.add_argument("--pairs", type=int, default=800_000,
-                        help="Number of pairs to generate (default: 800_000)")
-    parser.add_argument("--test-size", type=float, default=0.2,
-                        help="Test split ratio (default: 0.2)")
-    parser.add_argument("--seed", type=int, default=42,
-                        help="Random seed (default: 42)")
+    parser.add_argument("--pairs", type=int, default=DEFAULT_PAIRS,
+                        help=f"Number of pairs to generate (default: {DEFAULT_PAIRS})")
+    parser.add_argument("--test-size", type=float, default=DEFAULT_TEST_SIZE,
+                        help=f"Test split ratio (default: {DEFAULT_TEST_SIZE})")
+    parser.add_argument("--seed", type=int, default=DEFAULT_SEED,
+                        help=f"Random seed (default: {DEFAULT_SEED})")
     parser.add_argument("--tune", action="store_true",
                         help="Run Optuna hyperparameter tuning before training")
     parser.add_argument("--tune-trials", type=int, default=30,
@@ -61,8 +64,8 @@ def parse_args():
                         help="Device to use for training (default: auto)")
     parser.add_argument("--cv", action="store_true",
                         help="Run Stratified K-Fold cross-validation instead of single train/test split")
-    parser.add_argument("--cv-folds", type=int, default=5,
-                        help="Number of CV folds (default: 5)")
+    parser.add_argument("--cv-folds", type=int, default=DEFAULT_CV_FOLDS,
+                        help=f"Number of CV folds (default: {DEFAULT_CV_FOLDS})")
     parser.add_argument("--cv-pairs", type=int, default=None,
                         help="Pairs per fold for CV (default: uses --pairs value)")
     return parser.parse_args()
@@ -157,12 +160,24 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         model = build_xgboost(args.seed, device=args.device)
 
         print(f"  → Training XGBoost...")
-        
+
+        # TOKEN_FEAT_COUNT aynı fold içinde yukarıda ayarlandı, satır filtrelemesi
+        # sütun sayısını değiştirmez → aşağıdaki feature_weights hesabı güvenlidir.
         feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
-        # Dynamically calculate the number of extra features
         num_extra = X_train.shape[1] - TOKEN_FEAT_COUNT
-        feature_weights[-num_extra:] = 1000.0
+        # feature_weights[-num_extra:] = 1000.0  # IPTAL EDILDI: Modelin özgürce özellik seçmesine izin veriyoruz
         model.set_params(feature_weights=feature_weights)
+
+        # ---- Cascade filter (CV modu) ----
+        # Eğitim setindeki "kolay" klonları (cos_token > CASCADE_THRESHOLD) çıkar.
+        # Bu sayede XGBoost sadece zor / Type-4 klonlar üzerinde eğitilir.
+        print(f"  → Filtering easy clones from CV Train set (threshold={CASCADE_THRESHOLD})...")
+        cos_tok_train = X_train[:, TOKEN_FEAT_COUNT].toarray().ravel()
+        keep_mask = (y_train == 0) | ((y_train == 1) & (cos_tok_train <= CASCADE_THRESHOLD))
+        X_train = X_train[keep_mask]
+        y_train = y_train[keep_mask]
+        print(f"  → Filtered CV Train: {X_train.shape} (removed {(~keep_mask).sum()} easy clones)")
+
         model.fit(X_train, y_train, verbose=False)
 
         # Evaluate
@@ -217,14 +232,18 @@ def main():
 
     # <----------> DEVICE SELECTION <---------->
     if args.device == "auto":
-        import torch
-        if torch.cuda.is_available():
-            args.device = "cuda"
-        elif hasattr(torch, "xpu") and torch.xpu.is_available():
-            args.device = "xpu"
-        else:
+        try:
+            import torch
+            if torch.cuda.is_available():
+                args.device = "cuda"
+            elif hasattr(torch, "xpu") and torch.xpu.is_available():
+                args.device = "xpu"
+            else:
+                args.device = "cpu"
+        except ImportError:
+            # torch opsiyonel; kurulu değilse CPU kullan
             args.device = "cpu"
-    
+
     print(f"---> Using device: {args.device}")
 
     # Only apply Intel optimizations for CPU or XPU
@@ -232,6 +251,7 @@ def main():
         apply_intel_optimizations()
 
     random.seed(RANDOM_STATE)
+    np.random.seed(RANDOM_STATE)  # numpy global seed — tam reproducibility için
 
     # <----------> LOAD DATA <---------->
     print("---> Loading dataset...")
@@ -378,8 +398,11 @@ def main():
     X_train = X_train.astype(np.float32)
 
     print("  → Filtering EASY clones from Train set (Cascade approach)...")
+    # TOKEN_FEAT_COUNT sütun filtreden önce belirlendi; satır filtresi sütun sayısını
+    # değiştirmez, dolayısıyla aşağıdaki feature_weights hesabında TOKEN_FEAT_COUNT
+    # hâlâ geçerlidir.
     cos_tokens_train = X_train[:, TOKEN_FEAT_COUNT].toarray().ravel()
-    keep_mask_train = (y_train == 0) | ((y_train == 1) & (cos_tokens_train <= 0.85))
+    keep_mask_train = (y_train == 0) | ((y_train == 1) & (cos_tokens_train <= CASCADE_THRESHOLD))
     X_train = X_train[keep_mask_train]
     y_train = y_train[keep_mask_train]
     print(f"  → Filtered Train matrix: {X_train.shape} (Removed {(~keep_mask_train).sum()} easy clones)")
@@ -400,7 +423,7 @@ def main():
 
     print("  → Filtering EASY clones from Val set (Cascade approach)...")
     cos_tokens_val = X_val[:, TOKEN_FEAT_COUNT].toarray().ravel()
-    keep_mask_val = (y_val == 0) | ((y_val == 1) & (cos_tokens_val <= 0.85))
+    keep_mask_val = (y_val == 0) | ((y_val == 1) & (cos_tokens_val <= CASCADE_THRESHOLD))
     X_val = X_val[keep_mask_val]
     y_val = y_val[keep_mask_val]
     print(f"  → Filtered Val matrix: {X_val.shape} (Removed {(~keep_mask_val).sum()} easy clones)")
@@ -433,7 +456,7 @@ def main():
     feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
     # Dynamically compute number of extra engineered features
     num_extra = X_train.shape[1] - TOKEN_FEAT_COUNT 
-    feature_weights[-num_extra:] = 1000.0
+    # feature_weights[-num_extra:] = 1000.0  # IPTAL EDILDI: Modelin özgürce özellik seçmesine izin veriyoruz
 
     if args.tune:
         print(f"\n---> Tuning {model_name} with Optuna ({args.tune_trials} trials)...")
@@ -475,7 +498,7 @@ def main():
     cos_tokens_test = X_test[:, TOKEN_FEAT_COUNT].toarray().ravel()
     y_test_pred = np.zeros_like(y_test)
     
-    easy_mask_test = cos_tokens_test > 0.85
+    easy_mask_test = cos_tokens_test > CASCADE_THRESHOLD
     y_test_pred[easy_mask_test] = 1  # Pre-filter easy clones
     print(f"  → Filtered {easy_mask_test.sum()} easy clones immediately without XGBoost.")
     

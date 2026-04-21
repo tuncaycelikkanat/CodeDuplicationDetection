@@ -81,10 +81,13 @@ def _linear_svm_objective(trial, X, y, random_state):
     return scores.mean()
 
 
+# [COMPAT] _OBJECTIVES sözlüğü geriye dönük uyumluluk için korunmaktadır.
+# Mevcut argparse yalnızca 'xgboost' seçeneğine izin verdiğinden, rf ve svm
+# objective'leri şu an aktif olarak kullanılmamaktadır.
 _OBJECTIVES = {
     'xgboost': _xgboost_objective,
-    'random_forest': _random_forest_objective,
-    'linear_svm': _linear_svm_objective,
+    'random_forest': _random_forest_objective,  # [COMPAT] main.py'de choices'a eklenmemiş
+    'linear_svm': _linear_svm_objective,        # [COMPAT] main.py'de choices'a eklenmemiş
 }
 
 

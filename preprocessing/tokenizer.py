@@ -55,9 +55,8 @@ def normalize_tokens(tokens):
             # Lookahead: if followed by '(', it's a function call or definition
             if i + 1 < length and tokens[i+1] == "(":
                 normalized.append("FUNC")
-            elif len(tok) == 1:
-                normalized.append("VAR")
             else:
+                # Tek karakterli ya da çok karakterli tüm tanımlayıcılar VAR'a dönüşür
                 normalized.append("VAR")
         else:
             normalized.append(tok)

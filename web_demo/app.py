@@ -1,14 +1,9 @@
 import os
 import sys
-
-# Ensure project root is on sys.path for imports
-_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if _PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, _PROJECT_ROOT)
-
-import pickle
-import time
 import re
+import time
+import math
+import pickle
 
 import numpy as np
 from fastapi import FastAPI, Request, HTTPException
@@ -19,48 +14,15 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.sparse import hstack, csr_matrix
 import shap
 from rapidfuzz.distance import Levenshtein
-import math
-from utils.feature_pipeline import build_pair_vector
-
-from preprocessing.tokenizer import normalize_tokens, tokenize
-from preprocessing.code_features import (
-    _extract_single, cf_pattern_similarity, FEATURE_NAMES as AST_FEATURE_NAMES
-)
-
-# ================= SEMANTIC SIMILARITY HELPERS =================
-
-def _jaccard_sim(set_a, set_b):
-    """Jaccard similarity between two sets. Returns 1.0 if both empty."""
-    if not set_a and not set_b:
-        return 1.0
-    if not set_a or not set_b:
-        return 0.0
-    union = len(set_a | set_b)
-    return len(set_a & set_b) / union if union > 0 else 1.0
-
-
-
-
-
-def _string_bigram_jaccard(s1, s2):
-    """Bigram Jaccard similarity between two strings."""
-    if not s1 and not s2:
-        return 1.0
-    if not s1 or not s2:
-        return 0.0
-    def _bg(s):
-        if len(s) < 2:
-            return {s}
-        return set(s[i:i+2] for i in range(len(s) - 1))
-    bg1, bg2 = _bg(s1), _bg(s2)
-    union = len(bg1 | bg2)
-    return len(bg1 & bg2) / union if union > 0 else 1.0
-
 
 # Ensure project root is on sys.path for imports
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
+
+from config import CASCADE_THRESHOLD
+from utils.feature_pipeline import build_pair_vector
+from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard
 
 from preprocessing.tokenizer import normalize_tokens, tokenize
 from preprocessing.code_features import (
@@ -92,7 +54,7 @@ def get_experiment_path(base_dir="experiments"):
             target_id = int(exp_id_env)
         except ValueError:
             raise RuntimeError("EXP_ID environment variable must be an integer.")
-            
+
         for name in os.listdir(base_dir):
             m = re.match(r"exp_(\d+)_", name)
             if m and int(m.group(1)) == target_id:
@@ -132,32 +94,53 @@ if os.path.exists(char_tfidf_path):
 else:
     print("   ⚠️  No char TF-IDF vectorizer found (using legacy mode)")
 
+# ── Cascade inference hazırlığı ──────────────────────────────────────────────
+# build_pair_vector çıktısı: [token_diff | char_diff? | extra...]
+# extra'nın 0. elemanı = cos_token; char_diff varsa indeksi kaymaktadır.
+_IS_CASCADE       = "CASCADE" in EXP_PATH
+_token_feat_count = len(vectorizer.vocabulary_)
+_char_feat_count  = len(char_vectorizer.vocabulary_) if char_vectorizer is not None else 0
+_COS_TOKEN_IDX    = _token_feat_count + _char_feat_count   # gerçek sütun indeksi
+
+print(f"   {'🌊 CASCADE mode aktif' if _IS_CASCADE else '📊 Standart mode aktif'} "
+      f"(cascade threshold={CASCADE_THRESHOLD})")
+
 
 # ================= FEATURE NAMES =================
 def _build_feature_names():
-    """Build human-readable feature names for SHAP explanations."""
+    """
+    SHAP açıklamaları için okunabilir feature isimleri.
+    Sıra build_pair_vector() / pair_generator.py ile birebir eşleştirilmiştir.
+    """
     names = []
 
-    # Token TF-IDF feature names
-    token_features = vectorizer.get_feature_names_out()
-    for feat in token_features:
+    # Token TF-IDF diff (TOKEN_FEAT_COUNT sütun)
+    for feat in vectorizer.get_feature_names_out():
         names.append(f"tfidf_{feat}")
 
-    # Extra features (always in this order)
+    # Char TF-IDF diff (opsiyonel)
+    if char_vectorizer is not None:
+        for feat in char_vectorizer.get_feature_names_out():
+            names.append(f"char_tfidf_{feat}")
+
+    # Extra features (sıra pair_generator.py ile aynı olmalı)
     names.append("cosine_similarity_token")
     names.append("length_ratio")
+    names.append("manhattan_token")    # Bug #11 düzeltildi: önceden eksikti
+    names.append("euclidean_token")    # Bug #11 düzeltildi: önceden eksikti
 
     if char_vectorizer is not None:
         names.append("cosine_similarity_char")
 
-    # AST + IR feature ratios dynamically generated
+    # AST feature ratios (14) + diffs (14) = 28 — Bug #11 düzeltildi
     for feat_name in AST_FEATURE_NAMES:
         names.append(f"{feat_name}_ratio")
+        names.append(f"{feat_name}_diff")
 
     # CF pattern similarity
     names.append("cf_pattern_similarity")
 
-    # Semantic similarity features (A1, A2, B3)
+    # Semantic similarity features (5)
     names.append("semantic_library_call_jaccard")
     names.append("semantic_data_struct_jaccard")
     names.append("semantic_io_pattern_jaccard")
@@ -165,6 +148,7 @@ def _build_feature_names():
     names.append("semantic_skeleton_jaccard")
     names.append("semantic_type_profile_cosine")
 
+    # SVD farkları bu demo'da svd_model=None ile çağrıldığından mevcut değil
     return names
 
 
@@ -191,11 +175,6 @@ def preprocess(code: str) -> str:
     return " ".join(norm_tokens)
 
 
-def _build_pair_vector(raw1, raw2):
-    """Refactored to use modular pipeline."""
-    return build_pair_vector(raw1, raw2, vectorizer, char_vectorizer)
-
-
 # ================= ROUTES =================
 _HTML_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -216,13 +195,26 @@ def predict(pair: CodePair):
         if not raw1 or not raw2:
             raise HTTPException(status_code=400, detail="Both code snippets are required.")
 
-        X_pair = _build_pair_vector(raw1, raw2)
+        X_pair = build_pair_vector(raw1, raw2, vectorizer, char_vectorizer)
+
+        # ---- Bug #18 düzeltildi: CASCADE modunda cos_token ön-filtresi ----
+        if _IS_CASCADE:
+            _cell = X_pair[0, _COS_TOKEN_IDX]
+            cos_token = float(_cell.toarray().ravel()[0]) if hasattr(_cell, 'toarray') else float(_cell)
+            if cos_token > CASCADE_THRESHOLD:
+                prob = 1.0
+                return {
+                    "probability": round(prob, 4),
+                    "prediction": "Duplicated",
+                    "cascade_filtered": True,
+                    "cos_token": round(cos_token, 4),
+                    "shap": None
+                }
 
         # ---- Predict ----
         if hasattr(model, "predict_proba"):
             prob = model.predict_proba(X_pair)[0][1]
         elif hasattr(model, "decision_function"):
-            import math
             decision = model.decision_function(X_pair)[0]
             prob = 1 / (1 + math.exp(-decision))
         else:
@@ -235,9 +227,9 @@ def predict(pair: CodePair):
             X_dense = X_pair.toarray() if hasattr(X_pair, 'toarray') else np.array(X_pair)
             shap_values = explainer.shap_values(X_dense)
 
-            # For binary classification, shap_values can be a list [class0, class1]
+            # Binary classification: shap_values is list [class0, class1]
             if isinstance(shap_values, list):
-                sv = shap_values[1][0]  # class 1 (duplicated)
+                sv = shap_values[1][0]
             else:
                 sv = shap_values[0]
 
@@ -253,8 +245,7 @@ def predict(pair: CodePair):
             shap_features = []
             for idx in top_indices:
                 fname = FEATURE_NAMES[idx] if idx < len(FEATURE_NAMES) else f"feature_{idx}"
-                # Clean up tfidf_ prefix for display
-                display_name = fname.replace("tfidf_", "")
+                display_name = fname.replace("tfidf_", "").replace("char_tfidf_", "char:")
                 shap_features.append({
                     "feature": display_name,
                     "value": round(float(X_dense[0, idx]), 4),
@@ -272,6 +263,7 @@ def predict(pair: CodePair):
         return {
             "probability": round(float(prob), 4),
             "prediction": "Duplicated" if prob > 0.95 else "Not Duplicated",
+            "cascade_filtered": False,
             "shap": shap_data
         }
 
