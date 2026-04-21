@@ -1,0 +1,7 @@
+Experiment: /home/tuncay/PycharmProjects/CodeDuplicationDetection/experiments/exp_050_XGBoost_1000k
+Threshold: 0.9
+Precision: 0.8561
+Recall:    0.9917
+F1-Score:  0.9189
+
+TP: 119, FP: 20, TN: 17, FN: 1

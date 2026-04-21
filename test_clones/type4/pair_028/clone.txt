@@ -1,0 +1,12 @@
+ int binarySearchRec(int array_data[], int left, int right, int target) {  
+// TODO
+      if (right >= left) {    
+// Logic here
+          int mid = left + (right - left) / 2;  
+        if (array_data[mid] == target) return mid; 
+
+        if (array_data[mid] > target) return binarySearchRec(array_data, left, mid - 1, target);    
+            return binarySearchRec(array_data, mid + 1, right, target);    
+        }    
+     return -1;   
+ }    

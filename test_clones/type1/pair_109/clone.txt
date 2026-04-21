@@ -1,0 +1,6 @@
+ void swap(int *xp, int *yp) {    
+// Check if needed
+        int temp = *xp;    
+     *xp = *yp;  
+      *yp = temp;   
+  }  

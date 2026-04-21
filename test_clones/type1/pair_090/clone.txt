@@ -1,0 +1,9 @@
+// Check if needed
+int sum(int arr[], int n) {    
+// Check if needed
+      int total = 0;  
+        for (int i = 0; i < n; i++)   
+// Fix this
+           total += arr[i];    
+       return total;    
+  } 

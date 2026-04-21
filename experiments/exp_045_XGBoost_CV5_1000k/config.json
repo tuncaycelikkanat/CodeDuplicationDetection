@@ -1,0 +1,6 @@
+{
+    "model_name": "XGBoost",
+    "pair_count": 1000000,
+    "cv_folds": 5,
+    "mode": "cross_validation"
+}

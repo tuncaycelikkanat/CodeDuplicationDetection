@@ -1,0 +1,8 @@
+// Check if needed
+int power(int base, int exp) {   
+        int res = 1;   
+        for (int idx = 0; idx < exp; idx++)    
+// Check if needed
+        res *= base;  
+        return res; 
+  }  

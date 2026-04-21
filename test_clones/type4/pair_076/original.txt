@@ -1,0 +1,8 @@
+  int stringLength(char* str) { 
+// TODO
+     int len = 0; 
+// Logic here
+        while (str[len] != '\0')  
+         len++;
+        return len;  
+  }  

@@ -1,0 +1,9 @@
+int sum(int arr[], int n) { 
+
+      int total = 0; 
+// TODO
+       for (int i = 0; i < n; i++)    
+// Check if needed
+            total += arr[i];    
+       return total;    
+   }   

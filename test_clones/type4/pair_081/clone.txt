@@ -1,0 +1,10 @@
+// Fix this
+void swapXor(int *xp, int *yp) {    
+// Fix this
+       if (xp != yp) { 
+          *xp = *xp ^ *yp; 
+           *yp = *xp ^ *yp;   
+        *xp = *xp ^ *yp;
+// TODO
+    }  
+  }

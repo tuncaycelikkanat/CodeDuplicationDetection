@@ -1,0 +1,9 @@
+// TODO
+ int power(int base, int exp) { 
+
+       int res = 1;  
+        for (int idx = 0; idx < exp; idx++)  
+// Fix this
+            res *= base;   
+        return res;    
+ } 

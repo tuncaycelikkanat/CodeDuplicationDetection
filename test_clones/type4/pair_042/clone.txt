@@ -1,0 +1,6 @@
+// Check if needed
+ int gcd_recursive(int val1, int val2) {    
+    if (val2 == 0) return val1;  
+// Logic here
+     return gcd_recursive(val2, val1 % val2);   
+    }   

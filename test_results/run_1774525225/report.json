@@ -1,0 +1,958 @@
+{
+    "experiment": "/home/tuncay/PycharmProjects/CodeDuplicationDetection/experiments/exp_050_XGBoost_1000k",
+    "test_samples": 157,
+    "threshold": 0.9,
+    "metrics": {
+        "precision": 0.85,
+        "recall": 0.9917,
+        "f1_score": 0.9154,
+        "tp": 119,
+        "fp": 21,
+        "tn": 16,
+        "fn": 1
+    },
+    "details": [
+        {
+            "pair": "prob_01/01_fibonacci_iter.txt vs prob_01/01_fibonacci_recur.txt",
+            "label": 1,
+            "probability": 0.9864,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_01/01_fibonacci_iter.txt vs prob_01/01_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_01/01_fibonacci_iter.txt vs prob_01/01_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_01/01_fibonacci_recur.txt vs prob_01/01_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9901,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_01/01_fibonacci_recur.txt vs prob_01/01_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9901,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_01/01_t3_v1.txt vs prob_01/01_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_02/02_factorial_iter.txt vs prob_02/02_factorial_recur.txt",
+            "label": 1,
+            "probability": 0.9734,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_02/02_factorial_iter.txt vs prob_02/02_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_02/02_factorial_iter.txt vs prob_02/02_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_02/02_factorial_recur.txt vs prob_02/02_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9831,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_02/02_factorial_recur.txt vs prob_02/02_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9831,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_02/02_t3_v1.txt vs prob_02/02_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_03/03_gcd_iter.txt vs prob_03/03_gcd_recur.txt",
+            "label": 1,
+            "probability": 0.9987,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_03/03_gcd_iter.txt vs prob_03/03_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_03/03_gcd_iter.txt vs prob_03/03_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_03/03_gcd_recur.txt vs prob_03/03_t3_v1.txt",
+            "label": 1,
+            "probability": 0.999,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_03/03_gcd_recur.txt vs prob_03/03_t3_v2.txt",
+            "label": 1,
+            "probability": 0.999,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_03/03_t3_v1.txt vs prob_03/03_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_04/04_binary_search_iter.txt vs prob_04/04_binary_search_recur.txt",
+            "label": 1,
+            "probability": 0.9997,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_04/04_binary_search_iter.txt vs prob_04/04_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_04/04_binary_search_iter.txt vs prob_04/04_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_04/04_binary_search_recur.txt vs prob_04/04_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9994,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_04/04_binary_search_recur.txt vs prob_04/04_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9994,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_04/04_t3_v1.txt vs prob_04/04_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_05/05_sum_array_iter.txt vs prob_05/05_sum_array_recur.txt",
+            "label": 1,
+            "probability": 0.9778,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_05/05_sum_array_iter.txt vs prob_05/05_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_05/05_sum_array_iter.txt vs prob_05/05_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_05/05_sum_array_recur.txt vs prob_05/05_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9845,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_05/05_sum_array_recur.txt vs prob_05/05_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9845,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_05/05_t3_v1.txt vs prob_05/05_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_06/06_power_iter.txt vs prob_06/06_power_recur.txt",
+            "label": 1,
+            "probability": 0.9908,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_06/06_power_iter.txt vs prob_06/06_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_06/06_power_iter.txt vs prob_06/06_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_06/06_power_recur.txt vs prob_06/06_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9936,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_06/06_power_recur.txt vs prob_06/06_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9936,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_06/06_t3_v1.txt vs prob_06/06_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_07/07_reverse_array_iter.txt vs prob_07/07_reverse_array_recur.txt",
+            "label": 1,
+            "probability": 0.9765,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_07/07_reverse_array_iter.txt vs prob_07/07_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_07/07_reverse_array_iter.txt vs prob_07/07_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_07/07_reverse_array_recur.txt vs prob_07/07_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9918,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_07/07_reverse_array_recur.txt vs prob_07/07_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9918,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_07/07_t3_v1.txt vs prob_07/07_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_08/08_max_array_iter.txt vs prob_08/08_max_array_recur.txt",
+            "label": 1,
+            "probability": 0.9824,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_08/08_max_array_iter.txt vs prob_08/08_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_08/08_max_array_iter.txt vs prob_08/08_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_08/08_max_array_recur.txt vs prob_08/08_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9782,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_08/08_max_array_recur.txt vs prob_08/08_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9782,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_08/08_t3_v1.txt vs prob_08/08_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_09/09_palindrome_iter.txt vs prob_09/09_palindrome_recur.txt",
+            "label": 1,
+            "probability": 0.996,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_09/09_palindrome_iter.txt vs prob_09/09_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_09/09_palindrome_iter.txt vs prob_09/09_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_09/09_palindrome_recur.txt vs prob_09/09_t3_v1.txt",
+            "label": 1,
+            "probability": 0.997,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_09/09_palindrome_recur.txt vs prob_09/09_t3_v2.txt",
+            "label": 1,
+            "probability": 0.997,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_09/09_t3_v1.txt vs prob_09/09_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_10/10_linear_search_iter.txt vs prob_10/10_linear_search_recur.txt",
+            "label": 1,
+            "probability": 0.9966,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_10/10_linear_search_iter.txt vs prob_10/10_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_10/10_linear_search_iter.txt vs prob_10/10_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_10/10_linear_search_recur.txt vs prob_10/10_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9973,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_10/10_linear_search_recur.txt vs prob_10/10_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9973,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_10/10_t3_v1.txt vs prob_10/10_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_11/11_count_vowels_iter.txt vs prob_11/11_count_vowels_recur.txt",
+            "label": 1,
+            "probability": 0.9986,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_11/11_count_vowels_iter.txt vs prob_11/11_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_11/11_count_vowels_iter.txt vs prob_11/11_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_11/11_count_vowels_recur.txt vs prob_11/11_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9989,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_11/11_count_vowels_recur.txt vs prob_11/11_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9989,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_11/11_t3_v1.txt vs prob_11/11_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_12/12_dec_to_bin_iter.txt vs prob_12/12_dec_to_bin_recur.txt",
+            "label": 1,
+            "probability": 0.9887,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_12/12_dec_to_bin_iter.txt vs prob_12/12_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_12/12_dec_to_bin_iter.txt vs prob_12/12_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_12/12_dec_to_bin_recur.txt vs prob_12/12_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9936,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_12/12_dec_to_bin_recur.txt vs prob_12/12_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9936,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_12/12_t3_v1.txt vs prob_12/12_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_13/13_strlen_iter.txt vs prob_13/13_strlen_recur.txt",
+            "label": 1,
+            "probability": 0.3298,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_13/13_strlen_iter.txt vs prob_13/13_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_13/13_strlen_iter.txt vs prob_13/13_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_13/13_strlen_recur.txt vs prob_13/13_t3_v1.txt",
+            "label": 1,
+            "probability": 0.988,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_13/13_strlen_recur.txt vs prob_13/13_t3_v2.txt",
+            "label": 1,
+            "probability": 0.988,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_13/13_t3_v1.txt vs prob_13/13_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_14/14_digit_sum_iter.txt vs prob_14/14_digit_sum_recur.txt",
+            "label": 1,
+            "probability": 0.9951,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_14/14_digit_sum_iter.txt vs prob_14/14_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_14/14_digit_sum_iter.txt vs prob_14/14_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_14/14_digit_sum_recur.txt vs prob_14/14_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9975,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_14/14_digit_sum_recur.txt vs prob_14/14_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9975,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_14/14_t3_v1.txt vs prob_14/14_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_15/15_bubble_sort_iter.txt vs prob_15/15_bubble_sort_recur.txt",
+            "label": 1,
+            "probability": 0.9997,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_15/15_bubble_sort_iter.txt vs prob_15/15_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_15/15_bubble_sort_iter.txt vs prob_15/15_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_15/15_bubble_sort_recur.txt vs prob_15/15_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9999,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_15/15_bubble_sort_recur.txt vs prob_15/15_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9999,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_15/15_t3_v1.txt vs prob_15/15_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_16/16_selection_sort_iter.txt vs prob_16/16_selection_sort_recur.txt",
+            "label": 1,
+            "probability": 0.9922,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_16/16_selection_sort_iter.txt vs prob_16/16_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_16/16_selection_sort_iter.txt vs prob_16/16_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_16/16_selection_sort_recur.txt vs prob_16/16_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9945,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_16/16_selection_sort_recur.txt vs prob_16/16_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9945,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_16/16_t3_v1.txt vs prob_16/16_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_17/17_bin_to_dec_iter.txt vs prob_17/17_bin_to_dec_recur.txt",
+            "label": 1,
+            "probability": 0.9787,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_17/17_bin_to_dec_iter.txt vs prob_17/17_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_17/17_bin_to_dec_iter.txt vs prob_17/17_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_17/17_bin_to_dec_recur.txt vs prob_17/17_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9833,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_17/17_bin_to_dec_recur.txt vs prob_17/17_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9833,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_17/17_t3_v1.txt vs prob_17/17_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_18/18_product_iter.txt vs prob_18/18_product_recur.txt",
+            "label": 1,
+            "probability": 0.9904,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_18/18_product_iter.txt vs prob_18/18_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_18/18_product_iter.txt vs prob_18/18_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_18/18_product_recur.txt vs prob_18/18_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9944,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_18/18_product_recur.txt vs prob_18/18_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9944,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_18/18_t3_v1.txt vs prob_18/18_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_19/19_avg_array_iter.txt vs prob_19/19_avg_array_recur.txt",
+            "label": 1,
+            "probability": 0.9767,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_19/19_avg_array_iter.txt vs prob_19/19_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_19/19_avg_array_iter.txt vs prob_19/19_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_19/19_avg_array_recur.txt vs prob_19/19_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9828,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_19/19_avg_array_recur.txt vs prob_19/19_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9828,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_19/19_t3_v1.txt vs prob_19/19_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_20/20_count_occ_iter.txt vs prob_20/20_count_occ_recur.txt",
+            "label": 1,
+            "probability": 0.9571,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_20/20_count_occ_iter.txt vs prob_20/20_t3_v1.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_20/20_count_occ_iter.txt vs prob_20/20_t3_v2.txt",
+            "label": 1,
+            "probability": 1.0,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_20/20_count_occ_recur.txt vs prob_20/20_t3_v1.txt",
+            "label": 1,
+            "probability": 0.9606,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_20/20_count_occ_recur.txt vs prob_20/20_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9606,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_20/20_t3_v1.txt vs prob_20/20_t3_v2.txt",
+            "label": 1,
+            "probability": 0.9995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_01/01_fibonacci_iter.txt vs prob_02/02_factorial_iter.txt",
+            "label": 0,
+            "probability": 0.9945,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_01/01_fibonacci_iter.txt vs prob_03/03_gcd_iter.txt",
+            "label": 0,
+            "probability": 0.9491,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_02/02_factorial_iter.txt vs prob_03/03_gcd_iter.txt",
+            "label": 0,
+            "probability": 0.9473,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_02/02_factorial_iter.txt vs prob_04/04_binary_search_iter.txt",
+            "label": 0,
+            "probability": 0.4737,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_03/03_gcd_iter.txt vs prob_04/04_binary_search_iter.txt",
+            "label": 0,
+            "probability": 0.7389,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_03/03_gcd_iter.txt vs prob_05/05_sum_array_iter.txt",
+            "label": 0,
+            "probability": 0.9631,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_04/04_binary_search_iter.txt vs prob_05/05_sum_array_iter.txt",
+            "label": 0,
+            "probability": 0.8428,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_04/04_binary_search_iter.txt vs prob_06/06_power_iter.txt",
+            "label": 0,
+            "probability": 0.1875,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_05/05_sum_array_iter.txt vs prob_06/06_power_iter.txt",
+            "label": 0,
+            "probability": 0.9981,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_05/05_sum_array_iter.txt vs prob_07/07_reverse_array_iter.txt",
+            "label": 0,
+            "probability": 0.9894,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_06/06_power_iter.txt vs prob_07/07_reverse_array_iter.txt",
+            "label": 0,
+            "probability": 0.9758,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_06/06_power_iter.txt vs prob_08/08_max_array_iter.txt",
+            "label": 0,
+            "probability": 0.9471,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_07/07_reverse_array_iter.txt vs prob_08/08_max_array_iter.txt",
+            "label": 0,
+            "probability": 0.9756,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_07/07_reverse_array_iter.txt vs prob_09/09_palindrome_iter.txt",
+            "label": 0,
+            "probability": 0.9336,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_08/08_max_array_iter.txt vs prob_09/09_palindrome_iter.txt",
+            "label": 0,
+            "probability": 0.9742,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_08/08_max_array_iter.txt vs prob_10/10_linear_search_iter.txt",
+            "label": 0,
+            "probability": 0.995,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_09/09_palindrome_iter.txt vs prob_10/10_linear_search_iter.txt",
+            "label": 0,
+            "probability": 0.9192,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_09/09_palindrome_iter.txt vs prob_11/11_count_vowels_iter.txt",
+            "label": 0,
+            "probability": 0.8767,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_10/10_linear_search_iter.txt vs prob_11/11_count_vowels_iter.txt",
+            "label": 0,
+            "probability": 0.6805,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_10/10_linear_search_iter.txt vs prob_12/12_dec_to_bin_iter.txt",
+            "label": 0,
+            "probability": 0.3665,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_11/11_count_vowels_iter.txt vs prob_12/12_dec_to_bin_iter.txt",
+            "label": 0,
+            "probability": 0.1425,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_11/11_count_vowels_iter.txt vs prob_13/13_strlen_iter.txt",
+            "label": 0,
+            "probability": 0.9921,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_12/12_dec_to_bin_iter.txt vs prob_13/13_strlen_iter.txt",
+            "label": 0,
+            "probability": 0.7346,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_12/12_dec_to_bin_iter.txt vs prob_14/14_digit_sum_iter.txt",
+            "label": 0,
+            "probability": 0.9387,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_13/13_strlen_iter.txt vs prob_14/14_digit_sum_iter.txt",
+            "label": 0,
+            "probability": 0.8972,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_13/13_strlen_iter.txt vs prob_15/15_bubble_sort_iter.txt",
+            "label": 0,
+            "probability": 0.3956,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_14/14_digit_sum_iter.txt vs prob_15/15_bubble_sort_iter.txt",
+            "label": 0,
+            "probability": 0.5049,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_14/14_digit_sum_iter.txt vs prob_16/16_selection_sort_iter.txt",
+            "label": 0,
+            "probability": 0.4694,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_15/15_bubble_sort_iter.txt vs prob_16/16_selection_sort_iter.txt",
+            "label": 0,
+            "probability": 0.9997,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_15/15_bubble_sort_iter.txt vs prob_17/17_bin_to_dec_iter.txt",
+            "label": 0,
+            "probability": 0.3647,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_16/16_selection_sort_iter.txt vs prob_17/17_bin_to_dec_iter.txt",
+            "label": 0,
+            "probability": 0.3436,
+            "prediction": 0
+        },
+        {
+            "pair": "prob_16/16_selection_sort_iter.txt vs prob_18/18_product_iter.txt",
+            "label": 0,
+            "probability": 0.9245,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_17/17_bin_to_dec_iter.txt vs prob_18/18_product_iter.txt",
+            "label": 0,
+            "probability": 0.9789,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_17/17_bin_to_dec_iter.txt vs prob_19/19_avg_array_iter.txt",
+            "label": 0,
+            "probability": 0.9359,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_18/18_product_iter.txt vs prob_19/19_avg_array_iter.txt",
+            "label": 0,
+            "probability": 0.9989,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_18/18_product_iter.txt vs prob_20/20_count_occ_iter.txt",
+            "label": 0,
+            "probability": 0.9091,
+            "prediction": 1
+        },
+        {
+            "pair": "prob_19/19_avg_array_iter.txt vs prob_20/20_count_occ_iter.txt",
+            "label": 0,
+            "probability": 0.6403,
+            "prediction": 0
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+// TODO
+int sumRec(int array_data[], int num_elements) {   
+// TODO
+     if (num_elements <= 0) return 0;
+// Fix this
+       return (sumRec(array_data, num_elements - 1) + array_data[num_elements - 1]);  
+   }    
