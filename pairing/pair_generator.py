@@ -21,22 +21,7 @@ def _jaccard_sim(set_a, set_b):
     return len(set_a & set_b) / union if union > 0 else 1.0
 
 
-def _counter_cosine_sim(c1, c2):
-    """
-    Cosine similarity between two Counter objects (sparse vectors).
-    Returns 1.0 if both empty.
-    """
-    if not c1 and not c2:
-        return 1.0
-    if not c1 or not c2:
-        return 0.0
-    # Get all keys
-    all_keys = set(c1.keys()) | set(c2.keys())
-    dot = sum(c1.get(k, 0) * c2.get(k, 0) for k in all_keys)
-    norm1 = math.sqrt(sum(v * v for v in c1.values()))
-    norm2 = math.sqrt(sum(v * v for v in c2.values()))
-    denom = norm1 * norm2
-    return dot / denom if denom > 0 else 0.0
+
 
 
 def _string_bigram_jaccard(s1, s2):
@@ -53,11 +38,21 @@ def _string_bigram_jaccard(s1, s2):
     union = len(bg1 | bg2)
     return len(bg1 & bg2) / union if union > 0 else 1.0
 
+def _tuple_bigram_jaccard(t1, t2):
+    if not t1 and not t2: return 1.0
+    if not t1 or not t2: return 0.0
+    def _bg(t):
+        if len(t) < 2: return {t}
+        return set((t[i], t[i+1]) for i in range(len(t) - 1))
+    bg1, bg2 = _bg(t1), _bg(t2)
+    union = len(bg1 | bg2)
+    return len(bg1 & bg2) / union if union > 0 else 1.0
+
 
 
 def generate_pairs(X_token, labels, num_pairs, processed_codes,
                    code_features=None, cf_patterns=None,
-                   semantic_features=None,
+                   semantic_features=None, X_svd=None,
                    random_state=42):
     """
     Generate pairs of code samples for clone detection.
@@ -73,10 +68,10 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
         - CF pattern similarity      (1 feature, if cf_patterns provided)
         - library_call_jaccard       (1 feature, if semantic_features provided)
         - data_struct_jaccard        (1 feature, if semantic_features provided)
-        - io_pattern_similarity      (1 feature, if semantic_features provided)
-        - math_op_jaccard            (1 feature, if semantic_features provided)
-        - opcode_ngram_cosine        (1 feature, if semantic_features provided)
-        - subtree_hash_jaccard       (1 feature, if semantic_features provided)
+        - io_pattern_similarity      (1 feature)
+        - math_op_jaccard            (1 feature)
+        - skeleton_jaccard           (1 feature)
+        - type_profile_cosine        (1 feature)
     """
 
 
@@ -222,9 +217,14 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
     del len_i, len_j, max_len, token_lengths
 
     # ---- Step 5: Build extra features array ----
+    manhattan_token = np.array(diff_matrix.sum(axis=1)).ravel()
+    euclidean_token = np.sqrt(np.array(diff_matrix.power(2).sum(axis=1)).ravel())
+    
     extra_cols = [cos_token.reshape(-1, 1),
-                  length_ratio.reshape(-1, 1)]
-    del cos_token, length_ratio
+                  length_ratio.reshape(-1, 1),
+                  manhattan_token.reshape(-1, 1).astype(np.float32),
+                  euclidean_token.reshape(-1, 1).astype(np.float32)]
+    del cos_token, length_ratio, manhattan_token, euclidean_token
 
     # ---- Step 7: AST feature ratios (if provided) ----
     if code_features is not None:
@@ -235,24 +235,16 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
         min_cf = np.minimum(cf_i, cf_j)
         max_cf[max_cf == 0] = 1.0
         ast_ratios = min_cf / max_cf
+        ast_diffs = np.abs(cf_i - cf_j)
         extra_cols.append(ast_ratios.astype(np.float32))
-        del cf_i, cf_j, max_cf, min_cf, ast_ratios
+        extra_cols.append(ast_diffs.astype(np.float32))
+        del cf_i, cf_j, max_cf, min_cf, ast_ratios, ast_diffs
 
     # ---- Step 8: Control flow pattern similarity (parallelized) ----
     if cf_patterns is not None:
         print("  → Computing CF pattern similarity (parallel batch)...")
 
-        # Pre-compute bigram sets for all patterns
-        def _bigrams(s):
-            if not s:
-                return set()
-            if len(s) < 2:
-                return {s}
-            return set(s[i:i+2] for i in range(len(s) - 1))
-
-        all_bigrams = [_bigrams(p) for p in cf_patterns]
-
-        def _cf_sim_chunk(start, end, bigrams_list, idx_i, idx_j, patterns):
+        def _cf_sim_chunk(start, end, idx_i, idx_j, patterns):
             result = np.empty(end - start, dtype=np.float32)
             for k in range(end - start):
                 p = start + k
@@ -262,54 +254,45 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
                 elif not pi or not pj:
                     result[k] = 0.0
                 else:
-                    bg1 = bigrams_list[idx_i[p]]
-                    bg2 = bigrams_list[idx_j[p]]
-                    union = len(bg1 | bg2)
-                    result[k] = len(bg1 & bg2) / union if union > 0 else 1.0
+                    dist = Levenshtein.distance(pi, pj)
+                    max_len = max(len(pi), len(pj))
+                    result[k] = 1.0 - (dist / max_len) if max_len > 0 else 1.0
             return result
 
         CHUNK = 100_000
         chunks = [(s, min(s + CHUNK, num_pairs)) for s in range(0, num_pairs, CHUNK)]
         cf_results = Parallel(n_jobs=-1, backend='loky')(
-            delayed(_cf_sim_chunk)(s, e, all_bigrams, all_i, all_j, cf_patterns)
+            delayed(_cf_sim_chunk)(s, e, all_i, all_j, cf_patterns)
             for s, e in chunks
         )
         cf_sim = np.concatenate(cf_results)
         extra_cols.append(cf_sim.reshape(-1, 1))
-        del cf_sim, all_bigrams, cf_results
+        del cf_sim, cf_results
 
     # ---- Step 9: Semantic similarity features (A1, A2, B3) ----
     if semantic_features is not None:
-        print("  → Computing semantic similarity features (A1+A2+B3)...")
+        print("  → Computing semantic similarity features...")
 
         lib_calls = semantic_features['library_calls']
         data_structs = semantic_features['data_structs']
         io_patterns = semantic_features['io_patterns']
         math_ops = semantic_features['math_ops']
-        opcode_ngrams = semantic_features['opcode_ngrams']
-        subtree_hashes = semantic_features['subtree_hashes']
+        skeletons = semantic_features['skeletons']
 
         # Vectorize Jaccard/cosine computations using chunked parallel processing
         def _semantic_sim_chunk(start, end, idx_i, idx_j,
                                 lib_calls, data_structs, io_patterns,
-                                math_ops, opcode_ngrams, subtree_hashes):
+                                math_ops, skeletons):
             size = end - start
-            result = np.empty((size, 6), dtype=np.float32)
+            result = np.empty((size, 5), dtype=np.float32)
             for k in range(size):
                 p = start + k
                 ii, jj = idx_i[p], idx_j[p]
-                # A1: Library call Jaccard
                 result[k, 0] = _jaccard_sim(lib_calls[ii], lib_calls[jj])
-                # A1: Data structure Jaccard
                 result[k, 1] = _jaccard_sim(data_structs[ii], data_structs[jj])
-                # A1: IO pattern bigram Jaccard
                 result[k, 2] = _string_bigram_jaccard(io_patterns[ii], io_patterns[jj])
-                # A1: Math op Jaccard
                 result[k, 3] = _jaccard_sim(math_ops[ii], math_ops[jj])
-                # A2: Opcode n-gram cosine
-                result[k, 4] = _counter_cosine_sim(opcode_ngrams[ii], opcode_ngrams[jj])
-                # B3: Subtree hash Jaccard
-                result[k, 5] = _jaccard_sim(subtree_hashes[ii], subtree_hashes[jj])
+                result[k, 4] = _tuple_bigram_jaccard(skeletons[ii], skeletons[jj])
             return result
 
         CHUNK = 100_000
@@ -317,12 +300,36 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
         sem_results = Parallel(n_jobs=-1, backend='loky')(
             delayed(_semantic_sim_chunk)(s, e, all_i, all_j,
                                         lib_calls, data_structs, io_patterns,
-                                        math_ops, opcode_ngrams, subtree_hashes)
+                                        math_ops, skeletons)
             for s, e in chunks
         )
         sem_matrix = np.vstack(sem_results)
         extra_cols.append(sem_matrix)
         del sem_results, sem_matrix
+
+        # Type Profile Cosine Similarity (Vectorized)
+        print("  → Computing type profile cosine similarity...")
+        type_profiles_mat = np.vstack(semantic_features['type_profiles'])
+        tp_i = type_profiles_mat[all_i]
+        tp_j = type_profiles_mat[all_j]
+        dot = np.sum(tp_i * tp_j, axis=1)
+        norm_i = np.linalg.norm(tp_i, axis=1)
+        norm_j = np.linalg.norm(tp_j, axis=1)
+        denom = norm_i * norm_j
+        denom[denom == 0] = 1.0
+        # For perfectly empty profiles, cosine sim is 1.0
+        tp_cos = np.where(denom == 0, 1.0, dot / denom)
+        extra_cols.append(tp_cos.reshape(-1, 1).astype(np.float32))
+        del type_profiles_mat, tp_i, tp_j, dot, norm_i, norm_j, denom, tp_cos
+
+    # ---- Step 9.5: SVD Differences (if provided) ----
+    if X_svd is not None:
+        print("  → Computing SVD differences (batch)...")
+        svd_i = X_svd[all_i]
+        svd_j = X_svd[all_j]
+        svd_diff = np.abs(svd_i - svd_j)
+        extra_cols.append(svd_diff.astype(np.float32))
+        del svd_i, svd_j, svd_diff
 
     # ---- Step 10: Combine all features ----
     print("  → Combining features...")

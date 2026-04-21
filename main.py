@@ -20,17 +20,14 @@ def apply_intel_optimizations():
 
 import numpy as np
 from sklearn.model_selection import train_test_split, StratifiedKFold
+from sklearn.decomposition import TruncatedSVD
 from tqdm import tqdm
 
-from models.linear_svm import build_linear_svm
 from models.xgboost import build_xgboost
-from models.ensemble import build_voting_ensemble
 from preprocessing.tokenizer import tokenize, normalize_tokens
 from preprocessing.code_features import extract_all_features
 from vectorization.tfidf import build_tfidf_vectorizer, build_char_tfidf_vectorizer
 from pairing.pair_generator import generate_pairs
-from models.random_forest import build_random_forest
-from models.dl_model import build_dl_model
 
 from utils.experiment_logger import (
     generate_experiment_name,
@@ -43,7 +40,7 @@ from utils.experiment_logger import (
 def parse_args():
     parser = argparse.ArgumentParser(description="Code Duplication Detection - Training Pipeline")
     parser.add_argument("--model", type=str, default="xgboost",
-                        choices=["random_forest", "linear_svm", "xgboost", "ensemble", "dl_model"],
+                        choices=["xgboost"],
                         help="Model to train (default: xgboost)")
     parser.add_argument("--dataset", type=str, default="data/poj104",
                         help="Path to dataset directory (default: data/poj104)")
@@ -113,6 +110,14 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         X_train_token = vectorizer.fit_transform(train_codes)
         X_test_token = vectorizer.transform(test_codes)
 
+        # TruncatedSVD
+        print("  → Applying TruncatedSVD on Token TF-IDF...")
+        svd = TruncatedSVD(n_components=50, random_state=args.seed)
+        X_train_svd = svd.fit_transform(X_train_token)
+        X_test_svd = svd.transform(X_test_token)
+        
+        TOKEN_FEAT_COUNT = X_train_token.shape[1]
+
         # Generate pairs
         test_ratio = len(test_idx) / (len(train_idx) + len(test_idx))
         num_train_pairs = int(cv_pairs * (1 - test_ratio))
@@ -124,11 +129,12 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
             code_features=train_code_features,
             cf_patterns=train_cf_patterns,
             semantic_features=train_semantic,
+            X_svd=X_train_svd,
             random_state=args.seed + fold_idx
         )
         X_train = X_train.astype(np.float32)
 
-        del X_train_token, train_code_features, train_cf_patterns, train_codes, train_semantic
+        del X_train_token, train_code_features, train_cf_patterns, train_codes, train_semantic, X_train_svd
         gc.collect()
 
         print(f"  → Generating {num_test_pairs} test pairs...")
@@ -137,35 +143,25 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
             code_features=test_code_features,
             cf_patterns=test_cf_patterns,
             semantic_features=test_semantic,
+            X_svd=X_test_svd,
             random_state=args.seed + fold_idx + 1000
         )
         X_test = X_test.astype(np.float32)
 
-        del X_test_token, test_code_features, test_cf_patterns, test_codes, test_semantic
+        del X_test_token, test_code_features, test_cf_patterns, test_codes, test_semantic, X_test_svd
         gc.collect()
 
         # Build & train model
-        if args.model in ["xgboost", "dl_model", "ensemble"]:
-            model = build_fn(args.seed, device=args.device)
-        else:
-            model = build_fn(args.seed)
+        model = build_xgboost(args.seed, device=args.device)
 
-        print(f"  → Training {model_name}...")
-        if args.model == "xgboost":
-            # Apply feature_weights for Type-4 semantic feature prioritization
-            from preprocessing.code_features import FEATURE_NAMES
-            feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
-            num_cf = 1
-            num_semantic = 6
-            num_extra = 2 + len(FEATURE_NAMES) + num_cf + num_semantic
-            if num_extra > 0:
-                feature_weights[-num_extra:] = 1000.0
-            model.set_params(feature_weights=feature_weights)
-            # NOTE: No eval_set in CV to prevent data leakage
-            # (test fold must not influence training)
-            model.fit(X_train, y_train, verbose=False)
-        else:
-            model.fit(X_train, y_train)
+        print(f"  → Training XGBoost...")
+        
+        feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
+        # Dynamically calculate the number of extra features
+        num_extra = X_train.shape[1] - TOKEN_FEAT_COUNT
+        feature_weights[-num_extra:] = 1000.0
+        model.set_params(feature_weights=feature_weights)
+        model.fit(X_train, y_train, verbose=False)
 
         # Evaluate
         from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
@@ -280,14 +276,7 @@ def main():
 
     # <---------> CROSS-VALIDATION MODE <---------->
     if args.cv:
-        MODEL_BUILDERS = {
-            "random_forest": ("RandomForest", build_random_forest),
-            "linear_svm": ("LinearSVM", build_linear_svm),
-            "xgboost": ("XGBoost", build_xgboost),
-            "ensemble": ("Ensemble", build_voting_ensemble),
-            "dl_model": ("DeepLearning", build_dl_model),
-        }
-        model_name, build_fn = MODEL_BUILDERS[args.model]
+        model_name, build_fn = "XGBoost", build_xgboost
 
         run_cross_validation(
             args, all_codes, labels, processed_codes,
@@ -357,8 +346,15 @@ def main():
     X_val_token = vectorizer.transform(val_codes)
     X_test_token = vectorizer.transform(test_codes)
     print(f"Token TF-IDF shape: {X_train_token.shape}")
+    
+    print("---> Applying TruncatedSVD on Token TF-IDF...")
+    svd = TruncatedSVD(n_components=50, random_state=RANDOM_STATE)
+    X_train_svd = svd.fit_transform(X_train_token)
+    X_val_svd = svd.transform(X_val_token)
+    X_test_svd = svd.transform(X_test_token)
 
     print(f"Total feature count: {X_train_token.shape[1]} (token)")
+    TOKEN_FEAT_COUNT = X_train_token.shape[1]
     t_split_tfidf = time.time() - t_phase
 
     # <----------> PAIRS (from separate splits) <---------->
@@ -374,11 +370,12 @@ def main():
         code_features=train_code_features,
         cf_patterns=train_cf_patterns,
         semantic_features=train_semantic,
+        X_svd=X_train_svd,
         random_state=RANDOM_STATE
     )
     X_train = X_train.astype(np.float32)
 
-    del X_train_token, train_code_features, train_cf_patterns, train_codes, train_semantic
+    del X_train_token, train_code_features, train_cf_patterns, train_codes, train_semantic, X_train_svd
     gc.collect()
 
     print(f"---> Generating {num_val_pairs} val pairs...")
@@ -387,11 +384,12 @@ def main():
         code_features=val_code_features,
         cf_patterns=val_cf_patterns,
         semantic_features=val_semantic,
+        X_svd=X_val_svd,
         random_state=RANDOM_STATE + 1
     )
     X_val = X_val.astype(np.float32)
 
-    del X_val_token, val_code_features, val_cf_patterns, val_codes, val_semantic
+    del X_val_token, val_code_features, val_cf_patterns, val_codes, val_semantic, X_val_svd
     gc.collect()
 
     print(f"---> Generating {num_test_pairs} test pairs...")
@@ -400,11 +398,12 @@ def main():
         code_features=test_code_features,
         cf_patterns=test_cf_patterns,
         semantic_features=test_semantic,
+        X_svd=X_test_svd,
         random_state=RANDOM_STATE + 2
     )
     X_test = X_test.astype(np.float32)
 
-    del X_test_token, test_code_features, test_cf_patterns, test_codes, test_semantic
+    del X_test_token, test_code_features, test_cf_patterns, test_codes, test_semantic, X_test_svd
     gc.collect()
 
     print(f"Train pair matrix: {X_train.shape}")
@@ -413,24 +412,12 @@ def main():
     t_pairs = time.time() - t_phase
 
     # <----------> HYPERPARAMETER TUNING (optional) <---------->
-    MODEL_BUILDERS = {
-        "random_forest": ("RandomForest", build_random_forest),
-        "linear_svm": ("LinearSVM", build_linear_svm),
-        "xgboost": ("XGBoost", build_xgboost),
-        "ensemble": ("Ensemble", build_voting_ensemble),
-        "dl_model": ("DeepLearning", build_dl_model),
-    }
+    model_name, build_fn = "XGBoost", build_xgboost
 
-    model_name, build_fn = MODEL_BUILDERS[args.model]
-
-    # Pre-compute feature weights for Type-4 semantic feature prioritization
     feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
-    from preprocessing.code_features import FEATURE_NAMES
-    num_cf = 1
-    num_semantic = 6  # 6 new semantic pair-level features (A1+A2+B3)
-    num_extra = 2 + len(FEATURE_NAMES) + num_cf + num_semantic  # cos, length, ast+ir+a1, cf, semantic
-    if num_extra > 0:
-        feature_weights[-num_extra:] = 1000.0
+    # Dynamically compute number of extra engineered features
+    num_extra = X_train.shape[1] - TOKEN_FEAT_COUNT 
+    feature_weights[-num_extra:] = 1000.0
 
     if args.tune:
         print(f"\n---> Tuning {model_name} with Optuna ({args.tune_trials} trials)...")
@@ -445,40 +432,20 @@ def main():
         )
 
         # Build model with best params
-        if args.model == "xgboost":
-            from xgboost import XGBClassifier
-            # Configure XGBoost device
-            xgb_device = args.device if args.device != "xpu" else "cpu" # XGBoost doesn't natively support XPU yet in standard pip
-            model = XGBClassifier(**best_params, random_state=RANDOM_STATE, n_jobs=-1, device=xgb_device)
-        elif args.model == "random_forest":
-            from sklearn.ensemble import RandomForestClassifier
-            model = RandomForestClassifier(**best_params, random_state=RANDOM_STATE, n_jobs=-1)
-        elif args.model == "linear_svm":
-            from sklearn.svm import LinearSVC
-            from sklearn.calibration import CalibratedClassifierCV
-            model = CalibratedClassifierCV(
-                LinearSVC(**best_params, random_state=RANDOM_STATE), cv=3
-            )
+        from xgboost import XGBClassifier
+        xgb_device = args.device if args.device != "xpu" else "cpu" 
+        model = XGBClassifier(**best_params, random_state=RANDOM_STATE, n_jobs=-1, device=xgb_device)
         t_tune = time.time() - t_phase
     else:
         t_tune = 0.0
-        # Pass device to builders that support it
-        if args.model in ["xgboost", "dl_model", "ensemble"]:
-            model = build_fn(RANDOM_STATE, device=args.device)
-        else:
-            model = build_fn(RANDOM_STATE)
+        model = build_fn(RANDOM_STATE, device=args.device)
 
     # <----------> TRAIN <---------->
     print(f"---> Training {model_name}...")
     t_phase = time.time()
-    if args.model == "xgboost":
-        # Apply pre-computed Type-4 semantic feature weights
-        model.set_params(feature_weights=feature_weights)
-        
-        # USE VALIDATION SET FOR EARLY STOPPING
-        model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=True)
-    else:
-        model.fit(X_train, y_train)
+    
+    model.set_params(feature_weights=feature_weights)
+    model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=True)
     t_train = time.time() - t_phase
 
     # <----------> EVALUATION <---------->
@@ -531,7 +498,6 @@ def main():
         y_test_pred=y_test_pred,
         timing_info=timing_info
     )
-
 
 if __name__ == "__main__":
     main()

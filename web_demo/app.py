@@ -1,10 +1,17 @@
 import os
 import sys
-import re
+
+# Ensure project root is on sys.path for imports
+_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
+
 import pickle
+import time
+import re
 
 import numpy as np
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +19,43 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.sparse import hstack, csr_matrix
 import shap
 from rapidfuzz.distance import Levenshtein
+import math
+from utils.feature_pipeline import build_pair_vector
+
+from preprocessing.tokenizer import normalize_tokens, tokenize
+from preprocessing.code_features import (
+    _extract_single, cf_pattern_similarity, FEATURE_NAMES as AST_FEATURE_NAMES
+)
+
+# ================= SEMANTIC SIMILARITY HELPERS =================
+
+def _jaccard_sim(set_a, set_b):
+    """Jaccard similarity between two sets. Returns 1.0 if both empty."""
+    if not set_a and not set_b:
+        return 1.0
+    if not set_a or not set_b:
+        return 0.0
+    union = len(set_a | set_b)
+    return len(set_a & set_b) / union if union > 0 else 1.0
+
+
+
+
+
+def _string_bigram_jaccard(s1, s2):
+    """Bigram Jaccard similarity between two strings."""
+    if not s1 and not s2:
+        return 1.0
+    if not s1 or not s2:
+        return 0.0
+    def _bg(s):
+        if len(s) < 2:
+            return {s}
+        return set(s[i:i+2] for i in range(len(s) - 1))
+    bg1, bg2 = _bg(s1), _bg(s2)
+    union = len(bg1 | bg2)
+    return len(bg1 & bg2) / union if union > 0 else 1.0
+
 
 # Ensure project root is on sys.path for imports
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -112,6 +156,15 @@ def _build_feature_names():
 
     # CF pattern similarity
     names.append("cf_pattern_similarity")
+
+    # Semantic similarity features (A1, A2, B3)
+    names.append("semantic_library_call_jaccard")
+    names.append("semantic_data_struct_jaccard")
+    names.append("semantic_io_pattern_jaccard")
+    names.append("semantic_math_op_jaccard")
+    names.append("semantic_skeleton_jaccard")
+    names.append("semantic_type_profile_cosine")
+
     return names
 
 
@@ -138,62 +191,9 @@ def preprocess(code: str) -> str:
     return " ".join(norm_tokens)
 
 
-def extract_features_for_code(raw_code):
-    """Extract AST + control flow + IR features for a single code."""
-    # _extract_single returns (feats_list, cf_pattern)
-    return _extract_single(raw_code)
-
-
 def _build_pair_vector(raw1, raw2):
-    """Build the feature vector for a code pair. Returns X_pair sparse matrix."""
-    code1 = preprocess(raw1)
-    code2 = preprocess(raw2)
-
-    X1 = vectorizer.transform([code1])
-    X2 = vectorizer.transform([code2])
-
-    # Token TF-IDF diff
-    diff = abs(X1 - X2)
-    cos_token = cosine_similarity(X1, X2)[0][0]
-
-    # Length ratio
-    len1 = len(code1.split())
-    len2 = len(code2.split())
-    length_ratio = min(len1, len2) / max(len1, len2) if max(len1, len2) > 0 else 1.0
-
-    extra = [cos_token, length_ratio]
-
-    # Char TF-IDF cosine + diff
-    char_diff = None
-    if char_vectorizer is not None:
-        C1 = char_vectorizer.transform([code1])
-        C2 = char_vectorizer.transform([code2])
-        cos_char = cosine_similarity(C1, C2)[0][0]
-        extra.append(cos_char)
-        char_diff = abs(C1 - C2)
-
-    # AST feature ratios
-    feat1, cf1 = extract_features_for_code(raw1)
-    feat2, cf2 = extract_features_for_code(raw2)
-
-    for v1, v2 in zip(feat1, feat2):
-        max_val = max(v1, v2)
-        ratio = min(v1, v2) / max_val if max_val > 0 else 1.0
-        extra.append(ratio)
-
-    # CF pattern similarity
-    cf_sim = cf_pattern_similarity(cf1, cf2)
-    extra.append(cf_sim)
-
-    # Combine
-    extra_features = csr_matrix([extra])
-    parts = [diff]
-    if char_diff is not None:
-        parts.append(char_diff)
-    parts.append(extra_features)
-    X_pair = hstack(parts)
-
-    return X_pair
+    """Refactored to use modular pipeline."""
+    return build_pair_vector(raw1, raw2, vectorizer, char_vectorizer)
 
 
 # ================= ROUTES =================
@@ -271,7 +271,7 @@ def predict(pair: CodePair):
 
         return {
             "probability": round(float(prob), 4),
-            "prediction": "Duplicated" if prob > 0.98 else "Not Duplicated",
+            "prediction": "Duplicated" if prob > 0.95 else "Not Duplicated",
             "shap": shap_data
         }
 

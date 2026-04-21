@@ -42,17 +42,23 @@ def tokenize(code):
 
 def normalize_tokens(tokens):
     normalized = []
-    for tok in tokens:
+    length = len(tokens)
+    for i in range(length):
+        tok = tokens[i]
         if tok in KEYWORDS:
             normalized.append(tok)
         elif _NUM_RE.match(tok):
             normalized.append("NUM")
         elif tok in LOOP_VARS:
             normalized.append(tok)
-        elif len(tok) == 1 and tok.isalpha():
-            normalized.append("VAR")
         elif _IDENT_RE.match(tok):
-            normalized.append("VAR")
+            # Lookahead: if followed by '(', it's a function call or definition
+            if i + 1 < length and tokens[i+1] == "(":
+                normalized.append("FUNC")
+            elif len(tok) == 1:
+                normalized.append("VAR")
+            else:
+                normalized.append("VAR")
         else:
             normalized.append(tok)
     return normalized
