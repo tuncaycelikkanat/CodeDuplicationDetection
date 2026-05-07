@@ -45,7 +45,7 @@ from utils.experiment_logger import (
 def parse_args():
     parser = argparse.ArgumentParser(description="Code Duplication Detection - Cascade Training Pipeline")
     parser.add_argument("--model", type=str, default="xgboost",
-                        choices=["xgboost"],
+                        choices=["xgboost", "ensemble"],
                         help="Model to train (default: xgboost)")
     parser.add_argument("--dataset", type=str, default="data/poj104",
                         help="Path to dataset directory (default: data/poj104)")
@@ -68,6 +68,9 @@ def parse_args():
                         help=f"Number of CV folds (default: {DEFAULT_CV_FOLDS})")
     parser.add_argument("--cv-pairs", type=int, default=None,
                         help="Pairs per fold for CV (default: uses --pairs value)")
+    parser.add_argument("--positive-ratio", type=float, default=0.5,
+                        help="Fraction of training pairs that are clones (default: 0.5). "
+                             "Use ~0.1 for realistic class imbalance simulation.")
     return parser.parse_args()
 
 
@@ -117,11 +120,10 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
 
         # TruncatedSVD
         print("  → Applying TruncatedSVD on Token TF-IDF...")
-        svd = TruncatedSVD(n_components=50, random_state=args.seed)
+        svd = TruncatedSVD(n_components=SVD_N_COMPONENTS, random_state=args.seed)
         X_train_svd = svd.fit_transform(X_train_token)
         X_test_svd = svd.transform(X_test_token)
-        
-        TOKEN_FEAT_COUNT = X_train_token.shape[1]
+        # TOKEN_FEAT_COUNT removed — pair_generator now returns dense arrays
 
         # Generate pairs
         test_ratio = len(test_idx) / (len(train_idx) + len(test_idx))
@@ -135,7 +137,8 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
             cf_patterns=train_cf_patterns,
             semantic_features=train_semantic,
             X_svd=X_train_svd,
-            random_state=args.seed + fold_idx
+            random_state=args.seed + fold_idx,
+            positive_ratio=args.positive_ratio
         )
         X_train = X_train.astype(np.float32)
 
@@ -157,22 +160,19 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         gc.collect()
 
         # Build & train model
-        model = build_xgboost(args.seed, device=args.device)
+        if args.model == "ensemble":
+            from models.ensemble import build_ensemble
+            model = build_ensemble(args.seed, device=args.device)
+        else:
+            model = build_xgboost(args.seed, device=args.device)
 
-        print(f"  → Training XGBoost...")
-
-        # TOKEN_FEAT_COUNT aynı fold içinde yukarıda ayarlandı, satır filtrelemesi
-        # sütun sayısını değiştirmez → aşağıdaki feature_weights hesabı güvenlidir.
-        feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
-        num_extra = X_train.shape[1] - TOKEN_FEAT_COUNT
-        # feature_weights[-num_extra:] = 1000.0  # IPTAL EDILDI: Modelin özgürce özellik seçmesine izin veriyoruz
-        model.set_params(feature_weights=feature_weights)
+        print(f"  → Training {model_name}...")
 
         # ---- Cascade filter (CV modu) ----
         # Eğitim setindeki "kolay" klonları (cos_token > CASCADE_THRESHOLD) çıkar.
-        # Bu sayede XGBoost sadece zor / Type-4 klonlar üzerinde eğitilir.
+        # Bu sayede model sadece zor / Type-4 klonlar üzerinde eğitilir.
         print(f"  → Filtering easy clones from CV Train set (threshold={CASCADE_THRESHOLD})...")
-        cos_tok_train = X_train[:, TOKEN_FEAT_COUNT].toarray().ravel()
+        cos_tok_train = X_train[:, 0]  # cos_token is now the 0th feature in the dense array
         keep_mask = (y_train == 0) | ((y_train == 1) & (cos_tok_train <= CASCADE_THRESHOLD))
         X_train = X_train[keep_mask]
         y_train = y_train[keep_mask]
@@ -298,7 +298,11 @@ def main():
 
     # <---------> CROSS-VALIDATION MODE <---------->
     if args.cv:
-        model_name, build_fn = "XGBoost", build_xgboost
+        if args.model == "ensemble":
+            from models.ensemble import build_ensemble
+            model_name, build_fn = "Ensemble", build_ensemble
+        else:
+            model_name, build_fn = "XGBoost", build_xgboost
 
         run_cross_validation(
             args, all_codes, labels, processed_codes,
@@ -370,13 +374,12 @@ def main():
     print(f"Token TF-IDF shape: {X_train_token.shape}")
     
     print("---> Applying TruncatedSVD on Token TF-IDF...")
-    svd = TruncatedSVD(n_components=50, random_state=RANDOM_STATE)
+    svd = TruncatedSVD(n_components=SVD_N_COMPONENTS, random_state=RANDOM_STATE)
     X_train_svd = svd.fit_transform(X_train_token)
     X_val_svd = svd.transform(X_val_token)
     X_test_svd = svd.transform(X_test_token)
 
-    print(f"Total feature count: {X_train_token.shape[1]} (token)")
-    TOKEN_FEAT_COUNT = X_train_token.shape[1]
+    print(f"SVD components: {SVD_N_COMPONENTS}, Dense feature vector size: 89")
     t_split_tfidf = time.time() - t_phase
 
     # <----------> PAIRS (from separate splits) <---------->
@@ -385,7 +388,7 @@ def main():
     num_val_pairs = int(NUM_PAIRS * 0.15)
     num_test_pairs = NUM_PAIRS - num_train_pairs - num_val_pairs
 
-    print(f"---> Generating {num_train_pairs} train pairs...")
+    print(f"---> Generating {num_train_pairs} train pairs (positive_ratio={args.positive_ratio})...")
     t_phase = time.time()
     X_train, y_train = generate_pairs(
         X_train_token, train_labels, num_train_pairs, train_codes,
@@ -393,15 +396,13 @@ def main():
         cf_patterns=train_cf_patterns,
         semantic_features=train_semantic,
         X_svd=X_train_svd,
-        random_state=RANDOM_STATE
+        random_state=RANDOM_STATE,
+        positive_ratio=args.positive_ratio
     )
     X_train = X_train.astype(np.float32)
 
     print("  → Filtering EASY clones from Train set (Cascade approach)...")
-    # TOKEN_FEAT_COUNT sütun filtreden önce belirlendi; satır filtresi sütun sayısını
-    # değiştirmez, dolayısıyla aşağıdaki feature_weights hesabında TOKEN_FEAT_COUNT
-    # hâlâ geçerlidir.
-    cos_tokens_train = X_train[:, TOKEN_FEAT_COUNT].toarray().ravel()
+    cos_tokens_train = X_train[:, 0]  # cos_token is now the 0th feature
     keep_mask_train = (y_train == 0) | ((y_train == 1) & (cos_tokens_train <= CASCADE_THRESHOLD))
     X_train = X_train[keep_mask_train]
     y_train = y_train[keep_mask_train]
@@ -422,7 +423,7 @@ def main():
     X_val = X_val.astype(np.float32)
 
     print("  → Filtering EASY clones from Val set (Cascade approach)...")
-    cos_tokens_val = X_val[:, TOKEN_FEAT_COUNT].toarray().ravel()
+    cos_tokens_val = X_val[:, 0]
     keep_mask_val = (y_val == 0) | ((y_val == 1) & (cos_tokens_val <= CASCADE_THRESHOLD))
     X_val = X_val[keep_mask_val]
     y_val = y_val[keep_mask_val]
@@ -451,14 +452,14 @@ def main():
     t_pairs = time.time() - t_phase
 
     # <----------> HYPERPARAMETER TUNING (optional) <---------->
-    model_name, build_fn = "XGBoost", build_xgboost
+    if args.model == "ensemble":
+        from models.ensemble import build_ensemble
+        model_name, build_fn = "Ensemble", build_ensemble
+    else:
+        from models.xgboost import build_xgboost
+        model_name, build_fn = "XGBoost", build_xgboost
 
-    feature_weights = np.ones(X_train.shape[1], dtype=np.float32)
-    # Dynamically compute number of extra engineered features
-    num_extra = X_train.shape[1] - TOKEN_FEAT_COUNT 
-    # feature_weights[-num_extra:] = 1000.0  # IPTAL EDILDI: Modelin özgürce özellik seçmesine izin veriyoruz
-
-    if args.tune:
+    if args.tune and args.model == "xgboost":
         print(f"\n---> Tuning {model_name} with Optuna ({args.tune_trials} trials)...")
         t_phase = time.time()
         from utils.hyperparameter_tuner import tune_hyperparameters
@@ -466,8 +467,7 @@ def main():
             args.model, X_train, y_train,
             random_state=RANDOM_STATE,
             n_trials=args.tune_trials,
-            device=args.device,
-            feature_weights=feature_weights if args.model == "xgboost" else None
+            device=args.device
         )
 
         # Build model with best params
@@ -483,8 +483,11 @@ def main():
     print(f"---> Training {model_name}...")
     t_phase = time.time()
     
-    model.set_params(feature_weights=feature_weights)
-    model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=True)
+    if args.model == "xgboost":
+        model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=True)
+    else:
+        model.fit(X_train, y_train)
+        
     t_train = time.time() - t_phase
 
     # <----------> EVALUATION (CASCADE INFERENCE) <---------->
@@ -495,7 +498,7 @@ def main():
     
     # Test evaluation uses the Cascade logic
     print("---> Running Cascade Inference on Test...")
-    cos_tokens_test = X_test[:, TOKEN_FEAT_COUNT].toarray().ravel()
+    cos_tokens_test = X_test[:, 0]
     y_test_pred = np.zeros_like(y_test)
     
     easy_mask_test = cos_tokens_test > CASCADE_THRESHOLD
@@ -550,7 +553,8 @@ def main():
         X_test=X_test,
         y_test=y_test,
         y_test_pred=y_test_pred,
-        timing_info=timing_info
+        timing_info=timing_info,
+        extra_vectorizers={"svd": svd}
     )
 
 if __name__ == "__main__":

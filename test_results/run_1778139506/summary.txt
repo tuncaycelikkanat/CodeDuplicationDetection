@@ -1,0 +1,77 @@
+Experiment: /home/tuncay/PycharmProjects/CodeDuplicationDetection/experiments/exp_059_CASCADE_XGBoost_0k
+Threshold: 0.95
+========================================
+GLOBAL METRICS
+========================================
+precision           : 1.0
+recall              : 0.3511
+f1_score            : 0.5197
+accuracy            : 0.4831
+mcc                 : 0.3148
+balanced_accuracy   : 0.6755
+tp                  : 165
+fp                  : 0
+tn                  : 120
+fn                  : 305
+auc_roc             : 0.8641
+total_pairs         : 590
+
+========================================
+TYPE1 METRICS
+========================================
+total_pairs         : 240
+precision           : 1.0
+recall              : 0.875
+f1_score            : 0.9333
+accuracy            : 0.9375
+mcc                 : 0.8819
+auc_roc             : 0.9993
+tp                  : 105
+fp                  : 0
+tn                  : 120
+fn                  : 15
+
+========================================
+TYPE2 METRICS
+========================================
+total_pairs         : 240
+precision           : 1.0
+recall              : 0.25
+f1_score            : 0.4
+accuracy            : 0.625
+mcc                 : 0.378
+auc_roc             : 0.9504
+tp                  : 30
+fp                  : 0
+tn                  : 120
+fn                  : 90
+
+========================================
+TYPE3 METRICS
+========================================
+total_pairs         : 240
+precision           : 1.0
+recall              : 0.2333
+f1_score            : 0.3784
+accuracy            : 0.6167
+mcc                 : 0.3634
+auc_roc             : 0.9437
+tp                  : 28
+fp                  : 0
+tn                  : 120
+fn                  : 92
+
+========================================
+TYPE4 METRICS
+========================================
+total_pairs         : 230
+precision           : 1.0
+recall              : 0.0182
+f1_score            : 0.0357
+accuracy            : 0.5304
+mcc                 : 0.0978
+auc_roc             : 0.5358
+tp                  : 2
+fp                  : 0
+tn                  : 120
+fn                  : 108

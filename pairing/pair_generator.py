@@ -18,25 +18,28 @@ from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard, _tuple_
 def generate_pairs(X_token, labels, num_pairs, processed_codes,
                    code_features=None, cf_patterns=None,
                    semantic_features=None, X_svd=None,
-                   random_state=42):
+                   random_state=42, positive_ratio=0.5):
     """
     Generate pairs of code samples for clone detection.
 
     Memory-optimized: generates all pair indices first, then computes
-    features in vectorized batches instead of one-by-one sparse matrices.
+    features in vectorized batches.
 
-    Features per pair:
-        - |TF-IDF_token_diff|        (sparse)
-        - cosine_similarity(token)   (1 feature)
-        - length_ratio               (1 feature)
-        - AST feature ratios         (N features, if code_features provided)
-        - CF pattern similarity      (1 feature, if cf_patterns provided)
-        - library_call_jaccard       (1 feature, if semantic_features provided)
-        - data_struct_jaccard        (1 feature, if semantic_features provided)
-        - io_pattern_similarity      (1 feature)
-        - math_op_jaccard            (1 feature)
-        - skeleton_jaccard           (1 feature)
-        - type_profile_cosine        (1 feature)
+    Returns a dense NumPy float32 array (N x F) — TF-IDF diff is NOT included.
+    Feature order:
+        [0]  cosine_similarity(token)
+        [1]  length_ratio
+        [2]  manhattan_token (L1 diff norm)
+        [3]  euclidean_token (L2 diff norm)
+        [4..31]  ast_ratios (14) + ast_diffs (14)  -- if code_features provided
+        [32] cf_pattern_similarity                  -- if cf_patterns provided
+        [33..37] semantic Jaccard/cosine features   -- if semantic_features provided
+        [38] type_profile_cosine
+        [39..88] SVD diff (50 dims)                 -- if X_svd provided
+
+    Args:
+        positive_ratio: Fraction of pairs that should be positive (clone) pairs.
+                        Default 0.5. For realistic evaluation use ~0.05-0.10.
     """
 
 
@@ -58,8 +61,8 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
     label_indices_np = {lbl: np.array(idxs, dtype=np.int32) for lbl, idxs in label_to_indices.items()}
     n_labels = len(unique_labels)
 
-    # Decide positive/negative for all pairs at once
-    is_positive = np_rng.random(num_pairs) < 0.5
+    # Decide positive/negative for all pairs at once using configurable ratio
+    is_positive = np_rng.random(num_pairs) < positive_ratio
     n_pos = int(is_positive.sum())
     n_neg = num_pairs - n_pos
 
@@ -298,12 +301,9 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
 
     # ---- Step 10: Combine all features ----
     print("  → Combining features...")
-    extra_matrix = csr_matrix(np.hstack(extra_cols))
-    del extra_cols
-
-    sparse_parts = [diff_matrix, extra_matrix]
-
-    result = hstack(sparse_parts, format='csr')
-    del diff_matrix, extra_matrix
+    # We no longer append the 500 TF-IDF differences. We return only the dense extra features.
+    result = np.hstack(extra_cols).astype(np.float32)
+    del extra_cols, diff_matrix
     
     return result, pairs_y
+

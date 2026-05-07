@@ -120,12 +120,14 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
         with open(char_tfidf_path, "rb") as f:
             char_vectorizer = pickle.load(f)
 
-    # Bug #4 düzeltildi: cos_token feature'sının indeksi char_vectorizer'a göre hesapla.
-    # build_pair_vector() çıktısı yapısı: [token_diff | char_diff? | extra...]
-    # extra'nın ilk feature'sı her zaman cos_token'dur.
-    _token_feat_count = len(vectorizer.vocabulary_)
-    _char_feat_count  = len(char_vectorizer.vocabulary_) if char_vectorizer is not None else 0
-    COS_TOKEN_IDX     = _token_feat_count + _char_feat_count  # cos_token'un gerçek sütun indeksi
+    svd_model = None
+    svd_path = os.path.join(exp_path, "svd.pkl")
+    if os.path.exists(svd_path):
+        with open(svd_path, "rb") as f:
+            svd_model = pickle.load(f)
+
+    # TF-IDF özelliklerini vektörden çıkardığımız için cos_token artık doğrudan 0. indekstedir.
+    COS_TOKEN_IDX = 0
 
     def _get_scalar(mat, col_idx):
         """csr_matrix[0, col] sparse veya scalar döndürebilir — ikisini de float'a çevirir."""
@@ -166,7 +168,7 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
         details = []
 
         for p in tqdm(test_pairs, desc=t):
-            X_pair = build_pair_vector(p['c1'], p['c2'], vectorizer, char_vectorizer)
+            X_pair = build_pair_vector(p['c1'], p['c2'], vectorizer, char_vectorizer, svd_model)
 
             # cos_token: build_pair_vector'da extra'nın ilk elemanı
             cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
@@ -223,7 +225,7 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
     tn, fp = 0, 0
     neg_y_true, neg_y_prob = [], []
     for p in tqdm(negatives, desc="Global Negatives"):
-        X_pair = build_pair_vector(p['c1'], p['c2'], vectorizer, char_vectorizer)
+        X_pair = build_pair_vector(p['c1'], p['c2'], vectorizer, char_vectorizer, svd_model)
         cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
 
         if "CASCADE" in exp_path and cos_token > 0.85:

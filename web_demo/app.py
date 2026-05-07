@@ -94,13 +94,20 @@ if os.path.exists(char_tfidf_path):
 else:
     print("   ⚠️  No char TF-IDF vectorizer found (using legacy mode)")
 
+# Load SVD model
+svd_model = None
+svd_path = f"{EXP_PATH}/svd.pkl"
+if os.path.exists(svd_path):
+    with open(svd_path, "rb") as f:
+        svd_model = pickle.load(f)
+    print("   ✅ SVD model loaded")
+else:
+    print("   ⚠️  No SVD model found")
+
 # ── Cascade inference hazırlığı ──────────────────────────────────────────────
-# build_pair_vector çıktısı: [token_diff | char_diff? | extra...]
-# extra'nın 0. elemanı = cos_token; char_diff varsa indeksi kaymaktadır.
 _IS_CASCADE       = "CASCADE" in EXP_PATH
-_token_feat_count = len(vectorizer.vocabulary_)
-_char_feat_count  = len(char_vectorizer.vocabulary_) if char_vectorizer is not None else 0
-_COS_TOKEN_IDX    = _token_feat_count + _char_feat_count   # gerçek sütun indeksi
+# TF-IDF özellikleri vektörden çıkarıldığı için cos_token artık doğrudan 0. indekstedir.
+_COS_TOKEN_IDX    = 0
 
 print(f"   {'🌊 CASCADE mode aktif' if _IS_CASCADE else '📊 Standart mode aktif'} "
       f"(cascade threshold={CASCADE_THRESHOLD})")
@@ -114,14 +121,8 @@ def _build_feature_names():
     """
     names = []
 
-    # Token TF-IDF diff (TOKEN_FEAT_COUNT sütun)
-    for feat in vectorizer.get_feature_names_out():
-        names.append(f"tfidf_{feat}")
-
-    # Char TF-IDF diff (opsiyonel)
-    if char_vectorizer is not None:
-        for feat in char_vectorizer.get_feature_names_out():
-            names.append(f"char_tfidf_{feat}")
+    # TF-IDF (Token/Char) sütunları sistemden çıkarıldığı için özellik isimleri
+    # artık doğrudan extra_features ile başlıyor.
 
     # Extra features (sıra pair_generator.py ile aynı olmalı)
     names.append("cosine_similarity_token")
@@ -148,7 +149,11 @@ def _build_feature_names():
     names.append("semantic_skeleton_jaccard")
     names.append("semantic_type_profile_cosine")
 
-    # SVD farkları bu demo'da svd_model=None ile çağrıldığından mevcut değil
+    # SVD farkları
+    if svd_model is not None:
+        for i in range(svd_model.n_components):
+            names.append(f"svd_diff_{i}")
+
     return names
 
 
@@ -195,7 +200,7 @@ def predict(pair: CodePair):
         if not raw1 or not raw2:
             raise HTTPException(status_code=400, detail="Both code snippets are required.")
 
-        X_pair = build_pair_vector(raw1, raw2, vectorizer, char_vectorizer)
+        X_pair = build_pair_vector(raw1, raw2, vectorizer, char_vectorizer, svd_model)
 
         # ---- Bug #18 düzeltildi: CASCADE modunda cos_token ön-filtresi ----
         if _IS_CASCADE:

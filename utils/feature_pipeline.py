@@ -19,27 +19,19 @@ from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard, _tuple_
 
 def build_pair_vector(raw1, raw2, vectorizer, char_vectorizer=None, svd_model=None):
     """
-    Standart feature extraction — bir çift kod snippet için.
+    Dense feature extraction — bir çift kod snippet için.
     Web Demo ve Automation scriptleri tarafından kullanılır.
 
+    ⚠️  DENSE ARRAY döndürür (np.float32, shape=(1, F)) — artık sparse matris yok.
+
     Feature sırası (pair_generator.py ile birebir eşleştirilmiştir):
-        diff_matrix       : |TF-IDF(token)_i - TF-IDF(token)_j|  (TOKEN_FEAT_COUNT sütun)
-        [char_diff]       : |TF-IDF(char)_i  - TF-IDF(char)_j|   (sadece char_vectorizer varsa)
-        cos_token         : token cosine similarity                 (1)
-        length_ratio      : min/max token uzunluk oranı            (1)
-        manhattan_token   : L1 norm of token diff                  (1)
-        euclidean_token   : L2 norm of token diff                  (1)
-        [cos_char]        : char cosine similarity                  (1, sadece char_vectorizer varsa)
-        ast_ratios        : min/max AST feature oranları           (14)
-        ast_diffs         : |AST_i - AST_j|                       (14)
-        cf_sim            : control-flow pattern similarity         (1)
-        lib_call_jaccard  : library call Jaccard                   (1)
-        data_struct_jaccard: data struct Jaccard                   (1)
-        io_pattern_jaccard: I/O pattern bigram Jaccard             (1)
-        math_op_jaccard   : math op Jaccard                        (1)
-        skeleton_jaccard  : skeleton bigram Jaccard                (1)
-        type_profile_cos  : type profile cosine                    (1)
-        [svd_diff]        : |SVD(token)_i - SVD(token)_j|         (SVD_N_COMPONENTS, sadece svd_model varsa)
+        [0]  cos_token         : token cosine similarity  ← CASCADE FİLTRESİ BURAYA BAKAR
+        [1]  length_ratio      : min/max token uzunluk oranı
+        [2]  manhattan_token   : L1 norm of token diff
+        [3]  euclidean_token   : L2 norm of token diff
+        [4..4+2*N-1] ast_ratios + ast_diffs  (N = len(FEATURE_NAMES))
+        [...]  cf_sim, semantic Jaccard x5, type_profile_cos
+        [-50:]  svd_diff        (sadece svd_model verilmişse)
     """
     def preprocess(code):
         tokens = tokenize(code)
@@ -107,10 +99,4 @@ def build_pair_vector(raw1, raw2, vectorizer, char_vectorizer=None, svd_model=No
         svd_diff = np.abs(svd1 - svd2)
         extra.extend(svd_diff.tolist())
 
-    extra_matrix = csr_matrix([extra])
-    parts = [diff]
-    if char_diff is not None:
-        parts.append(char_diff)
-    parts.append(extra_matrix)
-
-    return hstack(parts)
+    return np.array([extra], dtype=np.float32)

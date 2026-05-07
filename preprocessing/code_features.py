@@ -204,7 +204,9 @@ FEATURE_NAMES = [
     'branch_count', 'loop_call_combined', 'nesting_depth', 'operator_count',
     'return_count', 'accumulator_pattern', 'param_count', 'math_op_set_size',
     'library_call_count', 'data_struct_count', 'io_pattern_length',
-    'halstead_volume', 'halstead_effort', 'mccabe_complexity'
+    'halstead_volume', 'halstead_effort', 'mccabe_complexity',
+    # Normalized density metrics (robust to code length variation)
+    'operator_density', 'branch_density', 'loop_density', 'halstead_vol_per_line'
 ]
 
 def _extract_single(code):
@@ -241,6 +243,14 @@ def _extract_single(code):
         mccabe
     ])
     
+    # ---- Normalized density metrics (length-invariant, better for Type-4) ----
+    num_lines = max(len(clean_code.splitlines()), 1)
+    num_tokens = max(len(clean_code.split()), 1)
+    feats.append(feats[3] / num_tokens)   # operator_density = operators / tokens
+    feats.append(feats[0] / num_lines)    # branch_density   = branches / lines
+    feats.append(feats[1] / num_lines)    # loop_density     = loops / lines
+    feats.append(h_vol / num_lines)       # halstead_vol_per_line
+
     cf = _extract_cf_pattern(clean_code)
     
     semantic = {

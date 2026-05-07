@@ -1,3 +1,16 @@
+# =============================================================================
+# ⚠️  DEPRECATED — Bu dosya artık kullanılmıyor.
+# =============================================================================
+# Güncel eğitim betiği: cascade_experiment/cascade_main.py
+# Bu dosya eski (tek-aşamalı, sparse TF-IDF) mimariye aittir ve
+# silinmeden önce referans amacıyla saklanmaktadır.
+# Yeni geliştirme yapmayın — lütfen cascade_main.py kullanın.
+# =============================================================================
+
+import sys
+print("⚠️  main.py DEPRECATED. Lütfen 'cascade_experiment/cascade_main.py' kullanın.", file=sys.stderr)
+import sys as _sys; _sys.exit(1)
+
 # import os and gc at top
 import os
 import gc

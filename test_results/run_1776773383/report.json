@@ -1,0 +1,5795 @@
+{
+    "run_info": {
+        "experiment": "/home/tuncay/PycharmProjects/CodeDuplicationDetection/experiments/exp_055_CASCADE_XGBoost_1000k",
+        "threshold": 0.5,
+        "timestamp": 1776773372
+    },
+    "per_type": {
+        "type1": {
+            "total_pairs": 240,
+            "positive_pairs": 120,
+            "negative_pairs": 120,
+            "precision": 0.96,
+            "recall": 1.0,
+            "f1_score": 0.9796,
+            "accuracy": 0.9792,
+            "mcc": 0.9592,
+            "balanced_accuracy": 0.9792,
+            "tp": 120,
+            "fp": 5,
+            "tn": 115,
+            "fn": 0,
+            "auc_roc": 1.0,
+            "details": [
+                {
+                    "pair": "type1/pair_001",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_002",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_003",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_004",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_005",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_006",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_007",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_008",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_009",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_010",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_011",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_012",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_013",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_014",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_015",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_016",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_017",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_018",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_019",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_020",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_021",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_022",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_023",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_024",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_025",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_026",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_027",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_028",
+                    "label": 1,
+                    "probability": 0.9717,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_029",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_030",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_031",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_032",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_033",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_034",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_035",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_036",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_037",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_038",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_039",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_040",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_041",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_042",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_043",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_044",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_045",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_046",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_047",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_048",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_049",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_050",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_051",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_052",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_053",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_054",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_055",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_056",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_057",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_058",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_059",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_060",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_061",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_062",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_063",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_064",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_065",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_066",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_067",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_068",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_069",
+                    "label": 1,
+                    "probability": 0.9706,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_070",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_071",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_072",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_073",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_074",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_075",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_076",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_077",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_078",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_079",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_080",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_081",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_082",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_083",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_084",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_085",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_086",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_087",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_088",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_089",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_090",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_091",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_092",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_093",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_094",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_095",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_096",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_097",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_098",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_099",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_100",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_101",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_102",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_103",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_104",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_105",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_106",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_107",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_108",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_109",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_110",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_111",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_112",
+                    "label": 1,
+                    "probability": 0.9741,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_113",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_114",
+                    "label": 1,
+                    "probability": 0.9536,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_115",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_116",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_117",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_118",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_119",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type1/pair_120",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_001",
+                    "label": 0,
+                    "probability": 0.4655,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_002",
+                    "label": 0,
+                    "probability": 0.0512,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_003",
+                    "label": 0,
+                    "probability": 0.1146,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_004",
+                    "label": 0,
+                    "probability": 0.0348,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_005",
+                    "label": 0,
+                    "probability": 0.2207,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_006",
+                    "label": 0,
+                    "probability": 0.0963,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_007",
+                    "label": 0,
+                    "probability": 0.0563,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_008",
+                    "label": 0,
+                    "probability": 0.2826,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_009",
+                    "label": 0,
+                    "probability": 0.2709,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_010",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_011",
+                    "label": 0,
+                    "probability": 0.0196,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_012",
+                    "label": 0,
+                    "probability": 0.2032,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_013",
+                    "label": 0,
+                    "probability": 0.401,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_014",
+                    "label": 0,
+                    "probability": 0.5563,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_015",
+                    "label": 0,
+                    "probability": 0.0099,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_016",
+                    "label": 0,
+                    "probability": 0.0435,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_017",
+                    "label": 0,
+                    "probability": 0.098,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_018",
+                    "label": 0,
+                    "probability": 0.0394,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_019",
+                    "label": 0,
+                    "probability": 0.046,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_020",
+                    "label": 0,
+                    "probability": 0.0285,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_021",
+                    "label": 0,
+                    "probability": 0.0867,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_022",
+                    "label": 0,
+                    "probability": 0.0126,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_023",
+                    "label": 0,
+                    "probability": 0.1106,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_024",
+                    "label": 0,
+                    "probability": 0.1536,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_025",
+                    "label": 0,
+                    "probability": 0.106,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_026",
+                    "label": 0,
+                    "probability": 0.191,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_027",
+                    "label": 0,
+                    "probability": 0.7355,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_028",
+                    "label": 0,
+                    "probability": 0.049,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_029",
+                    "label": 0,
+                    "probability": 0.0423,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_030",
+                    "label": 0,
+                    "probability": 0.2497,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_031",
+                    "label": 0,
+                    "probability": 0.5698,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_032",
+                    "label": 0,
+                    "probability": 0.6108,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_033",
+                    "label": 0,
+                    "probability": 0.0643,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_034",
+                    "label": 0,
+                    "probability": 0.0156,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_035",
+                    "label": 0,
+                    "probability": 0.2219,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_036",
+                    "label": 0,
+                    "probability": 0.2651,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_037",
+                    "label": 0,
+                    "probability": 0.0072,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_038",
+                    "label": 0,
+                    "probability": 0.1107,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_039",
+                    "label": 0,
+                    "probability": 0.0249,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_040",
+                    "label": 0,
+                    "probability": 0.1302,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_041",
+                    "label": 0,
+                    "probability": 0.6264,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_042",
+                    "label": 0,
+                    "probability": 0.3237,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_043",
+                    "label": 0,
+                    "probability": 0.0079,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_044",
+                    "label": 0,
+                    "probability": 0.0688,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_045",
+                    "label": 0,
+                    "probability": 0.0157,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_046",
+                    "label": 0,
+                    "probability": 0.0221,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_047",
+                    "label": 0,
+                    "probability": 0.3586,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_048",
+                    "label": 0,
+                    "probability": 0.1881,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_049",
+                    "label": 0,
+                    "probability": 0.0752,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_050",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_051",
+                    "label": 0,
+                    "probability": 0.0157,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_052",
+                    "label": 0,
+                    "probability": 0.0093,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_053",
+                    "label": 0,
+                    "probability": 0.0367,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_054",
+                    "label": 0,
+                    "probability": 0.0064,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_055",
+                    "label": 0,
+                    "probability": 0.0206,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_056",
+                    "label": 0,
+                    "probability": 0.3398,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_057",
+                    "label": 0,
+                    "probability": 0.358,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_058",
+                    "label": 0,
+                    "probability": 0.1224,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_059",
+                    "label": 0,
+                    "probability": 0.0285,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_060",
+                    "label": 0,
+                    "probability": 0.0513,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_061",
+                    "label": 0,
+                    "probability": 0.0496,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_062",
+                    "label": 0,
+                    "probability": 0.0769,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_063",
+                    "label": 0,
+                    "probability": 0.0516,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_064",
+                    "label": 0,
+                    "probability": 0.0965,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_065",
+                    "label": 0,
+                    "probability": 0.0914,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_066",
+                    "label": 0,
+                    "probability": 0.0166,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_067",
+                    "label": 0,
+                    "probability": 0.0137,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_068",
+                    "label": 0,
+                    "probability": 0.0148,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_069",
+                    "label": 0,
+                    "probability": 0.0162,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_070",
+                    "label": 0,
+                    "probability": 0.0923,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_071",
+                    "label": 0,
+                    "probability": 0.0557,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_072",
+                    "label": 0,
+                    "probability": 0.1461,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_073",
+                    "label": 0,
+                    "probability": 0.0527,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_074",
+                    "label": 0,
+                    "probability": 0.0456,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_075",
+                    "label": 0,
+                    "probability": 0.0806,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_076",
+                    "label": 0,
+                    "probability": 0.0225,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_077",
+                    "label": 0,
+                    "probability": 0.011,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_078",
+                    "label": 0,
+                    "probability": 0.0506,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_079",
+                    "label": 0,
+                    "probability": 0.1762,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_080",
+                    "label": 0,
+                    "probability": 0.115,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_081",
+                    "label": 0,
+                    "probability": 0.0374,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_082",
+                    "label": 0,
+                    "probability": 0.0468,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_083",
+                    "label": 0,
+                    "probability": 0.1317,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_084",
+                    "label": 0,
+                    "probability": 0.0338,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_085",
+                    "label": 0,
+                    "probability": 0.1343,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_086",
+                    "label": 0,
+                    "probability": 0.2493,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_087",
+                    "label": 0,
+                    "probability": 0.0408,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_088",
+                    "label": 0,
+                    "probability": 0.0275,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_089",
+                    "label": 0,
+                    "probability": 0.1526,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_090",
+                    "label": 0,
+                    "probability": 0.0413,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_091",
+                    "label": 0,
+                    "probability": 0.0669,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_092",
+                    "label": 0,
+                    "probability": 0.1699,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_093",
+                    "label": 0,
+                    "probability": 0.3703,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_094",
+                    "label": 0,
+                    "probability": 0.0475,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_095",
+                    "label": 0,
+                    "probability": 0.017,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_096",
+                    "label": 0,
+                    "probability": 0.0328,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_097",
+                    "label": 0,
+                    "probability": 0.0667,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_098",
+                    "label": 0,
+                    "probability": 0.0634,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_099",
+                    "label": 0,
+                    "probability": 0.0091,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_100",
+                    "label": 0,
+                    "probability": 0.1301,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_101",
+                    "label": 0,
+                    "probability": 0.024,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_102",
+                    "label": 0,
+                    "probability": 0.2434,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_103",
+                    "label": 0,
+                    "probability": 0.1341,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_104",
+                    "label": 0,
+                    "probability": 0.1893,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_105",
+                    "label": 0,
+                    "probability": 0.3307,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_106",
+                    "label": 0,
+                    "probability": 0.4807,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_107",
+                    "label": 0,
+                    "probability": 0.1177,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_108",
+                    "label": 0,
+                    "probability": 0.0237,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_109",
+                    "label": 0,
+                    "probability": 0.0107,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_110",
+                    "label": 0,
+                    "probability": 0.0962,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_111",
+                    "label": 0,
+                    "probability": 0.2057,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_112",
+                    "label": 0,
+                    "probability": 0.02,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_113",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_114",
+                    "label": 0,
+                    "probability": 0.2239,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_115",
+                    "label": 0,
+                    "probability": 0.0815,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_116",
+                    "label": 0,
+                    "probability": 0.0123,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_117",
+                    "label": 0,
+                    "probability": 0.1468,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_118",
+                    "label": 0,
+                    "probability": 0.0353,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_119",
+                    "label": 0,
+                    "probability": 0.197,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_120",
+                    "label": 0,
+                    "probability": 0.0023,
+                    "prediction": 0
+                }
+            ]
+        },
+        "type2": {
+            "total_pairs": 240,
+            "positive_pairs": 120,
+            "negative_pairs": 120,
+            "precision": 0.96,
+            "recall": 1.0,
+            "f1_score": 0.9796,
+            "accuracy": 0.9792,
+            "mcc": 0.9592,
+            "balanced_accuracy": 0.9792,
+            "tp": 120,
+            "fp": 5,
+            "tn": 115,
+            "fn": 0,
+            "auc_roc": 0.9996,
+            "details": [
+                {
+                    "pair": "type2/pair_001",
+                    "label": 1,
+                    "probability": 0.9087,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_002",
+                    "label": 1,
+                    "probability": 0.9087,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_003",
+                    "label": 1,
+                    "probability": 0.9087,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_004",
+                    "label": 1,
+                    "probability": 0.9087,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_005",
+                    "label": 1,
+                    "probability": 0.9087,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_006",
+                    "label": 1,
+                    "probability": 0.9087,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_007",
+                    "label": 1,
+                    "probability": 0.8077,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_008",
+                    "label": 1,
+                    "probability": 0.8077,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_009",
+                    "label": 1,
+                    "probability": 0.8077,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_010",
+                    "label": 1,
+                    "probability": 0.8077,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_011",
+                    "label": 1,
+                    "probability": 0.8077,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_012",
+                    "label": 1,
+                    "probability": 0.8077,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_013",
+                    "label": 1,
+                    "probability": 0.9157,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_014",
+                    "label": 1,
+                    "probability": 0.9157,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_015",
+                    "label": 1,
+                    "probability": 0.9157,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_016",
+                    "label": 1,
+                    "probability": 0.9157,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_017",
+                    "label": 1,
+                    "probability": 0.9157,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_018",
+                    "label": 1,
+                    "probability": 0.9157,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_019",
+                    "label": 1,
+                    "probability": 0.6486,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_020",
+                    "label": 1,
+                    "probability": 0.6486,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_021",
+                    "label": 1,
+                    "probability": 0.6486,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_022",
+                    "label": 1,
+                    "probability": 0.6486,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_023",
+                    "label": 1,
+                    "probability": 0.6486,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_024",
+                    "label": 1,
+                    "probability": 0.6486,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_025",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_026",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_027",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_028",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_029",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_030",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_031",
+                    "label": 1,
+                    "probability": 0.7913,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_032",
+                    "label": 1,
+                    "probability": 0.7913,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_033",
+                    "label": 1,
+                    "probability": 0.7913,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_034",
+                    "label": 1,
+                    "probability": 0.7913,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_035",
+                    "label": 1,
+                    "probability": 0.7913,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_036",
+                    "label": 1,
+                    "probability": 0.7913,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_037",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_038",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_039",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_040",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_041",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_042",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_043",
+                    "label": 1,
+                    "probability": 0.9704,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_044",
+                    "label": 1,
+                    "probability": 0.9704,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_045",
+                    "label": 1,
+                    "probability": 0.9704,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_046",
+                    "label": 1,
+                    "probability": 0.9704,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_047",
+                    "label": 1,
+                    "probability": 0.9704,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_048",
+                    "label": 1,
+                    "probability": 0.9704,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_049",
+                    "label": 1,
+                    "probability": 0.9003,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_050",
+                    "label": 1,
+                    "probability": 0.9003,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_051",
+                    "label": 1,
+                    "probability": 0.9003,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_052",
+                    "label": 1,
+                    "probability": 0.9003,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_053",
+                    "label": 1,
+                    "probability": 0.9003,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_054",
+                    "label": 1,
+                    "probability": 0.9003,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_055",
+                    "label": 1,
+                    "probability": 0.8544,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_056",
+                    "label": 1,
+                    "probability": 0.8544,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_057",
+                    "label": 1,
+                    "probability": 0.8544,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_058",
+                    "label": 1,
+                    "probability": 0.8544,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_059",
+                    "label": 1,
+                    "probability": 0.8544,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_060",
+                    "label": 1,
+                    "probability": 0.8544,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_061",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_062",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_063",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_064",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_065",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_066",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_067",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_068",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_069",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_070",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_071",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_072",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_073",
+                    "label": 1,
+                    "probability": 0.9629,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_074",
+                    "label": 1,
+                    "probability": 0.9629,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_075",
+                    "label": 1,
+                    "probability": 0.9629,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_076",
+                    "label": 1,
+                    "probability": 0.9629,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_077",
+                    "label": 1,
+                    "probability": 0.9629,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_078",
+                    "label": 1,
+                    "probability": 0.9629,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_079",
+                    "label": 1,
+                    "probability": 0.9191,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_080",
+                    "label": 1,
+                    "probability": 0.9191,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_081",
+                    "label": 1,
+                    "probability": 0.9191,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_082",
+                    "label": 1,
+                    "probability": 0.9191,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_083",
+                    "label": 1,
+                    "probability": 0.9191,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_084",
+                    "label": 1,
+                    "probability": 0.9191,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_085",
+                    "label": 1,
+                    "probability": 0.9408,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_086",
+                    "label": 1,
+                    "probability": 0.9408,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_087",
+                    "label": 1,
+                    "probability": 0.9408,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_088",
+                    "label": 1,
+                    "probability": 0.9408,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_089",
+                    "label": 1,
+                    "probability": 0.9408,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_090",
+                    "label": 1,
+                    "probability": 0.9408,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_091",
+                    "label": 1,
+                    "probability": 0.9322,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_092",
+                    "label": 1,
+                    "probability": 0.9322,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_093",
+                    "label": 1,
+                    "probability": 0.9322,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_094",
+                    "label": 1,
+                    "probability": 0.9322,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_095",
+                    "label": 1,
+                    "probability": 0.9322,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_096",
+                    "label": 1,
+                    "probability": 0.9322,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_097",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_098",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_099",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_100",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_101",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_102",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_103",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_104",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_105",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_106",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_107",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_108",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_109",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_110",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_111",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_112",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_113",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_114",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_115",
+                    "label": 1,
+                    "probability": 0.8768,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_116",
+                    "label": 1,
+                    "probability": 0.8768,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_117",
+                    "label": 1,
+                    "probability": 0.8768,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_118",
+                    "label": 1,
+                    "probability": 0.8768,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_119",
+                    "label": 1,
+                    "probability": 0.8768,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type2/pair_120",
+                    "label": 1,
+                    "probability": 0.8768,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_001",
+                    "label": 0,
+                    "probability": 0.4655,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_002",
+                    "label": 0,
+                    "probability": 0.0512,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_003",
+                    "label": 0,
+                    "probability": 0.1146,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_004",
+                    "label": 0,
+                    "probability": 0.0348,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_005",
+                    "label": 0,
+                    "probability": 0.2207,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_006",
+                    "label": 0,
+                    "probability": 0.0963,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_007",
+                    "label": 0,
+                    "probability": 0.0563,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_008",
+                    "label": 0,
+                    "probability": 0.2826,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_009",
+                    "label": 0,
+                    "probability": 0.2709,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_010",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_011",
+                    "label": 0,
+                    "probability": 0.0196,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_012",
+                    "label": 0,
+                    "probability": 0.2032,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_013",
+                    "label": 0,
+                    "probability": 0.401,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_014",
+                    "label": 0,
+                    "probability": 0.5563,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_015",
+                    "label": 0,
+                    "probability": 0.0099,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_016",
+                    "label": 0,
+                    "probability": 0.0435,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_017",
+                    "label": 0,
+                    "probability": 0.098,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_018",
+                    "label": 0,
+                    "probability": 0.0394,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_019",
+                    "label": 0,
+                    "probability": 0.046,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_020",
+                    "label": 0,
+                    "probability": 0.0285,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_021",
+                    "label": 0,
+                    "probability": 0.0867,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_022",
+                    "label": 0,
+                    "probability": 0.0126,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_023",
+                    "label": 0,
+                    "probability": 0.1106,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_024",
+                    "label": 0,
+                    "probability": 0.1536,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_025",
+                    "label": 0,
+                    "probability": 0.106,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_026",
+                    "label": 0,
+                    "probability": 0.191,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_027",
+                    "label": 0,
+                    "probability": 0.7355,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_028",
+                    "label": 0,
+                    "probability": 0.049,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_029",
+                    "label": 0,
+                    "probability": 0.0423,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_030",
+                    "label": 0,
+                    "probability": 0.2497,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_031",
+                    "label": 0,
+                    "probability": 0.5698,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_032",
+                    "label": 0,
+                    "probability": 0.6108,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_033",
+                    "label": 0,
+                    "probability": 0.0643,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_034",
+                    "label": 0,
+                    "probability": 0.0156,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_035",
+                    "label": 0,
+                    "probability": 0.2219,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_036",
+                    "label": 0,
+                    "probability": 0.2651,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_037",
+                    "label": 0,
+                    "probability": 0.0072,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_038",
+                    "label": 0,
+                    "probability": 0.1107,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_039",
+                    "label": 0,
+                    "probability": 0.0249,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_040",
+                    "label": 0,
+                    "probability": 0.1302,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_041",
+                    "label": 0,
+                    "probability": 0.6264,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_042",
+                    "label": 0,
+                    "probability": 0.3237,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_043",
+                    "label": 0,
+                    "probability": 0.0079,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_044",
+                    "label": 0,
+                    "probability": 0.0688,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_045",
+                    "label": 0,
+                    "probability": 0.0157,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_046",
+                    "label": 0,
+                    "probability": 0.0221,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_047",
+                    "label": 0,
+                    "probability": 0.3586,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_048",
+                    "label": 0,
+                    "probability": 0.1881,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_049",
+                    "label": 0,
+                    "probability": 0.0752,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_050",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_051",
+                    "label": 0,
+                    "probability": 0.0157,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_052",
+                    "label": 0,
+                    "probability": 0.0093,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_053",
+                    "label": 0,
+                    "probability": 0.0367,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_054",
+                    "label": 0,
+                    "probability": 0.0064,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_055",
+                    "label": 0,
+                    "probability": 0.0206,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_056",
+                    "label": 0,
+                    "probability": 0.3398,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_057",
+                    "label": 0,
+                    "probability": 0.358,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_058",
+                    "label": 0,
+                    "probability": 0.1224,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_059",
+                    "label": 0,
+                    "probability": 0.0285,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_060",
+                    "label": 0,
+                    "probability": 0.0513,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_061",
+                    "label": 0,
+                    "probability": 0.0496,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_062",
+                    "label": 0,
+                    "probability": 0.0769,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_063",
+                    "label": 0,
+                    "probability": 0.0516,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_064",
+                    "label": 0,
+                    "probability": 0.0965,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_065",
+                    "label": 0,
+                    "probability": 0.0914,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_066",
+                    "label": 0,
+                    "probability": 0.0166,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_067",
+                    "label": 0,
+                    "probability": 0.0137,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_068",
+                    "label": 0,
+                    "probability": 0.0148,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_069",
+                    "label": 0,
+                    "probability": 0.0162,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_070",
+                    "label": 0,
+                    "probability": 0.0923,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_071",
+                    "label": 0,
+                    "probability": 0.0557,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_072",
+                    "label": 0,
+                    "probability": 0.1461,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_073",
+                    "label": 0,
+                    "probability": 0.0527,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_074",
+                    "label": 0,
+                    "probability": 0.0456,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_075",
+                    "label": 0,
+                    "probability": 0.0806,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_076",
+                    "label": 0,
+                    "probability": 0.0225,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_077",
+                    "label": 0,
+                    "probability": 0.011,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_078",
+                    "label": 0,
+                    "probability": 0.0506,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_079",
+                    "label": 0,
+                    "probability": 0.1762,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_080",
+                    "label": 0,
+                    "probability": 0.115,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_081",
+                    "label": 0,
+                    "probability": 0.0374,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_082",
+                    "label": 0,
+                    "probability": 0.0468,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_083",
+                    "label": 0,
+                    "probability": 0.1317,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_084",
+                    "label": 0,
+                    "probability": 0.0338,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_085",
+                    "label": 0,
+                    "probability": 0.1343,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_086",
+                    "label": 0,
+                    "probability": 0.2493,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_087",
+                    "label": 0,
+                    "probability": 0.0408,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_088",
+                    "label": 0,
+                    "probability": 0.0275,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_089",
+                    "label": 0,
+                    "probability": 0.1526,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_090",
+                    "label": 0,
+                    "probability": 0.0413,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_091",
+                    "label": 0,
+                    "probability": 0.0669,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_092",
+                    "label": 0,
+                    "probability": 0.1699,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_093",
+                    "label": 0,
+                    "probability": 0.3703,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_094",
+                    "label": 0,
+                    "probability": 0.0475,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_095",
+                    "label": 0,
+                    "probability": 0.017,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_096",
+                    "label": 0,
+                    "probability": 0.0328,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_097",
+                    "label": 0,
+                    "probability": 0.0667,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_098",
+                    "label": 0,
+                    "probability": 0.0634,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_099",
+                    "label": 0,
+                    "probability": 0.0091,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_100",
+                    "label": 0,
+                    "probability": 0.1301,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_101",
+                    "label": 0,
+                    "probability": 0.024,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_102",
+                    "label": 0,
+                    "probability": 0.2434,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_103",
+                    "label": 0,
+                    "probability": 0.1341,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_104",
+                    "label": 0,
+                    "probability": 0.1893,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_105",
+                    "label": 0,
+                    "probability": 0.3307,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_106",
+                    "label": 0,
+                    "probability": 0.4807,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_107",
+                    "label": 0,
+                    "probability": 0.1177,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_108",
+                    "label": 0,
+                    "probability": 0.0237,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_109",
+                    "label": 0,
+                    "probability": 0.0107,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_110",
+                    "label": 0,
+                    "probability": 0.0962,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_111",
+                    "label": 0,
+                    "probability": 0.2057,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_112",
+                    "label": 0,
+                    "probability": 0.02,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_113",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_114",
+                    "label": 0,
+                    "probability": 0.2239,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_115",
+                    "label": 0,
+                    "probability": 0.0815,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_116",
+                    "label": 0,
+                    "probability": 0.0123,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_117",
+                    "label": 0,
+                    "probability": 0.1468,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_118",
+                    "label": 0,
+                    "probability": 0.0353,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_119",
+                    "label": 0,
+                    "probability": 0.197,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_120",
+                    "label": 0,
+                    "probability": 0.0023,
+                    "prediction": 0
+                }
+            ]
+        },
+        "type3": {
+            "total_pairs": 240,
+            "positive_pairs": 120,
+            "negative_pairs": 120,
+            "precision": 0.96,
+            "recall": 1.0,
+            "f1_score": 0.9796,
+            "accuracy": 0.9792,
+            "mcc": 0.9592,
+            "balanced_accuracy": 0.9792,
+            "tp": 120,
+            "fp": 5,
+            "tn": 115,
+            "fn": 0,
+            "auc_roc": 0.9999,
+            "details": [
+                {
+                    "pair": "type3/pair_001",
+                    "label": 1,
+                    "probability": 0.9759,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_002",
+                    "label": 1,
+                    "probability": 0.9766,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_003",
+                    "label": 1,
+                    "probability": 0.9087,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_004",
+                    "label": 1,
+                    "probability": 0.9672,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_005",
+                    "label": 1,
+                    "probability": 0.9679,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_006",
+                    "label": 1,
+                    "probability": 0.9766,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_007",
+                    "label": 1,
+                    "probability": 0.9402,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_008",
+                    "label": 1,
+                    "probability": 0.8077,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_009",
+                    "label": 1,
+                    "probability": 0.9266,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_010",
+                    "label": 1,
+                    "probability": 0.8077,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_011",
+                    "label": 1,
+                    "probability": 0.9451,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_012",
+                    "label": 1,
+                    "probability": 0.9402,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_013",
+                    "label": 1,
+                    "probability": 0.976,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_014",
+                    "label": 1,
+                    "probability": 0.9796,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_015",
+                    "label": 1,
+                    "probability": 0.976,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_016",
+                    "label": 1,
+                    "probability": 0.9157,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_017",
+                    "label": 1,
+                    "probability": 0.9157,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_018",
+                    "label": 1,
+                    "probability": 0.9727,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_019",
+                    "label": 1,
+                    "probability": 0.912,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_020",
+                    "label": 1,
+                    "probability": 0.9219,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_021",
+                    "label": 1,
+                    "probability": 0.6486,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_022",
+                    "label": 1,
+                    "probability": 0.9371,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_023",
+                    "label": 1,
+                    "probability": 0.912,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_024",
+                    "label": 1,
+                    "probability": 0.9289,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_025",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_026",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_027",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_028",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_029",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_030",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_031",
+                    "label": 1,
+                    "probability": 0.7913,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_032",
+                    "label": 1,
+                    "probability": 0.9479,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_033",
+                    "label": 1,
+                    "probability": 0.9637,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_034",
+                    "label": 1,
+                    "probability": 0.9479,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_035",
+                    "label": 1,
+                    "probability": 0.9479,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_036",
+                    "label": 1,
+                    "probability": 0.9479,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_037",
+                    "label": 1,
+                    "probability": 0.9562,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_038",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_039",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_040",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_041",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_042",
+                    "label": 1,
+                    "probability": 0.891,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_043",
+                    "label": 1,
+                    "probability": 0.9857,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_044",
+                    "label": 1,
+                    "probability": 0.9704,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_045",
+                    "label": 1,
+                    "probability": 0.9893,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_046",
+                    "label": 1,
+                    "probability": 0.9704,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_047",
+                    "label": 1,
+                    "probability": 0.9704,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_048",
+                    "label": 1,
+                    "probability": 0.9704,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_049",
+                    "label": 1,
+                    "probability": 0.9792,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_050",
+                    "label": 1,
+                    "probability": 0.9632,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_051",
+                    "label": 1,
+                    "probability": 0.9792,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_052",
+                    "label": 1,
+                    "probability": 0.9735,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_053",
+                    "label": 1,
+                    "probability": 0.9784,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_054",
+                    "label": 1,
+                    "probability": 0.9632,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_055",
+                    "label": 1,
+                    "probability": 0.965,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_056",
+                    "label": 1,
+                    "probability": 0.965,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_057",
+                    "label": 1,
+                    "probability": 0.9634,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_058",
+                    "label": 1,
+                    "probability": 0.8544,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_059",
+                    "label": 1,
+                    "probability": 0.8544,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_060",
+                    "label": 1,
+                    "probability": 0.8544,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_061",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_062",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_063",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_064",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_065",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_066",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_067",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_068",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_069",
+                    "label": 1,
+                    "probability": 0.9065,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_070",
+                    "label": 1,
+                    "probability": 0.926,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_071",
+                    "label": 1,
+                    "probability": 0.9323,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_072",
+                    "label": 1,
+                    "probability": 0.9269,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_073",
+                    "label": 1,
+                    "probability": 0.9916,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_074",
+                    "label": 1,
+                    "probability": 0.9916,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_075",
+                    "label": 1,
+                    "probability": 0.9883,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_076",
+                    "label": 1,
+                    "probability": 0.9629,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_077",
+                    "label": 1,
+                    "probability": 0.9916,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_078",
+                    "label": 1,
+                    "probability": 0.9883,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_079",
+                    "label": 1,
+                    "probability": 0.9191,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_080",
+                    "label": 1,
+                    "probability": 0.9191,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_081",
+                    "label": 1,
+                    "probability": 0.9822,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_082",
+                    "label": 1,
+                    "probability": 0.9191,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_083",
+                    "label": 1,
+                    "probability": 0.9816,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_084",
+                    "label": 1,
+                    "probability": 0.9191,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_085",
+                    "label": 1,
+                    "probability": 0.9861,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_086",
+                    "label": 1,
+                    "probability": 0.9408,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_087",
+                    "label": 1,
+                    "probability": 0.9861,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_088",
+                    "label": 1,
+                    "probability": 0.9861,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_089",
+                    "label": 1,
+                    "probability": 0.9408,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_090",
+                    "label": 1,
+                    "probability": 0.9408,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_091",
+                    "label": 1,
+                    "probability": 0.9859,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_092",
+                    "label": 1,
+                    "probability": 0.9835,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_093",
+                    "label": 1,
+                    "probability": 0.9865,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_094",
+                    "label": 1,
+                    "probability": 0.9827,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_095",
+                    "label": 1,
+                    "probability": 0.9859,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_096",
+                    "label": 1,
+                    "probability": 0.9322,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_097",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_098",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_099",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_100",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_101",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_102",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_103",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_104",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_105",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_106",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_107",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_108",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_109",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_110",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_111",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_112",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_113",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_114",
+                    "label": 1,
+                    "probability": 1.0,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_115",
+                    "label": 1,
+                    "probability": 0.9563,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_116",
+                    "label": 1,
+                    "probability": 0.8768,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_117",
+                    "label": 1,
+                    "probability": 0.9562,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_118",
+                    "label": 1,
+                    "probability": 0.9563,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_119",
+                    "label": 1,
+                    "probability": 0.9469,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type3/pair_120",
+                    "label": 1,
+                    "probability": 0.8768,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_001",
+                    "label": 0,
+                    "probability": 0.4655,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_002",
+                    "label": 0,
+                    "probability": 0.0512,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_003",
+                    "label": 0,
+                    "probability": 0.1146,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_004",
+                    "label": 0,
+                    "probability": 0.0348,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_005",
+                    "label": 0,
+                    "probability": 0.2207,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_006",
+                    "label": 0,
+                    "probability": 0.0963,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_007",
+                    "label": 0,
+                    "probability": 0.0563,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_008",
+                    "label": 0,
+                    "probability": 0.2826,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_009",
+                    "label": 0,
+                    "probability": 0.2709,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_010",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_011",
+                    "label": 0,
+                    "probability": 0.0196,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_012",
+                    "label": 0,
+                    "probability": 0.2032,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_013",
+                    "label": 0,
+                    "probability": 0.401,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_014",
+                    "label": 0,
+                    "probability": 0.5563,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_015",
+                    "label": 0,
+                    "probability": 0.0099,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_016",
+                    "label": 0,
+                    "probability": 0.0435,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_017",
+                    "label": 0,
+                    "probability": 0.098,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_018",
+                    "label": 0,
+                    "probability": 0.0394,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_019",
+                    "label": 0,
+                    "probability": 0.046,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_020",
+                    "label": 0,
+                    "probability": 0.0285,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_021",
+                    "label": 0,
+                    "probability": 0.0867,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_022",
+                    "label": 0,
+                    "probability": 0.0126,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_023",
+                    "label": 0,
+                    "probability": 0.1106,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_024",
+                    "label": 0,
+                    "probability": 0.1536,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_025",
+                    "label": 0,
+                    "probability": 0.106,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_026",
+                    "label": 0,
+                    "probability": 0.191,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_027",
+                    "label": 0,
+                    "probability": 0.7355,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_028",
+                    "label": 0,
+                    "probability": 0.049,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_029",
+                    "label": 0,
+                    "probability": 0.0423,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_030",
+                    "label": 0,
+                    "probability": 0.2497,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_031",
+                    "label": 0,
+                    "probability": 0.5698,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_032",
+                    "label": 0,
+                    "probability": 0.6108,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_033",
+                    "label": 0,
+                    "probability": 0.0643,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_034",
+                    "label": 0,
+                    "probability": 0.0156,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_035",
+                    "label": 0,
+                    "probability": 0.2219,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_036",
+                    "label": 0,
+                    "probability": 0.2651,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_037",
+                    "label": 0,
+                    "probability": 0.0072,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_038",
+                    "label": 0,
+                    "probability": 0.1107,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_039",
+                    "label": 0,
+                    "probability": 0.0249,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_040",
+                    "label": 0,
+                    "probability": 0.1302,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_041",
+                    "label": 0,
+                    "probability": 0.6264,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_042",
+                    "label": 0,
+                    "probability": 0.3237,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_043",
+                    "label": 0,
+                    "probability": 0.0079,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_044",
+                    "label": 0,
+                    "probability": 0.0688,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_045",
+                    "label": 0,
+                    "probability": 0.0157,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_046",
+                    "label": 0,
+                    "probability": 0.0221,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_047",
+                    "label": 0,
+                    "probability": 0.3586,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_048",
+                    "label": 0,
+                    "probability": 0.1881,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_049",
+                    "label": 0,
+                    "probability": 0.0752,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_050",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_051",
+                    "label": 0,
+                    "probability": 0.0157,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_052",
+                    "label": 0,
+                    "probability": 0.0093,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_053",
+                    "label": 0,
+                    "probability": 0.0367,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_054",
+                    "label": 0,
+                    "probability": 0.0064,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_055",
+                    "label": 0,
+                    "probability": 0.0206,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_056",
+                    "label": 0,
+                    "probability": 0.3398,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_057",
+                    "label": 0,
+                    "probability": 0.358,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_058",
+                    "label": 0,
+                    "probability": 0.1224,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_059",
+                    "label": 0,
+                    "probability": 0.0285,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_060",
+                    "label": 0,
+                    "probability": 0.0513,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_061",
+                    "label": 0,
+                    "probability": 0.0496,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_062",
+                    "label": 0,
+                    "probability": 0.0769,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_063",
+                    "label": 0,
+                    "probability": 0.0516,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_064",
+                    "label": 0,
+                    "probability": 0.0965,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_065",
+                    "label": 0,
+                    "probability": 0.0914,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_066",
+                    "label": 0,
+                    "probability": 0.0166,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_067",
+                    "label": 0,
+                    "probability": 0.0137,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_068",
+                    "label": 0,
+                    "probability": 0.0148,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_069",
+                    "label": 0,
+                    "probability": 0.0162,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_070",
+                    "label": 0,
+                    "probability": 0.0923,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_071",
+                    "label": 0,
+                    "probability": 0.0557,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_072",
+                    "label": 0,
+                    "probability": 0.1461,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_073",
+                    "label": 0,
+                    "probability": 0.0527,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_074",
+                    "label": 0,
+                    "probability": 0.0456,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_075",
+                    "label": 0,
+                    "probability": 0.0806,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_076",
+                    "label": 0,
+                    "probability": 0.0225,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_077",
+                    "label": 0,
+                    "probability": 0.011,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_078",
+                    "label": 0,
+                    "probability": 0.0506,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_079",
+                    "label": 0,
+                    "probability": 0.1762,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_080",
+                    "label": 0,
+                    "probability": 0.115,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_081",
+                    "label": 0,
+                    "probability": 0.0374,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_082",
+                    "label": 0,
+                    "probability": 0.0468,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_083",
+                    "label": 0,
+                    "probability": 0.1317,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_084",
+                    "label": 0,
+                    "probability": 0.0338,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_085",
+                    "label": 0,
+                    "probability": 0.1343,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_086",
+                    "label": 0,
+                    "probability": 0.2493,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_087",
+                    "label": 0,
+                    "probability": 0.0408,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_088",
+                    "label": 0,
+                    "probability": 0.0275,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_089",
+                    "label": 0,
+                    "probability": 0.1526,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_090",
+                    "label": 0,
+                    "probability": 0.0413,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_091",
+                    "label": 0,
+                    "probability": 0.0669,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_092",
+                    "label": 0,
+                    "probability": 0.1699,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_093",
+                    "label": 0,
+                    "probability": 0.3703,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_094",
+                    "label": 0,
+                    "probability": 0.0475,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_095",
+                    "label": 0,
+                    "probability": 0.017,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_096",
+                    "label": 0,
+                    "probability": 0.0328,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_097",
+                    "label": 0,
+                    "probability": 0.0667,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_098",
+                    "label": 0,
+                    "probability": 0.0634,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_099",
+                    "label": 0,
+                    "probability": 0.0091,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_100",
+                    "label": 0,
+                    "probability": 0.1301,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_101",
+                    "label": 0,
+                    "probability": 0.024,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_102",
+                    "label": 0,
+                    "probability": 0.2434,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_103",
+                    "label": 0,
+                    "probability": 0.1341,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_104",
+                    "label": 0,
+                    "probability": 0.1893,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_105",
+                    "label": 0,
+                    "probability": 0.3307,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_106",
+                    "label": 0,
+                    "probability": 0.4807,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_107",
+                    "label": 0,
+                    "probability": 0.1177,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_108",
+                    "label": 0,
+                    "probability": 0.0237,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_109",
+                    "label": 0,
+                    "probability": 0.0107,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_110",
+                    "label": 0,
+                    "probability": 0.0962,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_111",
+                    "label": 0,
+                    "probability": 0.2057,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_112",
+                    "label": 0,
+                    "probability": 0.02,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_113",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_114",
+                    "label": 0,
+                    "probability": 0.2239,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_115",
+                    "label": 0,
+                    "probability": 0.0815,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_116",
+                    "label": 0,
+                    "probability": 0.0123,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_117",
+                    "label": 0,
+                    "probability": 0.1468,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_118",
+                    "label": 0,
+                    "probability": 0.0353,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_119",
+                    "label": 0,
+                    "probability": 0.197,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_120",
+                    "label": 0,
+                    "probability": 0.0023,
+                    "prediction": 0
+                }
+            ]
+        },
+        "type4": {
+            "total_pairs": 230,
+            "positive_pairs": 110,
+            "negative_pairs": 120,
+            "precision": 0.8913,
+            "recall": 0.3727,
+            "f1_score": 0.5256,
+            "accuracy": 0.6783,
+            "mcc": 0.4134,
+            "balanced_accuracy": 0.6655,
+            "tp": 41,
+            "fp": 5,
+            "tn": 115,
+            "fn": 69,
+            "auc_roc": 0.8254,
+            "details": [
+                {
+                    "pair": "type4/pair_001",
+                    "label": 1,
+                    "probability": 0.6069,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_002",
+                    "label": 1,
+                    "probability": 0.6626,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_003",
+                    "label": 1,
+                    "probability": 0.6068,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_004",
+                    "label": 1,
+                    "probability": 0.6708,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_005",
+                    "label": 1,
+                    "probability": 0.6076,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_006",
+                    "label": 1,
+                    "probability": 0.5783,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_007",
+                    "label": 1,
+                    "probability": 0.6394,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_008",
+                    "label": 1,
+                    "probability": 0.6181,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_009",
+                    "label": 1,
+                    "probability": 0.7177,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_010",
+                    "label": 1,
+                    "probability": 0.8586,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_011",
+                    "label": 1,
+                    "probability": 0.6626,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_012",
+                    "label": 1,
+                    "probability": 0.0491,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_013",
+                    "label": 1,
+                    "probability": 0.1176,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_014",
+                    "label": 1,
+                    "probability": 0.1105,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_015",
+                    "label": 1,
+                    "probability": 0.0491,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_016",
+                    "label": 1,
+                    "probability": 0.157,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_017",
+                    "label": 1,
+                    "probability": 0.0584,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_018",
+                    "label": 1,
+                    "probability": 0.2148,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_019",
+                    "label": 1,
+                    "probability": 0.0584,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_020",
+                    "label": 1,
+                    "probability": 0.0491,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_021",
+                    "label": 1,
+                    "probability": 0.0645,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_022",
+                    "label": 1,
+                    "probability": 0.0584,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_023",
+                    "label": 1,
+                    "probability": 0.7739,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_024",
+                    "label": 1,
+                    "probability": 0.5371,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_025",
+                    "label": 1,
+                    "probability": 0.6007,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_026",
+                    "label": 1,
+                    "probability": 0.5979,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_027",
+                    "label": 1,
+                    "probability": 0.4898,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_028",
+                    "label": 1,
+                    "probability": 0.8944,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_029",
+                    "label": 1,
+                    "probability": 0.8863,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_030",
+                    "label": 1,
+                    "probability": 0.8159,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_031",
+                    "label": 1,
+                    "probability": 0.5979,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_032",
+                    "label": 1,
+                    "probability": 0.5483,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_033",
+                    "label": 1,
+                    "probability": 0.8159,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_034",
+                    "label": 1,
+                    "probability": 0.5509,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_035",
+                    "label": 1,
+                    "probability": 0.541,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_036",
+                    "label": 1,
+                    "probability": 0.6179,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_037",
+                    "label": 1,
+                    "probability": 0.6307,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_038",
+                    "label": 1,
+                    "probability": 0.5331,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_039",
+                    "label": 1,
+                    "probability": 0.5331,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_040",
+                    "label": 1,
+                    "probability": 0.6365,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_041",
+                    "label": 1,
+                    "probability": 0.5331,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_042",
+                    "label": 1,
+                    "probability": 0.8087,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_043",
+                    "label": 1,
+                    "probability": 0.6403,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_044",
+                    "label": 1,
+                    "probability": 0.5331,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_045",
+                    "label": 1,
+                    "probability": 0.2512,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_046",
+                    "label": 1,
+                    "probability": 0.2806,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_047",
+                    "label": 1,
+                    "probability": 0.2597,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_048",
+                    "label": 1,
+                    "probability": 0.279,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_049",
+                    "label": 1,
+                    "probability": 0.2813,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_050",
+                    "label": 1,
+                    "probability": 0.2512,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_051",
+                    "label": 1,
+                    "probability": 0.2083,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_052",
+                    "label": 1,
+                    "probability": 0.3114,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_053",
+                    "label": 1,
+                    "probability": 0.3209,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_054",
+                    "label": 1,
+                    "probability": 0.286,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_055",
+                    "label": 1,
+                    "probability": 0.2886,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_056",
+                    "label": 1,
+                    "probability": 0.4049,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_057",
+                    "label": 1,
+                    "probability": 0.3578,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_058",
+                    "label": 1,
+                    "probability": 0.4841,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_059",
+                    "label": 1,
+                    "probability": 0.3877,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_060",
+                    "label": 1,
+                    "probability": 0.4992,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_061",
+                    "label": 1,
+                    "probability": 0.4464,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_062",
+                    "label": 1,
+                    "probability": 0.3877,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_063",
+                    "label": 1,
+                    "probability": 0.0326,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_064",
+                    "label": 1,
+                    "probability": 0.3347,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_065",
+                    "label": 1,
+                    "probability": 0.3877,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_066",
+                    "label": 1,
+                    "probability": 0.3991,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_067",
+                    "label": 1,
+                    "probability": 0.1244,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_068",
+                    "label": 1,
+                    "probability": 0.5982,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_069",
+                    "label": 1,
+                    "probability": 0.5863,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_070",
+                    "label": 1,
+                    "probability": 0.524,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_071",
+                    "label": 1,
+                    "probability": 0.6128,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_072",
+                    "label": 1,
+                    "probability": 0.5558,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_073",
+                    "label": 1,
+                    "probability": 0.5216,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_074",
+                    "label": 1,
+                    "probability": 0.524,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_075",
+                    "label": 1,
+                    "probability": 0.1244,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_076",
+                    "label": 1,
+                    "probability": 0.5432,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_077",
+                    "label": 1,
+                    "probability": 0.1244,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_078",
+                    "label": 1,
+                    "probability": 0.3829,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_079",
+                    "label": 1,
+                    "probability": 0.4111,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_080",
+                    "label": 1,
+                    "probability": 0.4046,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_081",
+                    "label": 1,
+                    "probability": 0.448,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_082",
+                    "label": 1,
+                    "probability": 0.4634,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_083",
+                    "label": 1,
+                    "probability": 0.4181,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_084",
+                    "label": 1,
+                    "probability": 0.4578,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_085",
+                    "label": 1,
+                    "probability": 0.3337,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_086",
+                    "label": 1,
+                    "probability": 0.3337,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_087",
+                    "label": 1,
+                    "probability": 0.5627,
+                    "prediction": 1
+                },
+                {
+                    "pair": "type4/pair_088",
+                    "label": 1,
+                    "probability": 0.4199,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_089",
+                    "label": 1,
+                    "probability": 0.0359,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_090",
+                    "label": 1,
+                    "probability": 0.0906,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_091",
+                    "label": 1,
+                    "probability": 0.1091,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_092",
+                    "label": 1,
+                    "probability": 0.1073,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_093",
+                    "label": 1,
+                    "probability": 0.0352,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_094",
+                    "label": 1,
+                    "probability": 0.083,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_095",
+                    "label": 1,
+                    "probability": 0.0669,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_096",
+                    "label": 1,
+                    "probability": 0.053,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_097",
+                    "label": 1,
+                    "probability": 0.096,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_098",
+                    "label": 1,
+                    "probability": 0.0843,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_099",
+                    "label": 1,
+                    "probability": 0.0398,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_100",
+                    "label": 1,
+                    "probability": 0.1275,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_101",
+                    "label": 1,
+                    "probability": 0.1275,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_102",
+                    "label": 1,
+                    "probability": 0.19,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_103",
+                    "label": 1,
+                    "probability": 0.1275,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_104",
+                    "label": 1,
+                    "probability": 0.1573,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_105",
+                    "label": 1,
+                    "probability": 0.3192,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_106",
+                    "label": 1,
+                    "probability": 0.0478,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_107",
+                    "label": 1,
+                    "probability": 0.1421,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_108",
+                    "label": 1,
+                    "probability": 0.3168,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_109",
+                    "label": 1,
+                    "probability": 0.3152,
+                    "prediction": 0
+                },
+                {
+                    "pair": "type4/pair_110",
+                    "label": 1,
+                    "probability": 0.1249,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_001",
+                    "label": 0,
+                    "probability": 0.4655,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_002",
+                    "label": 0,
+                    "probability": 0.0512,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_003",
+                    "label": 0,
+                    "probability": 0.1146,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_004",
+                    "label": 0,
+                    "probability": 0.0348,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_005",
+                    "label": 0,
+                    "probability": 0.2207,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_006",
+                    "label": 0,
+                    "probability": 0.0963,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_007",
+                    "label": 0,
+                    "probability": 0.0563,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_008",
+                    "label": 0,
+                    "probability": 0.2826,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_009",
+                    "label": 0,
+                    "probability": 0.2709,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_010",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_011",
+                    "label": 0,
+                    "probability": 0.0196,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_012",
+                    "label": 0,
+                    "probability": 0.2032,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_013",
+                    "label": 0,
+                    "probability": 0.401,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_014",
+                    "label": 0,
+                    "probability": 0.5563,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_015",
+                    "label": 0,
+                    "probability": 0.0099,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_016",
+                    "label": 0,
+                    "probability": 0.0435,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_017",
+                    "label": 0,
+                    "probability": 0.098,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_018",
+                    "label": 0,
+                    "probability": 0.0394,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_019",
+                    "label": 0,
+                    "probability": 0.046,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_020",
+                    "label": 0,
+                    "probability": 0.0285,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_021",
+                    "label": 0,
+                    "probability": 0.0867,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_022",
+                    "label": 0,
+                    "probability": 0.0126,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_023",
+                    "label": 0,
+                    "probability": 0.1106,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_024",
+                    "label": 0,
+                    "probability": 0.1536,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_025",
+                    "label": 0,
+                    "probability": 0.106,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_026",
+                    "label": 0,
+                    "probability": 0.191,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_027",
+                    "label": 0,
+                    "probability": 0.7355,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_028",
+                    "label": 0,
+                    "probability": 0.049,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_029",
+                    "label": 0,
+                    "probability": 0.0423,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_030",
+                    "label": 0,
+                    "probability": 0.2497,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_031",
+                    "label": 0,
+                    "probability": 0.5698,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_032",
+                    "label": 0,
+                    "probability": 0.6108,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_033",
+                    "label": 0,
+                    "probability": 0.0643,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_034",
+                    "label": 0,
+                    "probability": 0.0156,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_035",
+                    "label": 0,
+                    "probability": 0.2219,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_036",
+                    "label": 0,
+                    "probability": 0.2651,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_037",
+                    "label": 0,
+                    "probability": 0.0072,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_038",
+                    "label": 0,
+                    "probability": 0.1107,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_039",
+                    "label": 0,
+                    "probability": 0.0249,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_040",
+                    "label": 0,
+                    "probability": 0.1302,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_041",
+                    "label": 0,
+                    "probability": 0.6264,
+                    "prediction": 1
+                },
+                {
+                    "pair": "negatives/pair_042",
+                    "label": 0,
+                    "probability": 0.3237,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_043",
+                    "label": 0,
+                    "probability": 0.0079,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_044",
+                    "label": 0,
+                    "probability": 0.0688,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_045",
+                    "label": 0,
+                    "probability": 0.0157,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_046",
+                    "label": 0,
+                    "probability": 0.0221,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_047",
+                    "label": 0,
+                    "probability": 0.3586,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_048",
+                    "label": 0,
+                    "probability": 0.1881,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_049",
+                    "label": 0,
+                    "probability": 0.0752,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_050",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_051",
+                    "label": 0,
+                    "probability": 0.0157,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_052",
+                    "label": 0,
+                    "probability": 0.0093,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_053",
+                    "label": 0,
+                    "probability": 0.0367,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_054",
+                    "label": 0,
+                    "probability": 0.0064,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_055",
+                    "label": 0,
+                    "probability": 0.0206,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_056",
+                    "label": 0,
+                    "probability": 0.3398,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_057",
+                    "label": 0,
+                    "probability": 0.358,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_058",
+                    "label": 0,
+                    "probability": 0.1224,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_059",
+                    "label": 0,
+                    "probability": 0.0285,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_060",
+                    "label": 0,
+                    "probability": 0.0513,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_061",
+                    "label": 0,
+                    "probability": 0.0496,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_062",
+                    "label": 0,
+                    "probability": 0.0769,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_063",
+                    "label": 0,
+                    "probability": 0.0516,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_064",
+                    "label": 0,
+                    "probability": 0.0965,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_065",
+                    "label": 0,
+                    "probability": 0.0914,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_066",
+                    "label": 0,
+                    "probability": 0.0166,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_067",
+                    "label": 0,
+                    "probability": 0.0137,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_068",
+                    "label": 0,
+                    "probability": 0.0148,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_069",
+                    "label": 0,
+                    "probability": 0.0162,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_070",
+                    "label": 0,
+                    "probability": 0.0923,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_071",
+                    "label": 0,
+                    "probability": 0.0557,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_072",
+                    "label": 0,
+                    "probability": 0.1461,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_073",
+                    "label": 0,
+                    "probability": 0.0527,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_074",
+                    "label": 0,
+                    "probability": 0.0456,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_075",
+                    "label": 0,
+                    "probability": 0.0806,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_076",
+                    "label": 0,
+                    "probability": 0.0225,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_077",
+                    "label": 0,
+                    "probability": 0.011,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_078",
+                    "label": 0,
+                    "probability": 0.0506,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_079",
+                    "label": 0,
+                    "probability": 0.1762,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_080",
+                    "label": 0,
+                    "probability": 0.115,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_081",
+                    "label": 0,
+                    "probability": 0.0374,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_082",
+                    "label": 0,
+                    "probability": 0.0468,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_083",
+                    "label": 0,
+                    "probability": 0.1317,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_084",
+                    "label": 0,
+                    "probability": 0.0338,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_085",
+                    "label": 0,
+                    "probability": 0.1343,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_086",
+                    "label": 0,
+                    "probability": 0.2493,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_087",
+                    "label": 0,
+                    "probability": 0.0408,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_088",
+                    "label": 0,
+                    "probability": 0.0275,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_089",
+                    "label": 0,
+                    "probability": 0.1526,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_090",
+                    "label": 0,
+                    "probability": 0.0413,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_091",
+                    "label": 0,
+                    "probability": 0.0669,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_092",
+                    "label": 0,
+                    "probability": 0.1699,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_093",
+                    "label": 0,
+                    "probability": 0.3703,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_094",
+                    "label": 0,
+                    "probability": 0.0475,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_095",
+                    "label": 0,
+                    "probability": 0.017,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_096",
+                    "label": 0,
+                    "probability": 0.0328,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_097",
+                    "label": 0,
+                    "probability": 0.0667,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_098",
+                    "label": 0,
+                    "probability": 0.0634,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_099",
+                    "label": 0,
+                    "probability": 0.0091,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_100",
+                    "label": 0,
+                    "probability": 0.1301,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_101",
+                    "label": 0,
+                    "probability": 0.024,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_102",
+                    "label": 0,
+                    "probability": 0.2434,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_103",
+                    "label": 0,
+                    "probability": 0.1341,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_104",
+                    "label": 0,
+                    "probability": 0.1893,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_105",
+                    "label": 0,
+                    "probability": 0.3307,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_106",
+                    "label": 0,
+                    "probability": 0.4807,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_107",
+                    "label": 0,
+                    "probability": 0.1177,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_108",
+                    "label": 0,
+                    "probability": 0.0237,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_109",
+                    "label": 0,
+                    "probability": 0.0107,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_110",
+                    "label": 0,
+                    "probability": 0.0962,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_111",
+                    "label": 0,
+                    "probability": 0.2057,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_112",
+                    "label": 0,
+                    "probability": 0.02,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_113",
+                    "label": 0,
+                    "probability": 0.0076,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_114",
+                    "label": 0,
+                    "probability": 0.2239,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_115",
+                    "label": 0,
+                    "probability": 0.0815,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_116",
+                    "label": 0,
+                    "probability": 0.0123,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_117",
+                    "label": 0,
+                    "probability": 0.1468,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_118",
+                    "label": 0,
+                    "probability": 0.0353,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_119",
+                    "label": 0,
+                    "probability": 0.197,
+                    "prediction": 0
+                },
+                {
+                    "pair": "negatives/pair_120",
+                    "label": 0,
+                    "probability": 0.0023,
+                    "prediction": 0
+                }
+            ]
+        }
+    },
+    "global": {
+        "precision": 0.9877,
+        "recall": 0.8532,
+        "f1_score": 0.9155,
+        "accuracy": 0.8746,
+        "mcc": 0.7051,
+        "balanced_accuracy": 0.9058,
+        "tp": 401,
+        "fp": 5,
+        "tn": 115,
+        "fn": 69,
+        "auc_roc": 0.959,
+        "total_pairs": 590
+    }
+}
