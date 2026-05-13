@@ -1,0 +1,77 @@
+Experiment: /home/tuncay/PycharmProjects/CodeDuplicationDetection/experiments/exp_062_CASCADE_Ensemble_500k
+Threshold: 0.95
+========================================
+GLOBAL METRICS
+========================================
+precision           : 0.9097
+recall              : 0.8362
+f1_score            : 0.8714
+accuracy            : 0.8034
+mcc                 : 0.4647
+balanced_accuracy   : 0.7556
+tp                  : 393
+fp                  : 39
+tn                  : 81
+fn                  : 77
+auc_roc             : 0.7557
+total_pairs         : 590
+
+========================================
+TYPE1 METRICS
+========================================
+total_pairs         : 240
+precision           : 0.7547
+recall              : 1.0
+f1_score            : 0.8602
+accuracy            : 0.8375
+mcc                 : 0.7137
+auc_roc             : 0.8542
+tp                  : 120
+fp                  : 39
+tn                  : 81
+fn                  : 0
+
+========================================
+TYPE2 METRICS
+========================================
+total_pairs         : 240
+precision           : 0.7451
+recall              : 0.95
+f1_score            : 0.8352
+accuracy            : 0.8125
+mcc                 : 0.6501
+auc_roc             : 0.8352
+tp                  : 114
+fp                  : 39
+tn                  : 81
+fn                  : 6
+
+========================================
+TYPE3 METRICS
+========================================
+total_pairs         : 240
+precision           : 0.7347
+recall              : 0.9
+f1_score            : 0.809
+accuracy            : 0.7875
+mcc                 : 0.5901
+auc_roc             : 0.8182
+tp                  : 108
+fp                  : 39
+tn                  : 81
+fn                  : 12
+
+========================================
+TYPE4 METRICS
+========================================
+total_pairs         : 230
+precision           : 0.5667
+recall              : 0.4636
+f1_score            : 0.51
+accuracy            : 0.5739
+mcc                 : 0.1419
+auc_roc             : 0.4932
+tp                  : 51
+fp                  : 39
+tn                  : 81
+fn                  : 59

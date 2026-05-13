@@ -13,12 +13,12 @@ KEYWORDS = {
     "static", "const", "extern", "volatile",
     # Boolean
     "true", "false",
-    # Common C identifiers in POJ-104
-    "main", "printf", "scanf",
+    # Common C/C++ identifiers in POJ-104
+    "main", "printf", "scanf", "cin", "cout", "endl", "std",
     # Preprocessor
     "include", "define",
-    # Null
-    "NULL", "nullptr"
+    # Null and Memory
+    "NULL", "nullptr", "malloc", "calloc", "realloc", "free", "new", "delete"
 }
 
 LOOP_VARS = {"i", "j", "k", "n", "m", "l", "x", "y"}

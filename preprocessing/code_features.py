@@ -8,6 +8,7 @@ import re
 from collections import Counter
 import numpy as np
 from joblib import Parallel, delayed
+from preprocessing.tree_sitter_parser import get_parser
 
 # ================= PRE-COMPILED REGEX PATTERNS =================
 
@@ -40,7 +41,17 @@ _KNOWN_LIBRARY_FUNCS = {
     'qsort', 'bsearch', 'sort', 'stable_sort', 'binary_search',
     'push_back', 'pop_back', 'insert', 'erase', 'find', 'count', 'size', 'empty', 'clear', 'push', 'pop', 'swap',
     'min', 'max', 'accumulate', 'reverse', 'fill', 'copy',
-    'srand', 'rand', 'time', 'clock', 'exit', 'assert',
+    'srand', 'rand', 'time', 'clock', 'exit', 'assert', 'cin', 'cout', 'new', 'delete'
+}
+
+_LIB_CATEGORIES = {
+    'IO': frozenset({'printf', 'scanf', 'puts', 'gets', 'getchar', 'putchar', 'fprintf', 'fscanf', 'fgets', 'fputs', 'fread', 'fwrite', 'cin', 'cout'}),
+    'FILE': frozenset({'fopen', 'fclose', 'fflush', 'fseek', 'ftell', 'rewind'}),
+    'MATH': frozenset({'sqrt', 'pow', 'abs', 'fabs', 'ceil', 'floor', 'round', 'log', 'log2', 'log10', 'exp', 'sin', 'cos', 'tan'}),
+    'STRING': frozenset({'strlen', 'strcmp', 'strncmp', 'strcpy', 'strncpy', 'strcat', 'strstr', 'strchr', 'strrchr', 'strtok', 'atoi'}),
+    'MEMORY': frozenset({'malloc', 'calloc', 'realloc', 'free', 'memset', 'memcpy', 'memmove', 'memcmp', 'new', 'delete'}),
+    'ALGO': frozenset({'qsort', 'bsearch', 'sort', 'stable_sort', 'binary_search', 'accumulate', 'reverse', 'fill', 'copy', 'swap', 'min', 'max'}),
+    'SYS': frozenset({'srand', 'rand', 'time', 'clock', 'exit', 'assert'})
 }
 
 # Data structure detection patterns
@@ -70,11 +81,23 @@ _TYPE_STRUCT = re.compile(r'\b(struct|class)\b')
 _PTR = re.compile(r'\*')
 _ARRAY = re.compile(r'\[')
 
+_ARRAY_ACCESS_RE = re.compile(r'\b[a-zA-Z_]\w*\s*\[')
+_PTR_DEREF_RE = re.compile(r'\*[a-zA-Z_]\w*')
+
+
 # ================= ALGORITHMIC FINGERPRINTING =================
 
 def _extract_library_calls(code):
     calls = _FUNC_CALL_RE.findall(code)
     return frozenset(c for c in calls if c in _KNOWN_LIBRARY_FUNCS)
+
+def _extract_library_categories(calls):
+    categories = set()
+    for call in calls:
+        for cat, funcs in _LIB_CATEGORIES.items():
+            if call in funcs:
+                categories.add(cat)
+    return frozenset(categories)
 
 def _extract_data_structures(code):
     structs = set()
@@ -113,6 +136,9 @@ def _count_func_calls(code):
     return sum(1 for c in calls if c not in _FUNC_CALL_KEYWORDS)
 def _count_operators(code): return len(_OPERATOR_RE.findall(code))
 def _count_returns(code): return len(_RETURN_RE.findall(code))
+
+def _count_array_accesses(code): return len(_ARRAY_ACCESS_RE.findall(code))
+def _count_ptr_derefs(code): return len(_PTR_DEREF_RE.findall(code))
 
 def _compute_nesting_depth(code):
     max_depth, depth = 0, 0
@@ -180,9 +206,19 @@ _CF_MAPPING = {
     'switch': 'S', 'case': 'C', 'return': 'R', 'break': 'B', 'continue': 'N'
 }
 
+_ABSTRACT_CF_MAPPING = {
+    'for': 'L', 'while': 'L', 'do': 'L',
+    'if': 'B', 'else': 'B', 'switch': 'B', 'case': 'B',
+    'return': 'R', 'break': 'J', 'continue': 'J'
+}
+
 def _extract_cf_pattern(code):
     tokens = _CF_RE.findall(code)
     return ''.join(_CF_MAPPING.get(t, '') for t in tokens)
+
+def _extract_abstract_cf_pattern(code):
+    tokens = _CF_RE.findall(code)
+    return ''.join(_ABSTRACT_CF_MAPPING.get(t, '') for t in tokens)
 
 def cf_pattern_similarity(pattern1, pattern2):
     if not pattern1 and not pattern2: return 1.0
@@ -205,30 +241,40 @@ FEATURE_NAMES = [
     'return_count', 'accumulator_pattern', 'param_count', 'math_op_set_size',
     'library_call_count', 'data_struct_count', 'io_pattern_length',
     'halstead_volume', 'halstead_effort', 'mccabe_complexity',
+    'array_access_count', 'ptr_deref_count',
     # Normalized density metrics (robust to code length variation)
     'operator_density', 'branch_density', 'loop_density', 'halstead_vol_per_line'
 ]
 
 def _extract_single(code):
     clean_code = _strip_comments(code)
+    parser = get_parser()
+    tree = parser.parse(clean_code)
     
-    # Extract numeric features
+    # Extract numeric features via Tree-sitter
+    loops = parser.count_matches(tree, 'loops')
+    func_calls = len(parser.extract_func_calls(tree, clean_code))
+    branches = parser.count_matches(tree, 'branches')
+    operators = parser.count_matches(tree, 'operators')
+    returns = parser.count_matches(tree, 'returns')
+    params = parser.count_matches(tree, 'params')
+    math_ops = parser.extract_math_ops(tree)
+    
     feats = [
-        _count_branches(clean_code),
-        _count_loops(clean_code) + _count_func_calls(clean_code),
+        branches,
+        loops + func_calls,
         _compute_nesting_depth(clean_code),
-        _count_operators(clean_code),
-        _count_returns(clean_code),
+        operators,
+        returns,
         _detect_accumulator(clean_code),
-        _count_params(clean_code),
-        len(_math_op_set(clean_code)),
+        params,
+        len(math_ops),
     ]
     
-    # Semantic & Algorithmic behaviors
+    # Semantic & Algorithmic behaviors (mixed regex/tree-sitter)
     lib_calls = _extract_library_calls(clean_code)
     data_structs = _extract_data_structures(clean_code)
     io_pattern = _extract_io_pattern(clean_code)
-    math_ops = _math_op_set(clean_code)
     
     # Pure ML Structural Metrics
     h_vol, h_eff = _compute_halstead(clean_code)
@@ -240,7 +286,9 @@ def _extract_single(code):
         len(io_pattern),
         h_vol,
         h_eff,
-        mccabe
+        mccabe,
+        parser.count_matches(tree, 'array_access'),
+        parser.count_matches(tree, 'ptr_deref')
     ])
     
     # ---- Normalized density metrics (length-invariant, better for Type-4) ----
@@ -251,15 +299,17 @@ def _extract_single(code):
     feats.append(feats[1] / num_lines)    # loop_density     = loops / lines
     feats.append(h_vol / num_lines)       # halstead_vol_per_line
 
-    cf = _extract_cf_pattern(clean_code)
+    cf = parser.extract_control_flow(tree)
     
     semantic = {
         'library_calls': lib_calls,
+        'library_categories': _extract_library_categories(lib_calls),
         'data_structs': data_structs,
         'io_pattern': io_pattern,
         'math_ops': math_ops,
         'skeleton': _extract_skeleton(clean_code),
-        'type_profile': _type_profile(clean_code)
+        'type_profile': _type_profile(clean_code),
+        'abstract_cf': cf
     }
     
     return feats, cf, semantic
@@ -275,11 +325,13 @@ def extract_all_features(raw_codes):
     
     semantic_features = {
         'library_calls':  [r[2]['library_calls'] for r in results],
+        'library_categories': [r[2]['library_categories'] for r in results],
         'data_structs':   [r[2]['data_structs'] for r in results],
         'io_patterns':    [r[2]['io_pattern'] for r in results],
         'math_ops':       [r[2]['math_ops'] for r in results],
         'skeletons':      [r[2]['skeleton'] for r in results],
         'type_profiles':  [r[2]['type_profile'] for r in results],
+        'abstract_cf_patterns': [r[2]['abstract_cf'] for r in results],
     }
 
     return features, cf_patterns, semantic_features

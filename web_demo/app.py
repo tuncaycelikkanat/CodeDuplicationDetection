@@ -104,6 +104,18 @@ if os.path.exists(svd_path):
 else:
     print("   ⚠️  No SVD model found")
 
+# Load Stage1 model
+stage1_model = None
+stage1_path = f"{EXP_PATH}/stage1_model.pkl"
+if os.path.exists(stage1_path):
+    with open(stage1_path, "rb") as f:
+        stage1_model = pickle.load(f)
+    print("   ✅ Stage-1 Lexical model loaded")
+else:
+    print("   ⚠️  No Stage-1 Lexical model found")
+
+
+
 # ── Cascade inference hazırlığı ──────────────────────────────────────────────
 _IS_CASCADE       = "CASCADE" in EXP_PATH
 # TF-IDF özellikleri vektörden çıkarıldığı için cos_token artık doğrudan 0. indekstedir.
@@ -141,12 +153,14 @@ def _build_feature_names():
     # CF pattern similarity
     names.append("cf_pattern_similarity")
 
-    # Semantic similarity features (5)
+    # Semantic similarity features (7)
     names.append("semantic_library_call_jaccard")
+    names.append("semantic_library_categories_jaccard")
     names.append("semantic_data_struct_jaccard")
     names.append("semantic_io_pattern_jaccard")
     names.append("semantic_math_op_jaccard")
     names.append("semantic_skeleton_jaccard")
+    names.append("semantic_abstract_cf_similarity")
     names.append("semantic_type_profile_cosine")
 
     # SVD farkları
@@ -202,8 +216,19 @@ def predict(pair: CodePair):
 
         X_pair = build_pair_vector(raw1, raw2, vectorizer, char_vectorizer, svd_model)
 
-        # ---- Bug #18 düzeltildi: CASCADE modunda cos_token ön-filtresi ----
-        if _IS_CASCADE:
+        # ---- CASCADE modunda cos_token ön-filtresi ----
+        if stage1_model is not None:
+            X_lexical = X_pair[:, :4]
+            y_prob_stage1 = float(stage1_model.predict_proba(X_lexical)[0][1])
+            if y_prob_stage1 >= 0.95:
+                return {
+                    "probability": 1.0,
+                    "prediction": "Duplicated",
+                    "cascade_filtered": True,
+                    "cos_token": None,
+                    "shap": None
+                }
+        elif _IS_CASCADE:
             _cell = X_pair[0, _COS_TOKEN_IDX]
             cos_token = float(_cell.toarray().ravel()[0]) if hasattr(_cell, 'toarray') else float(_cell)
             if cos_token > CASCADE_THRESHOLD:

@@ -10,7 +10,9 @@ from sklearn.metrics import (
     roc_auc_score,
     classification_report,
     confusion_matrix,
-    ConfusionMatrixDisplay
+    ConfusionMatrixDisplay,
+    average_precision_score,
+    matthews_corrcoef
 )
 
 
@@ -45,13 +47,15 @@ def generate_experiment_name(model_name, pair_count, base_dir="experiments"):
 
 
 def _compute_metrics(y_true, y_pred, y_prob=None):
-    """Compute accuracy, F1, and optionally AUC-ROC."""
+    """Compute accuracy, F1, MCC, and optionally AUC-ROC / PR-AUC."""
     metrics = {
         "accuracy": accuracy_score(y_true, y_pred),
         "f1_score": f1_score(y_true, y_pred),
+        "mcc": matthews_corrcoef(y_true, y_pred)
     }
     if y_prob is not None:
         metrics["auc_roc"] = roc_auc_score(y_true, y_prob)
+        metrics["pr_auc"] = average_precision_score(y_true, y_prob)
     return metrics
 
 
@@ -70,10 +74,11 @@ def save_experiment(
     base_dir="experiments",
     extra_vectorizers=None,
     timing_info=None,
-    # Opsiyonel val metrikleri (#19)
+    stage1_model=None,
     X_val=None,
     y_val=None,
     y_val_pred=None,
+    use_ssl=False,
 ):
     exp_dir = os.path.join(base_dir, exp_name)
     os.makedirs(exp_dir, exist_ok=True)
@@ -84,7 +89,8 @@ def save_experiment(
         "pair_count": pair_count,
         "model_params": _make_json_serializable(model.get_params()),
         "tfidf_params": _make_json_serializable(vectorizer.get_params()),
-        "num_features": int(X_train.shape[1])
+        "num_features": int(X_train.shape[1]),
+        "use_ssl": use_ssl
     }
 
     with open(os.path.join(exp_dir, "config.json"), "w") as f:
@@ -161,6 +167,10 @@ def save_experiment(
     # ================= SERIALIZATION =================
     with open(os.path.join(exp_dir, "model.pkl"), "wb") as f:
         pickle.dump(model, f)
+
+    if stage1_model is not None:
+        with open(os.path.join(exp_dir, "stage1_model.pkl"), "wb") as f:
+            pickle.dump(stage1_model, f)
 
     with open(os.path.join(exp_dir, "tfidf.pkl"), "wb") as f:
         pickle.dump(vectorizer, f)

@@ -70,14 +70,13 @@ def calculate_metrics(tp, fp, tn, fn):
         "tp": tp, "fp": fp, "tn": tn, "fn": fn
     }
 
-def calculate_auc_roc(y_true, y_prob):
-    # Simple AUC calculation
-    if not y_true or not y_prob: return 0.0
-    from sklearn.metrics import roc_auc_score
+def calculate_auc(y_true, y_prob):
+    if not y_true or not y_prob: return 0.0, 0.0
+    from sklearn.metrics import roc_auc_score, average_precision_score
     try:
-        return round(roc_auc_score(y_true, y_prob), 4)
+        return round(roc_auc_score(y_true, y_prob), 4), round(average_precision_score(y_true, y_prob), 4)
     except:
-        return 0.0
+        return 0.0, 0.0
 
 def load_pairs(dir_path, label):
     pairs = []
@@ -113,6 +112,19 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
         model = pickle.load(f)
     with open(os.path.join(exp_path, "tfidf.pkl"), "rb") as f:
         vectorizer = pickle.load(f)
+        
+    config_path = os.path.join(exp_path, "config.json")
+    use_ssl = False
+    if os.path.exists(config_path):
+        with open(config_path, "r") as f:
+            config = json.load(f)
+            use_ssl = config.get("use_ssl", False)
+            
+    ssl_pipeline = None
+    if use_ssl:
+        print("  → Loading SSL pipeline for inference...")
+        from vectorization.ssl_encoder import build_ssl_pipeline
+        ssl_pipeline = build_ssl_pipeline(device="cpu") # Inference on CPU for testing by default
 
     char_vectorizer = None
     char_tfidf_path = os.path.join(exp_path, "char_tfidf.pkl")
@@ -125,6 +137,12 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
     if os.path.exists(svd_path):
         with open(svd_path, "rb") as f:
             svd_model = pickle.load(f)
+
+    stage1_model = None
+    stage1_path = os.path.join(exp_path, "stage1_model.pkl")
+    if os.path.exists(stage1_path):
+        with open(stage1_path, "rb") as f:
+            stage1_model = pickle.load(f)
 
     # TF-IDF özelliklerini vektörden çıkardığımız için cos_token artık doğrudan 0. indekstedir.
     COS_TOKEN_IDX = 0
@@ -168,13 +186,32 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
         details = []
 
         for p in tqdm(test_pairs, desc=t):
-            X_pair = build_pair_vector(p['c1'], p['c2'], vectorizer, char_vectorizer, svd_model)
+            X_pair = build_pair_vector(
+                p['c1'], p['c2'],
+                vectorizer,
+                char_vectorizer=char_vectorizer,
+                svd_model=svd_model,
+                ssl_pipeline=ssl_pipeline
+            )
 
             # cos_token: build_pair_vector'da extra'nın ilk elemanı
             cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
 
             # Cascade Logic
-            if "CASCADE" in exp_path and cos_token > 0.85:
+            if stage1_model is not None:
+                X_stage1 = X_pair[:, :32]
+                y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
+                if y_prob_stage1 >= 0.95:
+                    prob = 1.0
+                else:
+                    if hasattr(model, "predict_proba"):
+                        try:
+                            prob = float(model.predict_proba(X_pair)[0][1])
+                        except:
+                            prob = float(model.predict(X_pair)[0])
+                    else:
+                        prob = float(model.predict(X_pair)[0])
+            elif "CASCADE" in exp_path and cos_token > 0.85:
                 prob = 1.0
             else:
                 if hasattr(model, "predict_proba"):
@@ -203,7 +240,9 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
             elif p['label'] == 0 and pred == 0: tn += 1
             
         metrics = calculate_metrics(tp, fp, tn, fn)
-        metrics["auc_roc"] = calculate_auc_roc(y_true, y_prob)
+        roc_auc, pr_auc = calculate_auc(y_true, y_prob)
+        metrics["auc_roc"] = roc_auc
+        metrics["pr_auc"] = pr_auc
         
         report["per_type"][t] = {
             "total_pairs": len(test_pairs),
@@ -225,10 +264,23 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
     tn, fp = 0, 0
     neg_y_true, neg_y_prob = [], []
     for p in tqdm(negatives, desc="Global Negatives"):
-        X_pair = build_pair_vector(p['c1'], p['c2'], vectorizer, char_vectorizer, svd_model)
+        X_pair = build_pair_vector(
+            p['c1'], p['c2'],
+            vectorizer,
+            char_vectorizer=char_vectorizer,
+            svd_model=svd_model,
+            ssl_pipeline=ssl_pipeline
+        )
         cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
 
-        if "CASCADE" in exp_path and cos_token > 0.85:
+        if stage1_model is not None:
+            X_stage1 = X_pair[:, :32]
+            y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
+            if y_prob_stage1 >= 0.95:
+                prob = 1.0
+            else:
+                prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
+        elif "CASCADE" in exp_path and cos_token > 0.85:
             prob = 1.0
         else:
             prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
@@ -254,7 +306,9 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
     global_y_prob = all_pos_prob + neg_y_prob
 
     global_metrics = calculate_metrics(global_tp, global_fp, global_tn, global_fn)
-    global_metrics["auc_roc"] = calculate_auc_roc(global_y_true, global_y_prob)
+    roc_auc, pr_auc = calculate_auc(global_y_true, global_y_prob)
+    global_metrics["auc_roc"] = roc_auc
+    global_metrics["pr_auc"] = pr_auc
     global_metrics["total_pairs"] = len(global_y_true)
     
     report["global"] = global_metrics
@@ -285,7 +339,7 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
             if t in report["per_type"]:
                 f.write("\n" + "="*40 + f"\n{t.upper()} METRICS\n" + "="*40 + "\n")
                 rm = report["per_type"][t]
-                for k in ["total_pairs", "precision", "recall", "f1_score", "accuracy", "mcc", "auc_roc", "tp", "fp", "tn", "fn"]:
+                for k in ["total_pairs", "precision", "recall", "f1_score", "accuracy", "mcc", "auc_roc", "pr_auc", "tp", "fp", "tn", "fn"]:
                     f.write(f"{k.ljust(20)}: {rm.get(k)}\n")
 
     print(f"\n✅ Results saved to: {out_dir}")

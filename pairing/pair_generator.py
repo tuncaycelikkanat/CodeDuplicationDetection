@@ -18,6 +18,7 @@ from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard, _tuple_
 def generate_pairs(X_token, labels, num_pairs, processed_codes,
                    code_features=None, cf_patterns=None,
                    semantic_features=None, X_svd=None,
+                   ssl_embeddings=None,
                    random_state=42, positive_ratio=0.5):
     """
     Generate pairs of code samples for clone detection.
@@ -36,6 +37,8 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
         [33..37] semantic Jaccard/cosine features   -- if semantic_features provided
         [38] type_profile_cosine
         [39..88] SVD diff (50 dims)                 -- if X_svd provided
+        [89] ssl_cosine_similarity                  -- if ssl_embeddings provided
+        [90] ssl_euclidean_distance                 -- if ssl_embeddings provided
 
     Args:
         positive_ratio: Fraction of pairs that should be positive (clone) pairs.
@@ -229,7 +232,7 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
 
         CHUNK = 100_000
         chunks = [(s, min(s + CHUNK, num_pairs)) for s in range(0, num_pairs, CHUNK)]
-        cf_results = Parallel(n_jobs=-1, backend='loky')(
+        cf_results = Parallel(n_jobs=-1, backend='threading')(
             delayed(_cf_sim_chunk)(s, e, all_i, all_j, cf_patterns)
             for s, e in chunks
         )
@@ -242,33 +245,48 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
         print("  → Computing semantic similarity features...")
 
         lib_calls = semantic_features['library_calls']
+        lib_categories = semantic_features['library_categories']
         data_structs = semantic_features['data_structs']
         io_patterns = semantic_features['io_patterns']
         math_ops = semantic_features['math_ops']
         skeletons = semantic_features['skeletons']
+        abstract_cf_patterns = semantic_features['abstract_cf_patterns']
 
         # Vectorize Jaccard/cosine computations using chunked parallel processing
         def _semantic_sim_chunk(start, end, idx_i, idx_j,
-                                lib_calls, data_structs, io_patterns,
-                                math_ops, skeletons):
+                                lib_calls, lib_categories, data_structs, io_patterns,
+                                math_ops, skeletons, abstract_cf):
             size = end - start
-            result = np.empty((size, 5), dtype=np.float32)
+            result = np.empty((size, 7), dtype=np.float32)
             for k in range(size):
                 p = start + k
                 ii, jj = idx_i[p], idx_j[p]
                 result[k, 0] = _jaccard_sim(lib_calls[ii], lib_calls[jj])
-                result[k, 1] = _jaccard_sim(data_structs[ii], data_structs[jj])
-                result[k, 2] = _string_bigram_jaccard(io_patterns[ii], io_patterns[jj])
-                result[k, 3] = _jaccard_sim(math_ops[ii], math_ops[jj])
-                result[k, 4] = _tuple_bigram_jaccard(skeletons[ii], skeletons[jj])
+                result[k, 1] = _jaccard_sim(lib_categories[ii], lib_categories[jj])
+                result[k, 2] = _jaccard_sim(data_structs[ii], data_structs[jj])
+                result[k, 3] = _string_bigram_jaccard(io_patterns[ii], io_patterns[jj])
+                result[k, 4] = _jaccard_sim(math_ops[ii], math_ops[jj])
+                result[k, 5] = _tuple_bigram_jaccard(skeletons[ii], skeletons[jj])
+                
+                # Abstract CF Levenshtein
+                pi, pj = abstract_cf[ii], abstract_cf[jj]
+                if not pi and not pj:
+                    result[k, 6] = 1.0
+                elif not pi or not pj:
+                    result[k, 6] = 0.0
+                else:
+                    dist = Levenshtein.distance(pi, pj)
+                    max_len = max(len(pi), len(pj))
+                    result[k, 6] = 1.0 - (dist / max_len) if max_len > 0 else 1.0
+                    
             return result
 
         CHUNK = 100_000
         chunks = [(s, min(s + CHUNK, num_pairs)) for s in range(0, num_pairs, CHUNK)]
-        sem_results = Parallel(n_jobs=-1, backend='loky')(
+        sem_results = Parallel(n_jobs=-1, backend='threading')(
             delayed(_semantic_sim_chunk)(s, e, all_i, all_j,
-                                        lib_calls, data_structs, io_patterns,
-                                        math_ops, skeletons)
+                                        lib_calls, lib_categories, data_structs, io_patterns,
+                                        math_ops, skeletons, abstract_cf_patterns)
             for s, e in chunks
         )
         sem_matrix = np.vstack(sem_results)
@@ -298,6 +316,25 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
         svd_diff = np.abs(svd_i - svd_j)
         extra_cols.append(svd_diff.astype(np.float32))
         del svd_i, svd_j, svd_diff
+
+    # ---- Step 9.6: SSL Embeddings Cosine Similarity (if provided) ----
+    if ssl_embeddings is not None:
+        print("  → Computing SSL embeddings similarity (batch)...")
+        ssl_i = ssl_embeddings[all_i]
+        ssl_j = ssl_embeddings[all_j]
+        dot = np.sum(ssl_i * ssl_j, axis=1)
+        norm_i = np.linalg.norm(ssl_i, axis=1)
+        norm_j = np.linalg.norm(ssl_j, axis=1)
+        denom = norm_i * norm_j
+        denom[denom == 0] = 1.0
+        ssl_cos = dot / denom
+        
+        ssl_diff = ssl_i - ssl_j
+        ssl_euclidean = np.sqrt(np.sum(ssl_diff**2, axis=1))
+
+        extra_cols.append(ssl_cos.reshape(-1, 1).astype(np.float32))
+        extra_cols.append(ssl_euclidean.reshape(-1, 1).astype(np.float32))
+        del ssl_i, ssl_j, dot, norm_i, norm_j, denom, ssl_cos, ssl_diff, ssl_euclidean
 
     # ---- Step 10: Combine all features ----
     print("  → Combining features...")

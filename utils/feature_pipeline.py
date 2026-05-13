@@ -17,7 +17,7 @@ from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard, _tuple_
 
 # ================= PIPELINE =================
 
-def build_pair_vector(raw1, raw2, vectorizer, char_vectorizer=None, svd_model=None):
+def build_pair_vector(raw1, raw2, vectorizer, char_vectorizer=None, svd_model=None, ssl_pipeline=None):
     """
     Dense feature extraction — bir çift kod snippet için.
     Web Demo ve Automation scriptleri tarafından kullanılır.
@@ -78,12 +78,25 @@ def build_pair_vector(raw1, raw2, vectorizer, char_vectorizer=None, svd_model=No
     cf_max = max(len(cf1), len(cf2))
     extra.append(1.0 - (cf_dist / cf_max) if cf_max > 0 else 1.0)
 
-    # Semantic features (5)
+    # Semantic features (7)
     extra.append(_jaccard_sim(sem1['library_calls'], sem2['library_calls']))
+    extra.append(_jaccard_sim(sem1['library_categories'], sem2['library_categories']))
     extra.append(_jaccard_sim(sem1['data_structs'], sem2['data_structs']))
     extra.append(_string_bigram_jaccard(sem1['io_pattern'], sem2['io_pattern']))
     extra.append(_jaccard_sim(sem1['math_ops'], sem2['math_ops']))
     extra.append(_tuple_bigram_jaccard(sem1['skeleton'], sem2['skeleton']))
+    
+    # Abstract CF Levenshtein
+    acf1, acf2 = sem1['abstract_cf'], sem2['abstract_cf']
+    if not acf1 and not acf2:
+        acf_sim = 1.0
+    elif not acf1 or not acf2:
+        acf_sim = 0.0
+    else:
+        acf_dist = Levenshtein.distance(acf1, acf2)
+        acf_max = max(len(acf1), len(acf2))
+        acf_sim = 1.0 - (acf_dist / acf_max) if acf_max > 0 else 1.0
+    extra.append(acf_sim)
 
     # Type profile cosine
     tp1, tp2 = sem1['type_profile'], sem2['type_profile']
@@ -98,5 +111,23 @@ def build_pair_vector(raw1, raw2, vectorizer, char_vectorizer=None, svd_model=No
         svd2 = svd_model.transform(X2)[0]
         svd_diff = np.abs(svd1 - svd2)
         extra.extend(svd_diff.tolist())
+
+    # SSL özellikleri (opsiyonel)
+    if ssl_pipeline is not None:
+        ssl_tokenizer, ssl_model = ssl_pipeline
+        import torch
+        inputs = ssl_tokenizer([code1, code2], return_tensors="pt", max_length=512, truncation=True, padding=True)
+        device = next(ssl_model.parameters()).device
+        inputs = {k: v.to(device) for k, v in inputs.items()}
+        with torch.no_grad():
+            outputs = ssl_model(**inputs)
+            cls_emb = outputs.last_hidden_state[:, 0, :].cpu().numpy()
+            ssl1, ssl2 = cls_emb[0], cls_emb[1]
+            dot = np.dot(ssl1, ssl2)
+            norm1 = np.linalg.norm(ssl1)
+            norm2 = np.linalg.norm(ssl2)
+            ssl_cos = dot / (norm1 * norm2) if (norm1 * norm2) > 0 else 1.0
+            ssl_euclidean = float(np.linalg.norm(ssl1 - ssl2))
+            extra.extend([ssl_cos, ssl_euclidean])
 
     return np.array([extra], dtype=np.float32)

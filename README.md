@@ -7,12 +7,9 @@ C/C++ kaynak kodları için **4 farklı klon tipini** (Type 1–4) tespit eden m
 ```
 CodeDuplicationDetection/
 ├── config.py                   # Merkezi sabitler ve magic number'lar
-├── main.py                     # Ana eğitim pipeline'ı
+├── main.py                     # AKTİF EĞİTİM ALANI (Two-Stage Cascade Eğitim Betiği)
+├── main_deprecated.py          # DEPRECATED (Eski tek aşamalı mimari, kullanılmaz)
 ├── requirements.txt
-│
-├── cascade_experiment/
-│   ├── cascade_main.py         # Cascade mimarisi (Type-4 odaklı eğitim)
-│   └── README.md
 │
 ├── preprocessing/
 │   ├── tokenizer.py            # C/C++ tokenizer ve normalizer
@@ -69,16 +66,9 @@ POJ-104 dataset'i `data/poj104/` altında şu yapıda olmalıdır:
 - Her alt klasör bir problem sınıfıdır (104 sınıf: `1/`, `2/`, ..., `104/`)
 - Her sınıfın altında `.txt` uzantılı C/C++ kaynak dosyaları bulunur
 
-## Eğitim
-
-### Standart Eğitim
+### Ensemble Mimarisi (Type-4 odaklı)
 ```bash
-python main.py --pairs 800000 --seed 42
-```
-
-### Cascade Mimarisi (Type-4 odaklı)
-```bash
-python cascade_experiment/cascade_main.py --pairs 800000
+python main.py --pairs 800000 --model ensemble
 ```
 
 ### Hiperparametre Ayarı

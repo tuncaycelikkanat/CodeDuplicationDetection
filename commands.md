@@ -5,79 +5,79 @@
 
 ---
 
-## 1. ~~Standart Eğitim — `main.py`~~ ⚠️ DEPRECATED
+## 1. ~~Standart Eğitim — `main_deprecated.py`~~ ⚠️ DEPRECATED
 
-> **Bu dosya artık kullanılmıyor.** Yerine `cascade_experiment/cascade_main.py` kullanın.
-> `main.py` çalıştırılırsa hata verir ve çıkar.
+> **Bu dosya artık kullanılmıyor.** Yerine `main_deprecated.py` kullanın.
+> `main_deprecated.py` çalıştırılırsa hata verir ve çıkar.
 
 ---
 
-## 2. Cascade Mimarisi — `cascade_experiment/cascade_main.py`
+## 2. Cascade Mimarisi — `main_deprecated.py`
 
 > Aktif eğitim betiği. Dense (89-boyutlu) özellik vektörü, Cascade filtresi, XGBoost veya Ensemble.
 
 ### Temel çalıştırma
 ```bash
-python cascade_experiment/cascade_main.py
-python cascade_experiment/cascade_main.py --pairs 500000
-python cascade_experiment/cascade_main.py --pairs 1000000
+python main.py
+python main.py --pairs 500000
+python main.py --pairs 1000000
 ```
 
 ### Model seçimi
 ```bash
 # Varsayılan: XGBoost
-python cascade_experiment/cascade_main.py --pairs 1000000 --model xgboost
+python main.py --pairs 1000000 --model xgboost
 
 # Stacking Ensemble (XGBoost + RandomForest + HistGradientBoosting)
-python cascade_experiment/cascade_main.py --pairs 1000000 --model ensemble
-python cascade_experiment/cascade_main.py --pairs 500000 --model ensemble --device cpu
+python main.py --pairs 1000000 --model ensemble
+python main.py --pairs 500000 --model ensemble --device cpu
 ```
 
 ### Sınıf dengesi (positive-ratio)
 ```bash
 # Dengeli eğitim (varsayılan: %50 klon, %50 klon-değil)
-python cascade_experiment/cascade_main.py --positive-ratio 0.5
+python main.py --positive-ratio 0.5
 
 # Gerçekçi dengesiz sınıf dağılımı (%10 klon)
-python cascade_experiment/cascade_main.py --positive-ratio 0.1
+python main.py --positive-ratio 0.1
 
 # Precision odaklı eğitim (%20 klon)
-python cascade_experiment/cascade_main.py --positive-ratio 0.2
+python main.py --positive-ratio 0.2
 ```
 
 ### Device
 ```bash
-python cascade_experiment/cascade_main.py --pairs 1000000 --device cuda
-python cascade_experiment/cascade_main.py --pairs 1000000 --device cpu
+python main.py --pairs 1000000 --device cuda
+python main.py --pairs 1000000 --device cpu
 ```
 
 ### Hiperparametre ayarı (sadece XGBoost)
 ```bash
-python cascade_experiment/cascade_main.py --pairs 1000000 --tune
-python cascade_experiment/cascade_main.py --pairs 1000000 --tune --tune-trials 50
-python cascade_experiment/cascade_main.py --pairs 2000000 --tune --tune-trials 100 --device cuda
+python main.py --pairs 1000000 --tune
+python main.py --pairs 1000000 --tune --tune-trials 50
+python main.py --pairs 2000000 --tune --tune-trials 100 --device cuda
 ```
 
 ### Cross-Validation (Cascade filtreliyle)
 ```bash
-python cascade_experiment/cascade_main.py --cv
-python cascade_experiment/cascade_main.py --cv --cv-folds 5
-python cascade_experiment/cascade_main.py --cv --cv-folds 5 --cv-pairs 200000 --model ensemble
+python main.py --cv
+python main.py --cv --cv-folds 5
+python main.py --cv --cv-folds 5 --cv-pairs 200000 --model ensemble
 ```
 
 ### Tam kombinasyonlar
 ```bash
 # Standart cascade eğitimi
-python cascade_experiment/cascade_main.py --pairs 1000000 --device auto --seed 42
+python main.py --pairs 1000000 --device auto --seed 42
 
 # Ensemble + gerçekçi sınıf dengesi
-python cascade_experiment/cascade_main.py --pairs 1000000 --model ensemble --positive-ratio 0.2
+python main.py --pairs 1000000 --model ensemble --positive-ratio 0.2
 
 # Büyük veri + GPU + tune
-python cascade_experiment/cascade_main.py --pairs 2000000 --device cuda --tune --tune-trials 50
+python main.py --pairs 2000000 --device cuda --tune --tune-trials 50
 
 # Hızlı deneme
-python cascade_experiment/cascade_main.py --pairs 5000 --device cpu
+python main.py --pairs 5000 --device cpu
 ```
 
 ---
@@ -228,9 +228,9 @@ python -c "import config; [print(f'{k}={v}') for k,v in vars(config).items() if 
 
 | Görev | Komut |
 |---|---|
-| ~~Eski eğitim~~ | `main.py` **DEPRECATED** |
-| Cascade eğitimi (XGBoost) | `python cascade_experiment/cascade_main.py --pairs 1000000` |
-| Cascade eğitimi (Ensemble) | `python cascade_experiment/cascade_main.py --pairs 1000000 --model ensemble` |
+| ~~Eski eğitim~~ | `main_deprecated.py` **DEPRECATED** |
+| Cascade eğitimi (XGBoost) | `python main.py --pairs 1000000` |
+| Cascade eğitimi (Ensemble) | `python main.py --pairs 1000000 --model ensemble` |
 | Gerçekçi sınıf dengesi | `... --positive-ratio 0.1` |
 | GPU eğitimi | `... --device cuda` |
 | Tune + eğitim | `... --tune --tune-trials 50` |
@@ -246,7 +246,7 @@ python -c "import config; [print(f'{k}={v}') for k,v in vars(config).items() if 
 
 ## 10. Tüm Parametreler Referansı
 
-### `cascade_experiment/cascade_main.py`
+### `main_deprecated.py`
 | Parametre | Tip | Varsayılan | Açıklama |
 |---|---|---|---|
 | `--model` | str | `xgboost` | `xgboost` veya `ensemble` |

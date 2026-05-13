@@ -1,45 +1,28 @@
 import numpy as np
 from sklearn.ensemble import StackingClassifier, RandomForestClassifier, HistGradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
-from xgboost import XGBClassifier
+from sklearn.svm import LinearSVC
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+
+def _make_col_pipeline(clf, transformers):
+    selector = ColumnTransformer(transformers=transformers, remainder='drop')
+    return Pipeline([
+        ('selector', selector),
+        ('clf', clf)
+    ])
 
 def build_ensemble(random_state=42, device="cpu"):
     """
-    Builds a Stacking Ensemble model combining the strengths of:
-    1. XGBoost
-    2. Random Forest
-    3. HistGradientBoosting (LightGBM equivalent)
+    Builds a Feature-Partitioned Stacking Ensemble:
+    1. LightGBM (HistGBM) -> Lexical (0-3) + SVD (41+)
+    2. Random Forest -> AST + CF (4-32)
+    3. LinearSVC (Calibrated) -> Semantic (33-40)
     
     A Logistic Regression meta-classifier combines their outputs.
     """
-    xgb_device = device if device != "xpu" else "cpu"
-    
-    # 1. XGBoost: The semantic powerhouse
-    # Note: No early_stopping_rounds here because StackingClassifier 
-    # cross-validation does not natively support passing eval_set.
-    xgb = XGBClassifier(
-        n_estimators=300,
-        learning_rate=0.05,
-        max_depth=10,
-        subsample=0.8,
-        colsample_bytree=0.8,
-        min_child_weight=3,
-        random_state=random_state,
-        n_jobs=-1,
-        device=xgb_device,
-        tree_method="hist"
-    )
-
-    # 2. Random Forest: The structural expert (less prone to overfitting)
-    rf = RandomForestClassifier(
-        n_estimators=200,
-        max_depth=15,
-        min_samples_split=5,
-        random_state=random_state,
-        n_jobs=-1
-    )
-
-    # 3. HistGradientBoosting: The speed demon (LightGBM equivalent)
+    # 1. LightGBM (HistGradientBoosting): Yüzeysel ve Vektörel uzmanı
     hgb = HistGradientBoostingClassifier(
         max_iter=300,
         learning_rate=0.05,
@@ -47,12 +30,41 @@ def build_ensemble(random_state=42, device="cpu"):
         min_samples_leaf=5,
         random_state=random_state
     )
+    # Lexical (0-3) ve SVD (41'den sona kadar)
+    pipe_hgb = _make_col_pipeline(hgb, [
+        ('lex', 'passthrough', [0, 1, 2, 3]),
+        ('svd', 'passthrough', slice(41, None))
+    ])
 
-    # 4. The Meta-Classifier
+    # 2. Random Forest: Yapısal (AST/CF) uzmanı
+    rf = RandomForestClassifier(
+        n_estimators=200,
+        max_depth=15,
+        min_samples_split=5,
+        random_state=random_state,
+        n_jobs=-1
+    )
+    # AST ve CF özellikleri (4'ten 32'ye kadar)
+    pipe_rf = _make_col_pipeline(rf, [
+        ('ast_cf', 'passthrough', slice(4, 33))
+    ])
+
+    # 3. LinearSVC (Calibrated): Semantik uzmanı
+    # SVM, 500k veri için RBF kernel ile çok yavaş olur. LinearSVC çok hızlıdır.
+    # CalibratedClassifierCV, SVM'in olasılık (predict_proba) üretmesini sağlar.
+    svm = LinearSVC(dual=False, random_state=random_state, max_iter=2000)
+    calibrated_svm = CalibratedClassifierCV(svm, cv=3, method='sigmoid')
+    
+    # Semantik özellikler (33'ten 40'a kadar)
+    pipe_svm = _make_col_pipeline(calibrated_svm, [
+        ('sem', 'passthrough', slice(33, 41))
+    ])
+
+    # 4. Meta-Classifier (Stacking)
     estimators = [
-        ('xgb', xgb),
-        ('rf', rf),
-        ('hgb', hgb)
+        ('lex_svd_hgb', pipe_hgb),
+        ('struct_rf', pipe_rf),
+        ('semantic_svm', pipe_svm)
     ]
     
     clf = StackingClassifier(

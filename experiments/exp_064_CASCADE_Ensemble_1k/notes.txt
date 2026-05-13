@@ -1,0 +1,17 @@
+Notes:
+
+Experiment Date: 2026-05-07 11:54:52
+=======================================================
+  TIMING SUMMARY
+=======================================================
+  Data Loading                               0.01 min (0.5s)
+  Preprocessing (Tokenization)               0.08 min (5.1s)
+  Feature Extraction (AST+IR+A1+A2+B3)       0.06 min (3.8s)
+  Split + TF-IDF Vectorization               0.20 min (12.3s)
+  Pair Generation (train+val+test)           0.03 min (1.7s)
+  Hyperparameter Tuning                      0.00 min (0.0s)
+  Model Training                             0.37 min (22.4s)
+  Evaluation (Prediction)                    0.01 min (0.8s)
+  ───────────────────────────────────────────────────
+  TOTAL                                      0.78 min (46.5s)
+=======================================================
