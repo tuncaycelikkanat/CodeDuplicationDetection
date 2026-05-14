@@ -1,0 +1,10 @@
+// Logic here
+int sum(int array_data[], int num_elements) {    
+        int total_sum = 0;   
+
+// Logic here
+     for (int idx = 0; idx < num_elements; idx++) 
+          total_sum += array_data[idx];    
+     return total_sum;  
+
+    }

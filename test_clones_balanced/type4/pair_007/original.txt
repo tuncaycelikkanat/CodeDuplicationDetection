@@ -1,0 +1,10 @@
+// Fix this
+int stringLength(char* str) {  
+// TODO
+     int len = 0; 
+        while (str[len] != '\0')  
+// Check if needed
+          len++;
+        return len;   
+
+    }

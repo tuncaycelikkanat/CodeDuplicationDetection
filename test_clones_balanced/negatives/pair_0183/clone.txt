@@ -1,0 +1,10 @@
+// TODO
+  int sum(int array_data[], int num_elements) {
+// TODO
+        int total_sum = 0;   
+      for (int idx = 0; idx < num_elements; idx++)   
+// Check if needed
+            total_sum += array_data[idx]; 
+// Fix this
+        return total_sum;  
+ }   

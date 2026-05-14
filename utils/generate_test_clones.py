@@ -138,8 +138,8 @@ def apply_type3(code):
             new_lines.append(line)
     return '\n'.join(new_lines)
 
-def generate_pairs():
-    out_dir = "test_clones"
+def generate_pairs(scenario="original"):
+    out_dir = f"test_clones_{scenario}"
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
     
@@ -149,15 +149,31 @@ def generate_pairs():
         
     all_snippets = [] # Store tuples of (seed_name, code) to generate negatives later
         
+    if scenario == "original":
+        pos_t123 = 120
+        pos_t4 = 110
+        neg_count = 120
+    elif scenario == "imbalanced":
+        pos_t123 = 12
+        pos_t4 = 14
+        neg_count = 950
+    elif scenario == "balanced":
+        pos_t123 = 125
+        pos_t4 = 125
+        neg_count = 500
+    else:
+        raise ValueError(f"Unknown scenario: {scenario}")
+        
     # Generate Type 1, 2, 3
     seed_keys = list(SEEDS.keys())
     
     for t_idx, t_name in enumerate(["type1", "type2", "type3"]):
         pair_idx = 1
-        for seed_k in seed_keys:
-            base_code = SEEDS[seed_k]
-            # Generate 5-6 variations per seed to get >100
-            for _ in range(6):
+        while pair_idx <= pos_t123:
+            for seed_k in seed_keys:
+                if pair_idx > pos_t123:
+                    break
+                base_code = SEEDS[seed_k]
                 if t_name == "type1":
                     clone_code = apply_type1(base_code)
                 elif t_name == "type2":
@@ -177,10 +193,10 @@ def generate_pairs():
 
     # Generate Type 4
     pair_idx = 1
-    # Her base pair üzerinde 11 varyasyon oluştur (0.15 olasılıkla orijinal kod kullan)
-    for base, alt in TYPE_4_PAIRS:
-        for _ in range(11):
-            # 0.15 olasılıkla orijinal, 0.85 olasılıkla type1/2 varyasyon uy. (#16 düz.)
+    while pair_idx <= pos_t4:
+        for base, alt in TYPE_4_PAIRS:
+            if pair_idx > pos_t4:
+                break
             c1 = base if random.random() < 0.15 else apply_type1(apply_type2(base))
             c2 = alt  if random.random() < 0.15 else apply_type1(apply_type2(alt))
             
@@ -191,26 +207,23 @@ def generate_pairs():
             with open(os.path.join(pair_dir, "clone.txt"), "w") as f:
                 f.write(c2)
             
-            # Since TYPE_4_PAIRS are in order of SEEDS (fib, fact, binarySearch...) we can roughly assign names or just use a generic 't4_seed'
             all_snippets.append((f"t4_{pair_idx}", c1))
             all_snippets.append((f"t4_{pair_idx}", c2))
             pair_idx += 1
 
-    # Generate 8930 Negatives to reach 5% positive ratio (470 positives / 0.05 = 9400 total)
-    print("Generating 8930 negative pairs for realistic 0.05 positive ratio...")
+    # Generate Negatives
+    print(f"Generating {neg_count} negative pairs for scenario '{scenario}'...")
     pair_idx = 1
     negative_pairs = set()
-    max_attempts = 100000
+    max_attempts = neg_count * 100
     attempts = 0
     
-    while pair_idx <= 8930 and attempts < max_attempts:
+    while pair_idx <= neg_count and attempts < max_attempts:
         s1 = random.choice(all_snippets)
         s2 = random.choice(all_snippets)
         
         # Check if they belong to different seed algorithms
         if s1[0] != s2[0]:
-            # Tuple hash: hash((s1,s2)) ≠ hash((s2,s1)) ve
-            # "AB"+"C" == "A"+"BC" string concaténasyon çakışmasını önler.
             pair_hash = hash((s1[1], s2[1]))
             if pair_hash not in negative_pairs:
                 negative_pairs.add(pair_hash)
@@ -227,4 +240,14 @@ def generate_pairs():
     print(f"Dataset generated successfully in {out_dir}/")
 
 if __name__ == "__main__":
-    generate_pairs()
+    import argparse
+    parser = argparse.ArgumentParser(description="Generate code clone test pairs")
+    parser.add_argument("--scenario", type=str, default="all", choices=["original", "imbalanced", "balanced", "all"], help="Test scenario to generate")
+    args = parser.parse_args()
+    
+    if args.scenario == "all":
+        generate_pairs("original")
+        generate_pairs("imbalanced")
+        generate_pairs("balanced")
+    else:
+        generate_pairs(args.scenario)

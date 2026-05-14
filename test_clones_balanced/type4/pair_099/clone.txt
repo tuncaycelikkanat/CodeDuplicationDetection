@@ -1,0 +1,5 @@
+ int fib_recursive(int num_elements) {
+        if (num_elements <= 1) return num_elements; 
+     return fib_recursive(num_elements-1) + fib_recursive(num_elements-2); 
+// Logic here
+}    

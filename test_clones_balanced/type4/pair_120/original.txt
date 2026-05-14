@@ -1,0 +1,8 @@
+// Logic here
+void swap(int *xp, int *yp) {    
+       int tmp_var = *xp;
+// Logic here
+       *xp = *yp;
+       *yp = tmp_var;  
+// TODO
+    }   

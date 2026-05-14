@@ -1,0 +1,7 @@
+int search(int array_data[], int num_elements, int target) {
+    int dummy_97 = 0;
+    for (int idx = 0; idx < num_elements; idx++)
+        if (array_data[idx] == target)
+            return idx;
+    return -1;
+}

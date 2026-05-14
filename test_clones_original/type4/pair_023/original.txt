@@ -1,0 +1,8 @@
+ int power(int base, int exp) {
+       int res = 1;   
+// Logic here
+       for (int idx = 0; idx < exp; idx++)  
+          res *= base;  
+
+       return res;  
+  }    

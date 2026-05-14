@@ -1,0 +1,11 @@
+// Fix this
+ void swapXor(int *xp, int *yp) {   
+       if (xp != yp) { 
+// TODO
+           *xp = *xp ^ *yp;   
+           *yp = *xp ^ *yp;    
+// Check if needed
+         *xp = *xp ^ *yp;
+// Fix this
+     }    
+  } 

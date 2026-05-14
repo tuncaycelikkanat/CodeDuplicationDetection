@@ -1,0 +1,10 @@
+    int factorial(int num_elements) { 
+// Logic here
+        int res = 1;   
+// Logic here
+      for (int idx = 1; idx <= num_elements; idx++) {
+        res *= idx; 
+// Check if needed
+      }   
+    return res;  
+}   

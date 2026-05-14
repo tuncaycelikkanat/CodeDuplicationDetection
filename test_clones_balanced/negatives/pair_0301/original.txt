@@ -1,0 +1,10 @@
+    void swapXor(int *xp, int *yp) {    
+// Logic here
+    if (xp != yp) { 
+        *xp = *xp ^ *yp; 
+// TODO
+            *yp = *xp ^ *yp;    
+
+           *xp = *xp ^ *yp;  
+    }    
+  }  

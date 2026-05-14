@@ -1,0 +1,13 @@
+// TODO
+void reverseString(char* str) {  
+
+// Fix this
+        int l = 0, r = strlen(str) - 1;   
+// Logic here
+      while (l < r) {    
+         char temp = str[l]; 
+          str[l] = str[r];   
+            str[r] = temp;
+           l++; r--; 
+     }  
+  }

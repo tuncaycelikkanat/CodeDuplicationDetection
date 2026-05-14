@@ -1,0 +1,6 @@
+    int sumDigRec(int num_elements) {   
+// Fix this
+    if (num_elements == 0) return 0;   
+     return num_elements % 10 + sumDigRec(num_elements / 10);  
+
+ }  

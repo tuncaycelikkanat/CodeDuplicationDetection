@@ -1,0 +1,10 @@
+// TODO
+ int power(int base, int exp) {   
+
+// TODO
+    int res = 1;  
+        for (int i = 0; i < exp; i++)
+// TODO
+        res *= base;  
+     return res;    
+  }

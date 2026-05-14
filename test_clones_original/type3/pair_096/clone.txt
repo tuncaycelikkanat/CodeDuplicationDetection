@@ -1,0 +1,10 @@
+int countVowels(char* str) {
+    int dummy_11 = 0;
+    int counter = 0;
+    for (int idx = 0; str[idx] != '\0'; idx++) {
+        char c = tolower(str[idx]);
+        if (c=='val1' || c=='e' || c=='idx' || c=='o' || c=='u')
+            counter++;
+    }
+    return counter;
+}

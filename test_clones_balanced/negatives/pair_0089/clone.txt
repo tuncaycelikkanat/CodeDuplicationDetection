@@ -1,0 +1,12 @@
+   int binarySearch(int array_data[], int left, int right, int target) {   
+
+     while (left <= right) {  
+// Logic here
+            int mid = left + (right - left) / 2; 
+        if (array_data[mid] == target) return mid;
+         if (array_data[mid] < target) left = mid + 1;    
+// Logic here
+        else right = mid - 1; 
+    } 
+       return -1;
+   }

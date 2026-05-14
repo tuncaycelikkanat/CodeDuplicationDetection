@@ -111,6 +111,13 @@ python utils/test_automation.py --threshold 0.85
 python utils/test_automation.py --threshold 0.50
 ```
 
+### Test Senaryosu Seçimi
+```bash
+python utils/test_automation.py --scenario original   # (Varsayılan) 590 Çift (%80 Klon)
+python utils/test_automation.py --scenario imbalanced # 1000 Çift (%5 Klon - Gerçekçi)
+python utils/test_automation.py --scenario balanced   # 1000 Çift (%50 Klon - Dengeli)
+```
+
 ### Kombinasyonlar
 ```bash
 # Cascade deneyi, 0.90 eşiğiyle
@@ -127,17 +134,16 @@ python utils/test_automation.py --exp-id 54 --threshold 0.99
 
 ## 4. Test Klonu Verisi Oluştur — `utils/generate_test_clones.py`
 
-> `test_clones/` dizininde Type1–4 klon çiftleri üretir.
+> `test_clones_*/` dizinlerinde Type1–4 klon çiftleri üretir.
 
 ```bash
-# Varsayılan dizine oluştur
-python utils/generate_test_clones.py
+# Sadece belirli bir senaryoyu oluştur
+python utils/generate_test_clones.py --scenario original
+python utils/generate_test_clones.py --scenario imbalanced
+python utils/generate_test_clones.py --scenario balanced
 
-# Özel çıktı dizini
-python utils/generate_test_clones.py --output test_clones_v2
-
-# Mevcut dizini sıfırla ve yeniden oluştur
-python utils/generate_test_clones.py --overwrite
+# Tüm senaryoları aynı anda oluştur (Varsayılan)
+python utils/generate_test_clones.py --scenario all
 ```
 
 ---
@@ -275,6 +281,7 @@ python -c "import config; [print(f'{k}={v}') for k,v in vars(config).items() if 
 |---|---|---|---|
 | `--exp-id` | int | `None` (en son) | Test edilecek deney ID'si |
 | `--threshold` | float | `0.95` | Sınıflandırma eşiği |
+| `--scenario` | str | `original` | Test veri seti senaryosu (`original`, `imbalanced`, `balanced`) |
 
 ### `web_demo/app.py` (env vars)
 | Değişken | Açıklama |

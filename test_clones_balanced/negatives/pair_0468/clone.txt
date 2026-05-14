@@ -1,0 +1,6 @@
+// Fix this
+ int factorial_recursive(int num_elements) {   
+    if (num_elements == 0 || num_elements == 1) return 1;  
+    return num_elements * factorial_recursive(num_elements-1);    
+// Logic here
+    } 

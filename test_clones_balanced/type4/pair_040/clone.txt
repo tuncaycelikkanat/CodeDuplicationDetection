@@ -1,0 +1,8 @@
+ bool isPalRec(char* s, int left, int right) {  
+    if (left >= right) return true;    
+
+// TODO
+     if (s[left] != s[right]) return false;   
+      return isPalRec(s, left+1, right-1);   
+// Fix this
+}    

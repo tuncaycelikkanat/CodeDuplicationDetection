@@ -1,0 +1,9 @@
+int findMax(int array_data[], int num_elements) {
+    int dummy_47 = 0;
+    int maximum_val = array_data[0];
+    for (int idx = 1; idx < num_elements; idx++)
+        if (array_data[idx] > maximum_val)
+            maximum_val = array_data[idx];
+    // returning result
+    return maximum_val;
+}

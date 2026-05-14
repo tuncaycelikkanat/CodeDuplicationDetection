@@ -1,0 +1,12 @@
+  void reverseString(char* str) {  
+     int l = 0, r = strlen(str) - 1; 
+     while (l < r) {  
+// Fix this
+            char temp = str[l];  
+// Check if needed
+           str[l] = str[r];   
+          str[r] = temp;
+// TODO
+        l++; r--;  
+    }   
+ }    

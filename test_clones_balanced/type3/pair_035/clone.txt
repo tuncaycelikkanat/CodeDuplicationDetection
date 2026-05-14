@@ -1,0 +1,8 @@
+int sum(int array_data[], int num_elements) {
+    int dummy_21 = 0;
+    int total_sum = 0;
+    for (int idx = 0; idx < num_elements; idx++)
+        total_sum += array_data[idx];
+    // returning result
+    return total_sum;
+}

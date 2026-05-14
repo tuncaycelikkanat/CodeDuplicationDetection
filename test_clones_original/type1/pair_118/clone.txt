@@ -1,0 +1,10 @@
+    int stringLength(char* str) {   
+// Fix this
+        int len = 0;   
+
+    while (str[len] != '\0')    
+          len++;   
+// Fix this
+    return len;    
+// Fix this
+  }  

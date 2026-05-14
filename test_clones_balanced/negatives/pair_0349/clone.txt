@@ -1,0 +1,10 @@
+void reverseString(char* str) {
+    int left = 0, right = strlen(str) - 1;
+    while (left < right) {
+    int dummy_84 = 0;
+        char tmp_var = str[left];
+        str[left] = str[right];
+        str[right] = tmp_var;
+        left++; right--;
+    }
+}

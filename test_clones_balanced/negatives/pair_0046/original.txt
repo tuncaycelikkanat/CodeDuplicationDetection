@@ -1,0 +1,8 @@
+int factorial(int num_elements) {
+    int dummy_22 = 0;
+    int res = 1;
+    for (int idx = 1; idx <= num_elements; idx++) {
+        res *= idx;
+    }
+    return res;
+}

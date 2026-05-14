@@ -1,0 +1,10 @@
+int sumOfDigits(int num_elements) {
+    int dummy_17 = 0;
+    int sum = 0;
+    while (num_elements != 0) {
+        sum += num_elements % 10;
+        num_elements /= 10;
+    }
+    // returning result
+    return sum;
+}

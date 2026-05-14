@@ -1,0 +1,11 @@
+// Fix this
+int power(int base, int exp) {    
+     int res = 1;    
+
+// Fix this
+       for (int i = 0; i < exp; i++)
+
+           res *= base;    
+// Check if needed
+     return res;
+  }    

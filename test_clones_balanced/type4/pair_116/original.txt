@@ -1,0 +1,11 @@
+// TODO
+    int gcd(int val1, int val2) { 
+// Logic here
+      while (val2 != 0) {  
+            int tmp_var = val2; 
+           val2 = val1 % val2;    
+         val1 = tmp_var;  
+// TODO
+      }   
+     return val1; 
+}

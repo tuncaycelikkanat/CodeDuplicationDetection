@@ -390,6 +390,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run automation tests on code clone models.")
     parser.add_argument("--exp-id", type=int, default=None, help="Specific experiment ID to test (e.g. 54). If not provided, uses latest.")
     parser.add_argument("--threshold", type=float, default=0.95, help="Classification threshold (default 0.95)")
+    parser.add_argument("--scenario", type=str, default="original", choices=["original", "imbalanced", "balanced"], help="Test scenario folder to use")
     args = parser.parse_args()
     
-    run_automation(threshold=args.threshold, exp_id=args.exp_id)
+    run_automation(test_dir=f"test_clones_{args.scenario}", threshold=args.threshold, exp_id=args.exp_id)

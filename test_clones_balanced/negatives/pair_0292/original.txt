@@ -1,0 +1,13 @@
+// Fix this
+ bool isPalindrome(char* str) { 
+     int left = 0, right = strlen(str) - 1;  
+        while (left < right) {   
+            if (str[left] != str[right]) return false;   
+// Check if needed
+        left++; right--;    
+
+// Logic here
+     }  
+// Logic here
+        return true;
+   }

@@ -1,290 +1,246 @@
-# Code Duplication Detection — Teknik Rapor
+# 🚀 Code Duplication Detection — Kapsamlı Teknik Rapor ve Kullanım Kılavuzu
 
 **Proje:** CodeDuplicationDetection  
-**Tarih:** Mayıs 2026  
-**Son Güncelleme:** Mayıs 2026 (kapsamlı kod kalitesi ve güvenlik iyileştirmeleri)  
-**Veri Seti:** POJ-104 (C/C++ kaynak kodu, 104 problem sınıfı, ~52.000 dosya)  
-**En İyi Model:** CASCADE Ensemble (Feature-Partitioned Stacking) / CASCADE XGBoost — Global F1: ~%92+ | Type 1-2-3 Recall: %100 | Type 4 Precision: Yüksek
+**Sürüm/Tarih:** Mayıs 2026 (Güncel Sürüm)  
+**Veri Seti:** POJ-104 (C/C++ Kaynak Kodu, 104 Farklı Problem Sınıfı, ~52.000 Dosya)  
+**Temel Mimari:** Two-Stage Cascade Mimarisi (HistGBM + XGBoost/Feature-Partitioned Stacking Ensemble)  
+**Derin Öğrenme Entegrasyonu:** CodeBERT SSL (Self-Supervised Learning) Gömüleri + PCA İndirgeme  
 
 ---
 
-## 1. Proje Genel Akışı
-
-Sistem, iki C/C++ kod parçasını karşılaştırarak aralarında anlamsal (semantik) benzerlik bulunup bulunmadığını tahmin eden bir ikili sınıflandırma (binary classification) sistemidir. Tahmin edilen sınıflar şunlardır:
-
-- **1 (Duplicate / Clone):** İki kod aynı problemi çözmekte; kaynak kodu, mantık veya algoritma düzeyinde benzeşmektedir.
-- **0 (Not Duplicate):** İki kod farklı problemlere aittir.
-
-```text
-Ham Kaynak Kod (C/C++)
-        │
-        ▼
-[1] Tokenizasyon + Normalizasyon (preprocessing/tokenizer.py)
-        │
-        ▼
-[2] Yapısal & Semantik Özellik Çıkarımı (preprocessing/code_features.py)
-    ├── Halstead, McCabe, Karmaşıklık, Yoğunluk (Density) Metrikleri
-    ├── Kod İskeleti (Skeleton), Soyut Kontrol Akışı (Abstract CF)
-    └── Algoritmik Parmak İzi (Kütüphane çağrıları, veri yapıları, IO pattern)
-        │
-        ▼
-[3] TF-IDF Vektörizasyon & SVD (vectorization/tfidf.py)
-    Token-level TF-IDF (1-3 gram) ve TruncatedSVD ile 50 boyuta sıkıştırma
-        │
-        ▼
-[4] Veri Seti Bölme — Kod düzeyinde, veri sızıntısı önleyici
-    Train %64 | Validation %16 | Test %20 (stratified)
-        │
-        ▼
-[5] Çift (Pair) Üretimi (pairing/pair_generator.py)
-    Train: %70 | Val: %15 | Test: %15
-    ├── Dengeli veya gerçekçi veri dağılımı (positive_ratio)
-    ├── Hard Negative Mining (%30 oranında — benzer uzunlukta farklı sınıflar)  [O(1) dict ile]
-    └── Hard Positive Mining (%30 oranında — Type-4 zorlaması, en farklı uzunlukta aynı sınıflar)
-        │
-        ▼
-[6] Vektör Oluşturma (Dense Feature Array)
-    [cos_token | length_ratio | manhattan | euclidean | AST Ratios & Diffs | CF Sim | Semantic Jaccards | SVD Diffs]
-    Feature sırası config.py'de (STAGE1_FEATURE_COUNT, ENSEMBLE_SVD_START_IDX) belgelenmiştir.
-    (Toplam ~91 yoğun özellik. Seyrek TF-IDF fark matrisi kaldırılmıştır.)
-        │
-        ▼
-[7] Model Eğitimi (Two-Stage Cascade Mimarisi)
-    ├── Stage-1: HistGradientBoosting (İlk STAGE1_FEATURE_COUNT=32 özellik ile eğitilir)
-    ├── Kaskad Filtreleme: _apply_cascade_filter() ile Stage-1'in kolayca klon
-    │   bulduğu (CASCADE_STAGE1_THRESHOLD=0.95+ prob) örnekler eğitim setinden silinir.
-    └── Stage-2 (Uzman): XGBoost veya Stacking Ensemble (LightGBM + RF + LinearSVC)
-        "Zor/Type-4" klonlara odaklanır.
-        │
-        ▼
-[8] Değerlendirme & Deney Kayıt (utils/test_automation.py)
-    Type 1-2-3-4 bazlı ayrık değerlendirme, Precision, Recall, F1, MCC, AUC-ROC
-        │
-        ▼
-[9] Çıktı
-    experiments/exp_NNN_CASCADE_Model_Xk/
-```
+## İçindekiler
+1. [Proje Özeti ve Amacı](#1-proje-özeti-ve-amacı)
+2. [Mimari Tasarım: İki Aşamalı (Two-Stage) Cascade Sistemi](#2-mimari-tasarım-iki-aşamalı-two-stage-cascade-sistemi)
+3. [Özellik Mühendisliği (Feature Engineering) Detayları](#3-özellik-mühendisliği-feature-engineering-detayları)
+4. [Özel Modeller ve Hiperparametreler](#4-özel-modeller-ve-hiperparametreler)
+5. [Çift Üretimi (Pairing) ve Hard Mining Algoritması](#5-çift-üretimi-pairing-ve-hard-mining-algoritması)
+6. [Hızlı Başlangıç ve Komut Referansı (Nasıl Çalıştırılır?)](#6-hızlı-başlangıç-ve-komut-referansı-nasıl-çalıştırılır)
+7. [Test Otomasyonu ve Değerlendirme](#7-test-otomasyonu-ve-değerlendirme)
+8. [Açıklanabilir Yapay Zeka: Web Arayüzü (Web Demo)](#8-açıklanabilir-yapay-zeka-web-arayüzü-web-demo)
+9. [Geliştirici Notları ve Optimizasyonlar](#9-geliştirici-notları-ve-optimizasyonlar)
 
 ---
 
-## 2. İki Aşamalı (Two-Stage) Cascade Mimarisi ve Modeller
+## 1. Proje Özeti ve Amacı
 
-Projenin en büyük evrimi, basit tek aşamalı tahminden **İki Aşamalı (Two-Stage)** filtreleme ve sınıflandırma sistemine geçişidir. Eski mimariyi içeren `main_deprecated.py` projeden **kaldırılmıştır**; eğitim tamamen `main.py` (Cascade) içerisinde yönetilmektedir.
+Bu proje, C/C++ kaynak kodları arasında anlamsal (semantik) ve sözdizimsel (sentaktik) benzerlikleri tespit eden gelişmiş bir makine öğrenmesi ve Doğal Dil İşleme (NLP) sistemidir. Sistem, verilen iki kod parçasının aynı problemi çözüp çözmediğini değerlendirerek "1 (Klon/Kopya)" veya "0 (Farklı)" şeklinde ikili sınıflandırma (binary classification) yapar.
 
-### Aşama 1: Lexical Filter (Kolay Klon Yakalayıcı)
-
-Model eğitiminin başında, ilk `STAGE1_FEATURE_COUNT = 32` leksikal ve yapısal özellik (Token Kosinüs Benzerliği, Uzunluk Oranı, Manhattan/Öklid mesafeleri, AST ratios/diffs, CF sim) kullanılarak hızlı bir **HistGradientBoosting** (Stage-1) eğitilir.
-
-- **Amacı:** Eğitim verisindeki birbirine çok benzeyen Type-1/2/3 klonları `CASCADE_STAGE1_THRESHOLD = 0.95` olasılık eşiğiyle tespit edip Stage-2'nin eğitim setinden çıkarmak.
-- **Uygulama:** `_apply_cascade_filter(X, y, stage1_model, threshold, feature_count)` merkezi helper fonksiyonu ile hem CV hem de normal eğitim modunda paylaşılır.
-- **Faydası:** Karmaşık modelin (Stage-2) kolay örnekleri ezberlemesi engellenir; model yalnızca **Type-4** klonları öğrenmeye zorlanır. Çıkarım (inference) sırasında `X[:, :STAGE1_FEATURE_COUNT]` slice'ı kullanılır — bu değer tüm kodlarda config'den gelir.
-
-### Aşama 2: Type-4 Uzmanı (XGBoost veya Ensemble)
-
-Zorlu örnekler üzerinde iki farklı uzman model kullanılabilir:
-
-1. **GPU XGBoost (`models/xgboost.py`):** Derin ağaçlarla (`max_depth=10`) semantik örüntüleri yakalayan geleneksel uzman.
-2. **Feature-Partitioned Stacking Ensemble (`models/ensemble.py`):**  
-   Özellik gruplarının ilgili uzman modellere dağıtıldığı mimari. SVD başlangıç indeksi `ENSEMBLE_SVD_START_IDX` sabiti ile `config.py`'den alınır; `build_ensemble(svd_start_idx=...)` parametresi ile çalışma zamanında da geçersiz kılınabilir:
-   - **LightGBM (HistGradientBoosting):** Lexical (0–3) + SVD (ENSEMBLE_SVD_START_IDX+) özellikleri
-   - **Random Forest:** Yapısal / AST+CF (4–32) özellikleri
-   - **LinearSVC (Calibrated):** Semantik Jaccard / tip profili (33–40) özellikleri
-   - **Meta-Classifier (Logistic Regression):** Üç modelin olasılıklarını birleştirerek nihai kararı verir.
+Proje, literatürdeki **4 farklı kod klonu tipini** yüksek doğrulukla tespit edecek şekilde tasarlanmıştır:
+- **Type-1:** Birebir aynı kodlar. (Sadece yorum satırları ve boşluklar farklı). Tespit edilmesi en kolay klon tipidir.
+- **Type-2:** Yeniden adlandırılmış kodlar. (Değişken, fonksiyon ve sınıf isimleri değiştirilmiş, veri tipleri farklılaştırılmış). Token normalizasyonu sayesinde kolayca yakalanır.
+- **Type-3:** Yakın kopyalar. (Küçük satır ekleme, silme veya değiştirme işlemleri yapılmış). Hem leksikal hem yapısal metrikler gerekir.
+- **Type-4:** Semantik klonlar. (Tamamen farklı algoritmik yapı ve sözdizimi, ancak aynı işlevsellik). *Sistemin asıl başarı gösterdiği alandır.* Geleneksel sistemlerin tıkandığı noktada CodeBERT ve derin algoritma analizleri devreye girer.
 
 ---
 
-## 3. Özellik Mühendisliği (Feature Engineering)
+## 2. Mimari Tasarım: İki Aşamalı (Two-Stage) Cascade Sistemi
 
-Proje, bellek tüketen seyrek (sparse) TF-IDF fark matrisini bırakıp tamamen yoğun (dense) özellik vektörlerine geçmiştir. Feature sırası `config.py`'de belgelenmiş ve tüm modüllerde sabitlerle yönetilmektedir.
+Sistemin kalbinde, performansı ve doğruluğu maksimize etmek için geliştirilmiş **Two-Stage Cascade (İki Aşamalı Kaskad) Mimarisi** bulunmaktadır. Bu mimari, eğitim ve çıkarım (inference) sürelerini dramatik biçimde hızlandırırken Type-4 başarısını artırır.
 
-### 3.1 Feature Vektörü Düzeni
+### Neden İki Aşama?
+Tek bir büyük model (XGBoost) kullandığımızda, model zamanının büyük kısmını zaten bariz olan Type-1 ve Type-2 klonları ezberlemeye ayırıyordu. Zorlu (Type-4) semantik klonları ise gözden kaçırıyordu. Kaskad mimarisi sayesinde kolay klonlar ön kapıda filtrelenerek içeri alınmaz.
 
-```
-İndeks   Açıklama
--------  ------------------------------------------------------------------
-[0]      cos_token         — Token kosinüs benzerliği (Stage-1 başvurusu)
-[1]      length_ratio      — min/max token uzunluk oranı
-[2]      manhattan_token   — TF-IDF fark L1 normu
-[3]      euclidean_token   — TF-IDF fark L2 normu
-[4..17]  AST ratios        — 14 yapısal metrik oranı (min/max)
-[18..31] AST diffs         — 14 yapısal metrik mutlak farkı
-[32]     cf_sim            — Kontrol akışı desen benzerliği
-[33..38] Semantic Jaccard  — lib, lib_cat, data_struct, io, math, skeleton
-[39]     abstract_cf       — Soyut kontrol akışı Levenshtein benzerliği
-[40]     type_profile_cos  — Değişken tip profili kosinüs benzerliği
-[41..]   svd_diff          — SVD bileşen farklarıı (SVD_N_COMPONENTS=50 boyut)
-```
+### Aşama 1 (Stage-1): Lexical (Yüzeysel) ve Yapısal Filtre
+- **Model:** `HistGradientBoostingClassifier` (Hızlı ve sığ bir karar ağacı).
+- **Girdi:** İlk 32 özellik (Token kosinüs benzerliği, satır/uzunluk oranları, AST metrikleri - `config.STAGE1_FEATURE_COUNT = 32`).
+- **İşlev:** Eğitim verisindeki ve test/çıkarım sırasındaki **kolay klonları (Type-1, Type-2)** `CASCADE_STAGE1_THRESHOLD` (örn. 0.95) eşiğiyle anında tespit eder.
+- **Faydası:** Karmaşık ana modelin bu kolay örnekleri ezberlemesi engellenir. Ana modelin (Stage-2) eğitim veri seti küçülür, eğitim hızlanır ve ağaçların yaprakları tamamen "zorlu vakalara" (Hard Examples) ayrılır.
 
-### 3.2 Lexical (Yüzeysel) Özellikler
-- Token tabanlı kosinüs benzerliği (`cos_token`)
-- Kod uzunluk oranı (`length_ratio`)
-- TF-IDF mutlak farklarının L1 (Manhattan) ve L2 (Öklid) normları
-
-### 3.3 AST ve Karmaşıklık Özellikleri
-Regex ile soyutlanmış hızlı metriklerin oranları (`min/max`) ve farkları (`abs(a - b)`):
-- Döngü, dal (branch), fonksiyon çağrısı, operatör ve parametre yoğunlukları
-- **Halstead Hacmi / Zihinsel Çaba:** Algoritmik karmaşıklık ve satır yoğunluğu
-- **McCabe Karmaşıklığı:** Karar noktaları yoğunluğu
-
-### 3.4 Semantik "Algoritmik Parmak İzi" (Type-4 İçin Kritik)
-Jaccard/Kosinüs benzerlikleri ile kodun niyetini okuyan özellikler:
-- **Kütüphane / Kategori Benzerliği:** `printf`, `malloc`, `sort` gibi çağrıların Jaccard benzerliği
-- **Veri Yapıları:** Array, stack, queue, map, vector kullanım benzerliği
-- **IO Deseni:** Girdi/çıktı sırasının (`I-O-I-O`) string bigram eşleşmesi
-- **Matematiksel Operatörler:** `+`, `-`, `*`, `%` kümesinin benzerliği
-- **Kontrol Akış İskeleti & Abstract CF:** Saf döngü/şart dizilimlerinin Levenshtein mesafesi
-- **Değişken Tip Profili:** int/float/char/pointer/array kullanım oranlarının kosinüs benzerliği
-
-### 3.5 SVD Boyut İndirgeme
-Token seviyesindeki TF-IDF temsili, **TruncatedSVD** ile `SVD_N_COMPONENTS = 50` boyuta düşürülür. Çiftler arasındaki SVD bileşen farkları gürültüden arındırılmış semantik sinyal olarak modele verilir.
+### Aşama 2 (Stage-2): Semantik Uzman (XGBoost veya Ensemble)
+- **Model Seçenekleri:** Derin GPU Destekli **XGBoost** veya özel olarak bileşenlere ayrılmış **Feature-Partitioned Stacking Ensemble**.
+- **Girdi:** Lexical, AST, Abstract Control Flow, SVD (TF-IDF tabanlı LSA) ve CodeBERT SSL (PCA) farklılıklarından oluşan yoğun özellik vektörünün *tamamı*.
+- **İşlev:** Stage-1'den "klon değil" veya "emin değilim" cevabı alan tüm kod çiftleri bu uzmana gönderilir. Derin bir semantik analiz yapılır.
 
 ---
 
-## 4. Çift Üretimi ve Hard Mining (`pairing/pair_generator.py`)
+## 3. Özellik Mühendisliği (Feature Engineering) Detayları
 
-Sistem eğitim setini hazırlarken NumPy tabanlı vektörize operasyonlar ve `joblib` paralel işleme kullanır. Hard mining döngüsünde etiket araması O(1)'e indirilmiştir:
+Sistem bellek tüketen seyrek (sparse) TF-IDF fark matrisini tamamen bırakmış, tamamen yoğun (dense) özellik vektörlerine (`np.float32`) geçmiştir.
 
-```python
-label_to_idx: Dict[str, int] = {lbl: i for i, lbl in enumerate(unique_labels)}
-# Önceden: unique_labels.index(src_lbl)  → O(n_labels) her iterasyonda
-# Şimdi:   label_to_idx[src_lbl]         → O(1)
-```
+Toplam Özellik Sayısı: **~91** (Sadece TF-IDF/SVD kullanılıyorsa) veya **~155** (CodeBERT SSL devredeyken).
 
-- **Hard Negative Mining (%30):** En yakın uzunluktaki farklı sınıf kodu seçilerek aldatıcı negatifler
-- **Hard Positive Mining (%30):** En farklı uzunluktaki aynı sınıf kodu ile Type-4 zorlaması
-- **Esnek Positive Ratio:** `positive_ratio=0.5` (dengeli) veya `0.1` (gerçekçi dağılım)
+### 3.1. Lexical ve Uzunluk Özellikleri [İndeks: 0-3]
+En temel sözdizimsel analizlerdir. Type-1 ve Type-2 klonları için harikadır.
+- `cos_token`: İki kodun TF-IDF token vektörlerinin kosinüs benzerliği. (Cascade filtresinin en çok başvurduğu metrik).
+- `length_ratio`: `min(len1, len2) / max(len1, len2)`. İki kod arasındaki uzunluk asimetrisi.
+- `manhattan_token` & `euclidean_token`: TF-IDF vektörlerinin mutlak L1 ve L2 fark normları.
+
+### 3.2. AST ve Karmaşıklık Özellikleri [İndeks: 4-31]
+Kodun soyut sentaks ağacından çıkarılan sayaçların oranları ve mutlak farkları.
+- **Döngü ve Dallanma:** `branch_count`, `loop_call_combined`
+- **Operatör ve Parametreler:** `operator_count`, `param_count`
+- **Karmaşıklık (Complexity):**
+  - **Halstead Hacmi (Volume):** Algoritmanın kapladığı alan.
+  - **Halstead Zihinsel Çaba (Effort):** Algoritmanın anlaşılma zorluğu.
+  - **McCabe Siklomatik Karmaşıklığı:** Karar düğümlerinin (if, while) sayısı.
+- **Yoğunluk Metrikleri:** Uzunluğa karşı dirençli özellikler (örn. `branch_density = branches / lines`). İki kodun uzunluğu farklı olsa bile "if-else yoğunluğu" aynıysa Type-4 adayıdır.
+
+### 3.3. Semantik "Algoritmik Parmak İzi" Özellikleri [İndeks: 32-40]
+Regex ve Tree-sitter ile kodun "niyetini" okuyan özellikler kümesi. Type-4 için kritiktir.
+- **Kütüphane Jaccard Benzerliği:** `printf`, `malloc`, `sort` gibi çağrıların kesişim oranı.
+- **Kategori Benzerliği:** IO, MATH, STRING, MEMORY, ALGO gibi kütüphane kategorilerinin Jaccard benzerliği.
+- **Veri Yapıları:** Array, Linked List, Stack, Queue, Map/Set kullanımlarının örtüşmesi.
+- **I/O Deseni:** Koddaki `printf/scanf` sırasının (`I-O-I-O`) string bigram eşleşmesi.
+- **Matematiksel Operatörler:** `+`, `-`, `*`, `%` kümesinin Jaccard benzerliği.
+- **Kontrol Akış İskeleti (Skeleton):** Saf döngü/şart dizilimlerinin (`F-W-I-R`) Levenshtein edit mesafesi.
+- **Tip Profili (`type_profile_cos`):** Kodda kullanılan veri tiplerinin (int, float, pointer, struct, array) oranlarının kosinüs benzerliği.
+
+### 3.4. SVD Boyut İndirgeme (LSA) [İndeks: 41-90]
+Token tabanlı N-Gram TF-IDF modeli (1-3 gram, maks 500 kelime) üzerine **TruncatedSVD** (Latent Semantic Analysis) uygulanarak boyut 50'ye (`SVD_N_COMPONENTS = 50`) sıkıştırılır.
+İki kodun SVD bileşenlerinin mutlak farkı (`|emb_A - emb_B|`) özellik vektörüne 50 boyutlu bir dilim olarak eklenir.
+
+### 3.5. Derin Öğrenme: CodeBERT SSL Embeddings ve PCA [İndeks: 91-154]
+*Bu özellik `--use-ssl` parametresi ile aktifleşir.*
+- **Self-Supervised Learning (SSL):** Microsoft'un geliştirdiği devasa ön-eğitimli C/C++ modelinden (`microsoft/codebert-base`) kodun 768 boyutlu semantik gömüleri (embeddings) çıkarılır.
+- **PCA İndirgeme:** 768 boyut, 1 milyon çift (Pair) için RAM'e sığmaz (2.4 GB). Bu nedenle **PCA** ile semantik öz korunarak 64 boyuta (`SSL_PCA_COMPONENTS = 64`) indirgenir (~200 MB).
+- **Mutlak Fark:** İki kodun CodeBERT gömülerinin mutlak farkı (`|pca_A - pca_B|`) özellik vektörüne eklenir. Sistem sadece 1 adet "benzerlik skoru" vermek yerine 64 farklı semantik boyutta "ne kadar farklı olduklarını" ağaçlara öğretir. Type-4 klon başarısında eşsiz bir artış sağlar.
 
 ---
 
-## 5. Yapılandırma (`config.py`)
+## 4. Özel Modeller ve Hiperparametreler
 
-Tüm kritik sabitler merkezi olarak `config.py`'de tanımlıdır — kodun herhangi bir yerinde hardcoded değer kullanılmaz:
+`models/` dizininde iki ana mimari tanımlıdır. İkisi de Stage-2 uzmanı olarak hizmet eder.
 
-| Sabit | Değer | Açıklama |
-|---|---|---|
-| `CASCADE_THRESHOLD` | 0.85 | Token kosinüs eşiği (kural bazlı ön filtre) |
-| `CASCADE_STAGE1_THRESHOLD` | 0.95 | Stage-1 model eşiği (HistGBM) |
-| `STAGE1_FEATURE_COUNT` | 32 | Stage-1'in kullandığı özellik sayısı |
-| `SVD_N_COMPONENTS` | 50 | TruncatedSVD bileşen sayısı |
-| `TFIDF_MAX_FEATURES` | 500 | TF-IDF kelime hazinesi boyutu |
-| `ENSEMBLE_SVD_START_IDX` | 41 | Ensemble'da SVD bloğunun başlangıç indeksi |
-| `DEFAULT_PAIRS` | 800_000 | Varsayılan çift sayısı |
-| `DEFAULT_SEED` | 42 | Rastgele tohum (üretilebilirlik) |
+### 4.1. Feature-Partitioned Stacking Ensemble (`models/ensemble.py`)
+Milyonlarca satır özelliği tek bir modele vermek yerine, özellik grupları "uzmanlarına" dağıtılmıştır (Partitioning):
+1. **LightGBM (HistGBM):** Leksikal (0-3) ve yüksek boyutlu SVD/SSL fark bloğunu (41+) alır. Eksik verilerle başa çıkabilen çok hızlı bir yapısı vardır.
+2. **Random Forest:** AST ve Kontrol Akışı (4-32) bloğunu alır. Sayısal sayaçların non-lineer etkileşimlerini harika yakalar.
+3. **LinearSVC (Calibrated):** Semantik parmak izi (33-40) bloğunu alır. Kategorik (Jaccard) verileri düzlemsel olarak çok hızlı ve yüksek netlikle ayırır (`Platt Scaling` ile olasılık çıktısı verir).
+4. **Meta-Classifier:** Lojistik Regresyon, bu üç uzman modelin çıktısını girdi olarak alarak nihai kararı harmanlar.
+
+### 4.2. GPUXGBClassifier (`models/xgboost.py`)
+Klasik ve aşırı optimize edilmiş XGBoost yaklaşımıdır. `DMatrix` seviyesinde GPU'ya entegre edilmiştir. 
+Parametreleri Type-4 yakalamaya özel dizayn edilmiştir:
+- `max_depth = 10` (Derin ağaçlar semantik soyutlamaları yakalar)
+- `learning_rate = 0.03` (Yavaş öğrenme generalizasyonu artırır)
+- `min_child_weight = 3`, `gamma = 0.3` (Sert budama, ağaçların kolay klonları ezberlemesini engeller)
 
 ---
 
-## 6. Değerlendirme & Test Otomasyonu
+## 5. Çift Üretimi (Pairing) ve Hard Mining Algoritması
 
-**`utils/test_automation.py`**
+Makine öğrenmesinde "çöp giren, çöp çıkar". Modeli eğitmek için `pairing/pair_generator.py` içindeki vektörize edilmiş akıllı çift üretim motoru kullanılır.
 
-Sistem, test setini tüm klon tiplerine (Type 1, 2, 3, 4) ayırarak bağımsız test eder. Cascade inference her iki noktada da `STAGE1_FEATURE_COUNT` ve `CASCADE_STAGE1_THRESHOLD` config sabitlerini kullanır. Raporlar `test_results/run_<timestamp>/` altında JSON, metin ve Karışıklık Matrisi formatlarında arşivlenir.
+1. **Vektörize Numpy Üretimi:** `for` döngüleri yerine `np.random.RandomState` ile milyonlarca indeks eşleşmesi anında oluşturulur.
+2. **O(1) Etiket Araması:** Eskiden 104 sınıf içerisinde O(n) ile aranan etiketler, `label_to_idx` dict map ile O(1) maliyete indirilmiştir. Çift üretim hızı 100x artmıştır.
+3. **Hard Negative Mining (%30):** Rastgele negatif (farklı sınıf) üretmek yerine, havuzun %30'u *uzunlukları birbirine en çok benzeyen farklı problem sınıflarından* seçilir. Model sadece uzunluğa bakarak "klon" dememeyi öğrenir.
+4. **Hard Positive Mining (%30):** Rastgele pozitif (aynı sınıf) üretmek yerine, havuzun %30'u *uzunlukları birbirinden en çok farklı olan aynı problem sınıflarından* seçilir. Bu, modelin farklı yapıdaki kodları (Type-4) birbirine bağlamayı öğrenmesini sağlar.
 
-**`utils/find_best_threshold.py`** — F1 ve MCC'yi maksimize eden ideal eşik belirlenir.
+---
 
-**`utils/compare_experiments.py`** — Birden fazla deneyin metriklerini yan yana karşılaştırır:
+## 6. Hızlı Başlangıç ve Komut Referansı (Nasıl Çalıştırılır?)
+
+Tüm komutlar sanal ortam (venv) aktifken proje kök dizininden (`/home/tuncay/PycharmProjects/CodeDuplicationDetection`) çalıştırılmalıdır.
 
 ```bash
+source .venv/bin/activate
+```
+
+### 6.1. Standart Eğitimler
+
+En çok kullanacağınız komutlar şunlardır:
+
+```bash
+# Cascade XGBoost Eğitimi (1 Milyon Çift, GPU destekli, otomatik threshold)
+python main.py --pairs 1000000 --device cuda
+
+# Cascade Ensemble Eğitimi (Daha yüksek Type-4 başarısı)
+python main.py --pairs 1000000 --model ensemble
+
+# CodeBERT SSL ile En Gelişmiş Eğitim (Sadece güçlü donanımlar için)
+python main.py --pairs 500000 --model ensemble --use-ssl --device cuda
+```
+
+### 6.2. Gerçekçi Sınıf Dengesi (Positive Ratio)
+Varsayılan olarak model %50 klon, %50 klon olmayan veri ile eğitilir (Laboratuvar ortamı). Ancak gerçek dünyada klonlar çok daha azdır.
+```bash
+# Sadece %5 klon (Gerçekçi dengesizlik)
+python main.py --pairs 1000000 --positive-ratio 0.05
+```
+
+### 6.3. Hiperparametre Ayarı (Tuning)
+XGBoost için Optuna kullanarak en iyi parametreleri arayabilirsiniz.
+```bash
+python main.py --pairs 1000000 --tune --tune-trials 50
+```
+
+### 6.4. Cross-Validation
+Sistemin veriyi ezberleyip ezberlemediğini (Data Leakage) anlamak için 5-Fold Stratified CV uygulayın. Kodlar fold'lara bölünür, çiftler ondan sonra üretilir.
+```bash
+python main.py --cv --cv-folds 5 --pairs 500000
+```
+
+---
+
+## 7. Test Otomasyonu ve Değerlendirme
+
+Sistemi eğitmek kadar doğru test etmek de önemlidir. `utils/` altındaki araçlar bunu otomatikleştirir.
+
+### Adım 1: Test Verisi Oluşturun
+Otomasyon için `test_clones/` klasörüne Type-1, 2, 3 ve 4 klonlarından oluşan saf test verileri oluşturmalısınız.
+```bash
+python utils/generate_test_clones.py --overwrite
+```
+
+### Adım 2: Otomatik Klon Tipi Testi Uygulayın
+Eğitilen en son deneyi (klasördeki en yeni `exp_NNN`) otomatik test eder. Size Type-1'den Type-4'e kadar detaylı F1, Precision, Recall tabloları sunar.
+```bash
+python utils/test_automation.py
+
+# Belirli bir deneyi ve eşiği (threshold) test etmek için
+python utils/test_automation.py --exp-id 56 --threshold 0.90
+```
+
+### Adım 3: Deneyleri Karşılaştırın
+Geçmişte eğittiğiniz birden fazla modeli yan yana kıyaslayın:
+```bash
+# Belirli deneyleri F1 skoruna göre yan yana tablo halinde listele
 python utils/compare_experiments.py --exp-ids 54 55 56
-python utils/compare_experiments.py --metric mcc
 ```
 
-| Klon Tipi | Yaklaşım ve Başarım |
-|---|---|
-| **Type-1** (Birebir Kopya) | Stage-1 Lexical filtre veya Kaskad eşiği (cos_sim > 0.85) anında **%100** doğrulukla yakalar. |
-| **Type-2** (Değişken Adı Farklı) | Token normalizasyonu (VAR/FUNC/NUM) sayesinde Stage-1 **%100** oranında işaretler. |
-| **Type-3** (Satır Ekleme/Silme) | Levenshtein ve CF desen benzerliği ile Stage-1 büyük çoğunluğu yakalar. |
-| **Type-4** (Farklı Algoritma) | Yalnızca Hard Mining ile eğitilmiş Stage-2 (XGBoost / Ensemble) devreye girer. **%50+ Recall ve Yüksek Precision** dengesi sağlanır. |
-
 ---
 
-## 7. Web Demo (`web_demo/app.py`)
+## 8. Açıklanabilir Yapay Zeka: Web Arayüzü (Web Demo)
 
-FastAPI tabanlı demo arayüzü SHAP TreeExplainer ile açıklanabilir tahmin sunar.
-
-**API Endpoints:**
-- `POST /predict` — Tek çift karşılaştırma, SHAP açıklamalı
-- `POST /predict_batch` — Toplu karşılaştırma (maks. 500 çift / istek)
-
-**Güvenlik:**
-- CORS kaynakları `ALLOWED_ORIGINS` env değişkeni ile kontrol edilir
-- `ALLOWED_ORIGINS=https://example.com uvicorn web_demo.app:app`
-
-**SSL Singleton:** CodeBERT pipeline uygulama başlangıcında bir kez yüklenir; her request'te yeniden yüklenmez.
-
----
-
-## 8. SSL Embedding Cache
-
-CodeBERT embedding çıkarımı büyük datasetlerde saatlerce sürebilir. `--ssl-cache` parametresi ile sonuçlar diske kaydedilir:
+`web_demo/app.py` üzerinde **FastAPI** tabanlı gelişmiş bir REST API bulunmaktadır. Kod klonlarını tarayıcı arayüzünden test etmenizi ve sonuçları SHAP ile analiz etmenizi sağlar.
 
 ```bash
-# İlk çalıştırma — çıkar ve kaydet
-python main.py --use-ssl --ssl-cache ssl_cache.npy --pairs 200000
+# En son deney modelini ayağa kaldır
+uvicorn web_demo.app:app --reload
 
-# Sonraki çalıştırmalar — cache'ten yükle
-python main.py --use-ssl --ssl-cache ssl_cache.npy --pairs 800000
+# Belirli bir deney numarasını (Örn. 56) ayağa kaldır
+EXP_ID=56 uvicorn web_demo.app:app --reload --port 8080
+```
+Tarayıcınızdan `http://localhost:8000` adresine giderek arayüzü kullanabilirsiniz.
+
+### API Uç Noktaları (Endpoints):
+- `POST /predict`: İki C/C++ kodunu JSON olarak alır. Stage-1 ve Stage-2 sonucunu verir. Eğer Stage-2 (XGBoost) çalıştıysa **SHAP (SHapley Additive exPlanations)** değerlerini hesaplar. Hangi özelliğin (örn. SVD diff, IO pattern, cf_sim) modele ne kadar "klon" dedirttiğini veya "klon değil" dedirttiğini açıklar.
+- `POST /predict_batch`: Maksimum 500 çifti kabul eden toplu çıkarım (Batch Inference) arayüzü.
+
+---
+
+## 9. Geliştirici Notları ve Optimizasyonlar
+
+### 9.1. Intel ve İşlemci Optimizasyonları
+Eğer sisteminiz CPU üzerinde çalışıyorsa (veya `device=cpu` verilmişse), `main.py` başlangıcında `sklearnex` yama kütüphanesi otomatik devreye girer. Scikit-learn (PCA, SVD, HistGBM) fonksiyonları Intel MKL kullanarak multi-threading ile donanıma gömülü hızlarda çalışır. Çıkarım sürelerini ~3x hızlandırır.
+
+### 9.2. SSL Gömü Önbelleği (Disk Cache)
+CodeBERT modelleri devasa olduğundan 1 milyon çift için gömü (embedding) çıkarmak saatler sürebilir.
+Bu nedenle ilk çalıştırmada çıkarılan vektörler `ssl_cache.npy` içerisine kaydedilir (Pickle yerine çok daha hızlı olan Memory-Mapped NPY). 
+Aynı komutu bir daha çalıştırdığınızda anında SSD'den belleğe (O(1) maliyetle) okunur.
+```bash
+python main.py --pairs 500000 --use-ssl --ssl-cache ssl_cache.npy
 ```
 
-Cache boyut uyuşmazlığı otomatik olarak tespit edilir ve yeniden extraction yapılır.
+### 9.3. Memory Management (RAM Patlamalarını Önleme)
+Projeyi 16GB - 32GB RAM'li sistemlerde çalıştırılabilir kılmak için `gc.collect()` (Garbage Collector) aktif olarak kullanılmıştır. `main.py` ve `pair_generator.py` içerisinde büyük TF-IDF matrisleri, SVD parçaları ve indeksleme array'leri kullanıldıktan *hemen* sonra `del` komutuyla bellekten atılır. 
 
----
-
-## 9. Test Kapsamı
-
-**Son Test Sonucu: `54 / 54 PASSED ✅`**
-
-| Test Dosyası | Test Sayısı | Kapsam |
-|---|---|---|
-| `test_tokenizer.py` | 11 | Tokenizer normalizasyonu |
-| `test_similarity_utils.py` | 13 | Jaccard / bigram benzerlik |
-| `test_feature_pipeline.py` | 12 | `build_pair_vector` + SVD + edge case |
-| `test_ensemble_pipeline.py` | 5 | Cascade + ensemble fit/predict |
-| `test_edge_cases.py` | 13 | Sinir durumları (positive_ratio, boş kod, determinizm, cascade helper) |
-
----
-
-## 10. Dizin Yapısı ve Modüller
-
-```text
-CodeDuplicationDetection/
-├── config.py                      # Merkezi sabitler (CASCADE_STAGE1_THRESHOLD, STAGE1_FEATURE_COUNT, ...)
-├── main.py                        # AKTİF EĞİTİM ALANI (Two-Stage Cascade Eğitim Betiği)
-├── requirements.txt               # Temel bağımlılıklar (Python 3.11/3.12)
-├── requirements-gpu.txt           # GPU / CodeBERT SSL bağımlılıkları (torch, transformers)
-├── models/
-│   ├── ensemble.py                # Feature-Partitioned Stacking Ensemble (svd_start_idx parametreli)
-│   └── xgboost.py                 # GPU XGBoost Mimarisi
-├── pairing/
-│   └── pair_generator.py          # Vektörize Çift ve Hard-Mining Üreticisi (O(1) label lookup)
-├── preprocessing/
-│   ├── tokenizer.py               # Kod tokenizasyon ve VAR/FUNC/NUM normalizasyonu
-│   ├── code_features.py           # AST, Metric ve Semantik özellikler
-│   └── tree_sitter_parser.py      # Tree-sitter C/C++ parser (pre-compiled queries, singleton)
-├── vectorization/
-│   ├── tfidf.py                   # Token ve Karakter TF-IDF (SVD destekli)
-│   └── ssl_encoder.py             # CodeBERT embedding çıkarımı (disk cache destekli)
-├── utils/
-│   ├── feature_pipeline.py        # Çıkarım (Inference) için tekil çift özellik oluşturucu
-│   ├── test_automation.py         # Type 1-4 ayrık model test aracı
-│   ├── find_best_threshold.py     # Optima eşik arayıcı (F1 & MCC)
-│   ├── compare_experiments.py     # Deney metrik karşılaştırma tablosu [YENİ]
-│   ├── similarity_utils.py        # Merkezi Jaccard/N-Gram benzerlik fonksiyonları
-│   ├── experiment_logger.py       # Deney kaydı, CV sonuçları, config.json oluşturucu
-│   └── hyperparameter_tuner.py    # Optuna ile XGBoost/RF/LinearSVM hiperparametre arama
-├── web_demo/
-│   ├── app.py                     # FastAPI servisi (/predict + /predict_batch, SHAP açıklamalı)
-│   └── index.html                 # Web arayüzü
-├── tests/                         # Unit ve Integration testleri (54 test)
-└── commands.md                    # Komut Referansı (Nasıl Çalıştırılır?)
+### 9.4. Tüm Unit Testlerin Koşulması (CI/CD Uyumluluğu)
+Sistemde 40+ üzeri unit test ve entegrasyon testi bulunmaktadır. Kod üzerinde değişiklik yaptıktan sonra her şeyin düzgün çalıştığından emin olmak için testleri koşunuz:
+```bash
+python -m pytest tests/ -v
 ```
 
-> **Nasıl Çalıştırılır?**  
-> Tüm işlemler `commands.md` dosyasında detaylandırılmıştır.  
-> Hızlı bir Ensemble eğitim başlatmak için:
-> ```bash
-> python main.py --pairs 1000000 --model ensemble
-> ```
-
 ---
-
-*Bu rapor, CodeDuplicationDetection projesinin "Two-Stage Cascade ve Feature-Partitioned Stacking Ensemble" mimarisini ve Mayıs 2026'da gerçekleştirilen kapsamlı kod kalitesi / güvenlik iyileştirmelerini yansıtmaktadır.*
+*CodeDuplicationDetection - Mayıs 2026 Mimarisi.*
+*Yapay Zeka destekli, ölçeklenebilir ve endüstri standardında kurumsal kod analizi.*

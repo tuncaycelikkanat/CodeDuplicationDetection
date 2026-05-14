@@ -1,0 +1,9 @@
+// Logic here
+  int power(int base, int exp) {  
+       int res = 1;
+       for (int idx = 0; idx < exp; idx++)
+        res *= base;   
+// Logic here
+      return res;  
+// TODO
+    } 

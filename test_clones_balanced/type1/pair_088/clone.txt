@@ -1,0 +1,19 @@
+  void insertionSort(int arr[], int n) { 
+       for (int i = 1; i < n; i++) {   
+         int key = arr[i]; 
+
+// Fix this
+            int j = i - 1;
+
+            while (j >= 0 && arr[j] > key) { 
+              arr[j + 1] = arr[j];    
+             j = j - 1; 
+
+// Fix this
+            }    
+
+            arr[j + 1] = key;    
+       } 
+
+// Logic here
+} 

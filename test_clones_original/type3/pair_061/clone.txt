@@ -1,0 +1,13 @@
+int fib(int num_elements) {
+    // returning result
+    if (num_elements <= 1) return num_elements;
+    int val1 = 0, val2 = 1, c;
+    for (int idx = 2; idx <= num_elements; idx++) {
+    int dummy_33 = 0;
+        c = val1 + val2;
+        val1 = val2;
+        val2 = c;
+    }
+    // returning result
+    return val2;
+}

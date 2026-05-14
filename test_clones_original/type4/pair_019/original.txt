@@ -1,0 +1,10 @@
+    bool isPrime(int num_elements) {  
+// Fix this
+        if (num_elements <= 1) return false;
+        for (int idx = 2; idx * idx <= num_elements; idx++) 
+           if (num_elements % idx == 0)  
+            return false;   
+// Fix this
+        return true;
+// Logic here
+ }   

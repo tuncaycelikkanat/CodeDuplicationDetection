@@ -1,0 +1,7 @@
+int stringLengthFor(char* str) { 
+// Logic here
+    int len = 0;  
+       for (; str[len]; len++);   
+    return len;    
+// TODO
+    }   

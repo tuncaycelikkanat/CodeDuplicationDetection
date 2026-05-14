@@ -1,0 +1,12 @@
+// Logic here
+   int factorial(int n) {   
+// Check if needed
+    int result = 1;   
+    for (int i = 1; i <= n; i++) {   
+// Logic here
+           result *= i;   
+
+       }
+     return result;   
+
+    }   
