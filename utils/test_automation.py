@@ -126,10 +126,18 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
             use_ssl = config.get("use_ssl", False)
             
     ssl_pipeline = None
+    ssl_pca = None
     if use_ssl:
         print("  → Loading SSL pipeline for inference...")
         from vectorization.ssl_encoder import build_ssl_pipeline
         ssl_pipeline = build_ssl_pipeline(device="cpu") # Inference on CPU for testing by default
+        _ssl_pca_path = os.path.join(exp_path, "ssl_pca.pkl")
+        if os.path.exists(_ssl_pca_path):
+            with open(_ssl_pca_path, "rb") as f:
+                ssl_pca = pickle.load(f)
+            print(f"  → ssl_pca loaded ({ssl_pca.n_components} components)")
+        else:
+            print("  ⚠️ ssl_pca.pkl bulunamadi — eski 2-skaler mod")
 
     char_vectorizer = None
     char_tfidf_path = os.path.join(exp_path, "char_tfidf.pkl")
@@ -196,7 +204,8 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
                 vectorizer,
                 char_vectorizer=char_vectorizer,
                 svd_model=svd_model,
-                ssl_pipeline=ssl_pipeline
+                ssl_pipeline=ssl_pipeline,
+                ssl_pca=ssl_pca
             )
 
             # cos_token: build_pair_vector'da extra'nın ilk elemanı

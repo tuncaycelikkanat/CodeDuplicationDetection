@@ -25,25 +25,27 @@ def build_pair_vector(
     char_vectorizer=None,
     svd_model=None,
     ssl_pipeline=None,
+    ssl_pca=None,
 ) -> np.ndarray:
     """
-    Dense feature extraction — bir çift kod snippet için.
-    Web Demo ve Automation scriptleri tarafından kullanılır.
+    Dense feature extraction --- bir cift kod snippet icin.
+    Web Demo ve Automation scriptleri tarafindan kullanilir.
 
-    ⚠️  DENSE ARRAY döndürür (np.float32, shape=(1, F)) — artık sparse matris yok.
+    Dondurulen array pair_generator.py ile birebir ayni feature sirasi:
+        [0]      cos_token         <- CASCADE FILTRESI BURAYA BAKAR
+        [1]      length_ratio
+        [2]      manhattan_token
+        [3]      euclidean_token
+        [4..31]  AST ratios + diffs  (STAGE1_FEATURE_COUNT siniri)
+        [32]     cf_sim
+        [33..39] Semantic Jaccard x6 + abstract CF
+        [40]     type_profile_cosine
+        [41..90] svd_diff            (sadece svd_model verilmisse, 50 boyut)
+        [91..154] ssl_pca_diff       (sadece ssl_pipeline + ssl_pca verilmisse, 64 boyut)
 
-    ⚠️  char_vectorizer: Eğitim sırasında bu parametre kullanılmadıysa
-        burada da None geçirilmelidir. Aksi halde feature boyutu eğitimden
-        farklı olur ve model predict_proba'da hata verir.
-
-    Feature sırası (pair_generator.py ile birebir eşleştirilmiştir):
-        [0]  cos_token         : token cosine similarity  ← CASCADE FİLTRESİ BURAYA BAKAR
-        [1]  length_ratio      : min/max token uzunluk oranı
-        [2]  manhattan_token   : L1 norm of token diff
-        [3]  euclidean_token   : L2 norm of token diff
-        [4..4+2*N-1] ast_ratios + ast_diffs  (N = len(FEATURE_NAMES))
-        [...]  cf_sim, semantic Jaccard x5, type_profile_cos
-        [-50:]  svd_diff        (sadece svd_model verilmişse)
+    UYARI — char_vectorizer: Egitimde kullanilmadiysa None gecirin.
+    UYARI — ssl_pca: Egitimde fit edilmis PCA nesnesi.  ssl_pipeline ile birlikte
+             verilmezse SSL ozellikleri feature vektorune eklenmez (boyut uyumsuzlugu).
     """
     def preprocess(code):
         tokens = tokenize(code)
@@ -124,11 +126,33 @@ def build_pair_vector(
         svd_diff = np.abs(svd1 - svd2)
         extra.extend(svd_diff.tolist())
 
-    # SSL özellikleri (opsiyonel)
-    if ssl_pipeline is not None:
+    # SSL ozellikleri (opsiyonel) — PCA ile indirgenmis abs diff vektoru
+    if ssl_pipeline is not None and ssl_pca is not None:
         ssl_tokenizer, ssl_model = ssl_pipeline
         import torch
-        inputs = ssl_tokenizer([code1, code2], return_tensors="pt", max_length=512, truncation=True, padding=True)
+        inputs = ssl_tokenizer(
+            [code1, code2], return_tensors="pt",
+            max_length=512, truncation=True, padding=True
+        )
+        device = next(ssl_model.parameters()).device
+        inputs = {k: v.to(device) for k, v in inputs.items()}
+        with torch.no_grad():
+            outputs = ssl_model(**inputs)
+            cls_emb = outputs.last_hidden_state[:, 0, :].cpu().numpy()  # (2, 768)
+        emb1, emb2 = cls_emb[0:1], cls_emb[1:2]  # (1, 768) her biri
+        # PCA indirgeme (egitimde fit edilmis)
+        emb1_r = ssl_pca.transform(emb1).astype(np.float32)  # (1, ssl_dim)
+        emb2_r = ssl_pca.transform(emb2).astype(np.float32)  # (1, ssl_dim)
+        ssl_diff = np.abs(emb1_r - emb2_r)[0]                # (ssl_dim,)
+        extra.extend(ssl_diff.tolist())
+    elif ssl_pipeline is not None and ssl_pca is None:
+        # Geriye donuk uyumluluk: PCA yoksa 2 skaler (eski davranis)
+        ssl_tokenizer, ssl_model = ssl_pipeline
+        import torch
+        inputs = ssl_tokenizer(
+            [code1, code2], return_tensors="pt",
+            max_length=512, truncation=True, padding=True
+        )
         device = next(ssl_model.parameters()).device
         inputs = {k: v.to(device) for k, v in inputs.items()}
         with torch.no_grad():

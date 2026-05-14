@@ -119,8 +119,9 @@ if os.path.exists(stage1_path):
 else:
     print("   ⚠️  No Stage-1 Lexical model found")
 
-# Load SSL pipeline (singleton — başlangıçta yüklenir, her requestte yeniden yüklenmez)
+# Load SSL pipeline (singleton — baslangiçta yuklenir, her requestte yeniden yuklenmez)
 ssl_pipeline = None
+ssl_pca = None
 config_path = f"{EXP_PATH}/config.json"
 if os.path.exists(config_path):
     with open(config_path, "r") as f:
@@ -132,7 +133,16 @@ if os.path.exists(config_path):
             ssl_pipeline = build_ssl_pipeline(device="cpu")
             print("   ✅ SSL pipeline loaded")
         except Exception as e:
-            print(f"   ⚠️ SSL pipeline yüklenemedi: {e}")
+            print(f"   ⚠️ SSL pipeline yuklenemedi: {e}")
+        # ssl_pca yukle
+        _ssl_pca_path = f"{EXP_PATH}/ssl_pca.pkl"
+        if os.path.exists(_ssl_pca_path):
+            with open(_ssl_pca_path, "rb") as f:
+                ssl_pca = pickle.load(f)
+            print(f"   ✅ SSL PCA loaded ({ssl_pca.n_components} components, "
+                  f"explained var: {ssl_pca.explained_variance_ratio_.sum():.2%})")
+        else:
+            print("   ⚠️ ssl_pca.pkl bulunamadi — eski 2-skaler mod kullanilacak")
 
 
 
@@ -188,6 +198,11 @@ def _build_feature_names():
         for i in range(svd_model.n_components):
             names.append(f"svd_diff_{i}")
 
+    # SSL PCA farklari
+    if ssl_pipeline is not None and ssl_pca is not None:
+        for i in range(ssl_pca.n_components):
+            names.append(f"ssl_pca_diff_{i}")
+
     return names
 
 
@@ -234,7 +249,10 @@ def predict(pair: CodePair):
         if not raw1 or not raw2:
             raise HTTPException(status_code=400, detail="Both code snippets are required.")
 
-        X_pair = build_pair_vector(raw1, raw2, vectorizer, char_vectorizer, svd_model)
+        X_pair = build_pair_vector(
+            raw1, raw2, vectorizer, char_vectorizer, svd_model,
+            ssl_pipeline=ssl_pipeline, ssl_pca=ssl_pca
+        )
 
         # ---- CASCADE modunda stage1 ön-filtresi ----
         if stage1_model is not None:
@@ -348,7 +366,10 @@ def predict_batch(batch: CodePairBatch):
             results.append({"error": "Both code1 and code2 are required."})
             continue
         try:
-            X_pair = build_pair_vector(code1, code2, vectorizer, char_vectorizer, svd_model)
+            X_pair = build_pair_vector(
+                code1, code2, vectorizer, char_vectorizer, svd_model,
+                ssl_pipeline=ssl_pipeline, ssl_pca=ssl_pca
+            )
 
             if stage1_model is not None:
                 X_lexical = X_pair[:, :STAGE1_FEATURE_COUNT]

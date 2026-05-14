@@ -37,16 +37,24 @@ DEFAULT_POSITIVE_RATIO = 0.5
 # ── Ensemble Mimarisi ─────────────────────────────────────────────────────────
 # Feature vektöründeki SVD bloğunun başlangıç indeksi.
 # pair_generator.py feature sırası:
-#   [0..3]   Lexical (cos_token, length_ratio, manhattan, euclidean)
-#   [4..31]  AST ratios (14) + AST diffs (14)
-#   [32]     CF pattern similarity
-#   [33..39] Semantic Jaccard x6 + abstract CF
-#   [40]     Type profile cosine
-#   [41..]   SVD diff (SVD_N_COMPONENTS boyutunda)
+#   [0..3]    Lexical (cos_token, length_ratio, manhattan, euclidean)
+#   [4..31]   AST ratios (14) + AST diffs (14)
+#   [32]      CF pattern similarity
+#   [33..39]  Semantic Jaccard x6 + abstract CF
+#   [40]      Type profile cosine
+#   [41..90]  SVD diff (SVD_N_COMPONENTS boyutunda)
+#   [91..154] SSL PCA diff (SSL_PCA_COMPONENTS boyutunda) — sadece --use-ssl ile
 ENSEMBLE_SVD_START_IDX = 41
 
 # Stage-1 model için kullanılan özellik sayısı (lexical + AST + CF).
 STAGE1_FEATURE_COUNT = 32
+
+# ── SSL Gömme Boyutu Azaltma ──────────────────────────────────────────────────
+# CodeBERT 768-D embedding'leri PCA ile bu boyuta indirgenir.
+# Bellek: SSL_PCA_COMPONENTS × N_pairs × 4 byte
+#   64  → ~200 MB (800K çift için) — önerilen
+#   128 → ~400 MB — daha iyi Type-4 için denenebilir
+SSL_PCA_COMPONENTS = 64
 
 # ── Donanım ───────────────────────────────────────────────────────────────────
 OMP_NUM_THREADS = 8

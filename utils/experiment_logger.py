@@ -79,6 +79,7 @@ def save_experiment(
     y_val=None,
     y_val_pred=None,
     use_ssl=False,
+    ssl_pca=None,
 ):
     exp_dir = os.path.join(base_dir, exp_name)
     os.makedirs(exp_dir, exist_ok=True)
@@ -179,6 +180,12 @@ def save_experiment(
         for name, vec in extra_vectorizers.items():
             with open(os.path.join(exp_dir, f"{name}.pkl"), "wb") as f:
                 pickle.dump(vec, f)
+
+    if ssl_pca is not None:
+        with open(os.path.join(exp_dir, "ssl_pca.pkl"), "wb") as f:
+            pickle.dump(ssl_pca, f)
+        print(f"   ssl_pca: saved ({ssl_pca.n_components} components, "
+              f"explained var: {ssl_pca.explained_variance_ratio_.sum():.2%})")
 
     # ================= SUMMARY =================
     print(f"\n✅ Experiment saved: {exp_dir}")

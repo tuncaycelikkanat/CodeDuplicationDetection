@@ -11,7 +11,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import (
     CASCADE_THRESHOLD, CASCADE_STAGE1_THRESHOLD, STAGE1_FEATURE_COUNT,
     SVD_N_COMPONENTS, DEFAULT_PAIRS, DEFAULT_SEED, DEFAULT_TEST_SIZE,
-    DEFAULT_CV_FOLDS, OMP_NUM_THREADS, MKL_NUM_THREADS, ENSEMBLE_SVD_START_IDX
+    DEFAULT_CV_FOLDS, OMP_NUM_THREADS, MKL_NUM_THREADS, ENSEMBLE_SVD_START_IDX,
+    SSL_PCA_COMPONENTS,
 )
 
 def apply_intel_optimizations():
@@ -347,14 +348,25 @@ def main():
     t_features = time.time() - t_phase
 
     ssl_embeddings_all = None
+    ssl_pca = None
     if args.use_ssl:
         from vectorization.ssl_encoder import extract_ssl_embeddings
+        from sklearn.decomposition import PCA
         print("---> Extracting SSL embeddings...")
         t_phase_ssl = time.time()
-        ssl_embeddings_all = extract_ssl_embeddings(
+        raw_ssl = extract_ssl_embeddings(
             all_codes, device=args.device, cache_path=args.ssl_cache
         )
-        print(f"  → SSL Embeddings ready in {time.time() - t_phase_ssl:.1f}s")
+        print(f"  → SSL Embeddings shape: {raw_ssl.shape}  ({time.time() - t_phase_ssl:.1f}s)")
+
+        # PCA ile 768-D -> SSL_PCA_COMPONENTS-D indirgeme
+        print(f"  → Fitting PCA: 768 → {SSL_PCA_COMPONENTS} dims...")
+        t_pca = time.time()
+        ssl_pca = PCA(n_components=SSL_PCA_COMPONENTS, random_state=DEFAULT_SEED)
+        ssl_embeddings_all = ssl_pca.fit_transform(raw_ssl).astype(np.float32)
+        explained = ssl_pca.explained_variance_ratio_.sum()
+        print(f"  → PCA done in {time.time() - t_pca:.1f}s | Explained variance: {explained:.2%}")
+        del raw_ssl
         t_features += (time.time() - t_phase_ssl)
 
     # Keep raw codes split for new features (edit distance, line/char ratios)
@@ -634,7 +646,8 @@ def main():
         timing_info=timing_info,
         extra_vectorizers={"svd": svd},
         stage1_model=stage1_model,
-        use_ssl=args.use_ssl
+        use_ssl=args.use_ssl,
+        ssl_pca=ssl_pca,
     )
 
 if __name__ == "__main__":

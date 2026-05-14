@@ -329,24 +329,17 @@ def generate_pairs(
         extra_cols.append(svd_diff.astype(np.float32))
         del svd_i, svd_j, svd_diff
 
-    # ---- Step 9.6: SSL Embeddings Cosine Similarity (if provided) ----
+    # ---- Step 9.6: SSL Embeddings Abs Diff (if provided) ----
+    # ssl_embeddings burada zaten PCA ile indirgenmis (N, SSL_PCA_COMPONENTS) formatindadir.
+    # 2 skaler (cos+euclidean) yerine tam abs fark vektoru kullaniliyor:
+    # model her boyuttaki farki ayri ayri ogrenir -> Type-4 icin cok daha zengin sinyal.
     if ssl_embeddings is not None:
-        print("  → Computing SSL embeddings similarity (batch)...")
-        ssl_i = ssl_embeddings[all_i]
-        ssl_j = ssl_embeddings[all_j]
-        dot = np.sum(ssl_i * ssl_j, axis=1)
-        norm_i = np.linalg.norm(ssl_i, axis=1)
-        norm_j = np.linalg.norm(ssl_j, axis=1)
-        denom = norm_i * norm_j
-        denom[denom == 0] = 1.0
-        ssl_cos = dot / denom
-        
-        ssl_diff = ssl_i - ssl_j
-        ssl_euclidean = np.sqrt(np.sum(ssl_diff**2, axis=1))
-
-        extra_cols.append(ssl_cos.reshape(-1, 1).astype(np.float32))
-        extra_cols.append(ssl_euclidean.reshape(-1, 1).astype(np.float32))
-        del ssl_i, ssl_j, dot, norm_i, norm_j, denom, ssl_cos, ssl_diff, ssl_euclidean
+        print("  → Computing SSL embedding abs diff (batch)...")
+        ssl_i = ssl_embeddings[all_i]   # (num_pairs, ssl_dim)
+        ssl_j = ssl_embeddings[all_j]   # (num_pairs, ssl_dim)
+        ssl_abs_diff = np.abs(ssl_i - ssl_j).astype(np.float32)
+        extra_cols.append(ssl_abs_diff)
+        del ssl_i, ssl_j, ssl_abs_diff
 
     # ---- Step 10: Combine all features ----
     print("  → Combining features...")
