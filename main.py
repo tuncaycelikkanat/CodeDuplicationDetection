@@ -8,7 +8,11 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import CASCADE_THRESHOLD, SVD_N_COMPONENTS, DEFAULT_PAIRS, DEFAULT_SEED, DEFAULT_TEST_SIZE, DEFAULT_CV_FOLDS, OMP_NUM_THREADS, MKL_NUM_THREADS
+from config import (
+    CASCADE_THRESHOLD, CASCADE_STAGE1_THRESHOLD, STAGE1_FEATURE_COUNT,
+    SVD_N_COMPONENTS, DEFAULT_PAIRS, DEFAULT_SEED, DEFAULT_TEST_SIZE,
+    DEFAULT_CV_FOLDS, OMP_NUM_THREADS, MKL_NUM_THREADS, ENSEMBLE_SVD_START_IDX
+)
 
 def apply_intel_optimizations():
     # Optimize threads for Intel processors (P-Cores)
@@ -39,6 +43,36 @@ from utils.experiment_logger import (
     save_experiment,
     save_cv_results
 )
+
+
+# <----------> CASCADE FILTER HELPER <---------->
+def _apply_cascade_filter(
+    X: np.ndarray,
+    y: np.ndarray,
+    stage1_model,
+    threshold: float = CASCADE_STAGE1_THRESHOLD,
+    feature_count: int = STAGE1_FEATURE_COUNT,
+) -> tuple:
+    """
+    Stage-1 (HistGradientBoosting) modelini kullanarak 'kolay klonları' filtreler.
+    Yüksek olasılıklı pozitif çiftleri egitim setinden çıkarır; model yalnızca
+    zor / Type-4 örnekler üzerinde egitilir.
+
+    Args:
+        X: Feature matrisi (float32 dense array)
+        y: Etiket dizisi
+        stage1_model: Eğitimli Stage-1 modeli
+        threshold: Kolay klon eşiği (varsayılan: CASCADE_STAGE1_THRESHOLD)
+        feature_count: Stage-1'in kullandığı özellik sayısı (varsayılan: STAGE1_FEATURE_COUNT)
+
+    Returns:
+        (X_filtered, y_filtered): Kolay klonlar çıkarılmış matris ve etiketler
+    """
+    X_stage1 = X[:, :feature_count]
+    y_prob_stage1 = stage1_model.predict_proba(X_stage1)[:, 1]
+    easy_pos_mask = (y == 1) & (y_prob_stage1 >= threshold)
+    keep_mask = ~easy_pos_mask
+    return X[keep_mask], y[keep_mask], easy_pos_mask.sum()
 
 
 # <----------> ARGUMENT PARSING <---------->
@@ -73,6 +107,9 @@ def parse_args():
                              "Used for realistic class imbalance simulation.")
     parser.add_argument("--use-ssl", action="store_true",
                         help="Enable CodeBERT SSL embeddings extraction (Requires Transformers/Torch)")
+    parser.add_argument("--ssl-cache", type=str, default=None,
+                        help="Path to cache SSL embeddings (e.g. ssl_cache.npy). "
+                             "If file exists, embeddings are loaded from cache instead of re-extracting.")
     return parser.parse_args()
 
 
@@ -186,19 +223,13 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         cos_tok_train = X_train[:, 0]
         easy_train_mask = (y_train == 0) | ((y_train == 1) & (cos_tok_train > CASCADE_THRESHOLD))
         
-        X_train_stage1_easy = X_train[easy_train_mask, :32]
+        X_train_stage1_easy = X_train[easy_train_mask, :STAGE1_FEATURE_COUNT]
         y_train_easy = y_train[easy_train_mask]
         stage1_model.fit(X_train_stage1_easy, y_train_easy)
         
-        print(f"  → Filtering easy clones from CV Train set (threshold={CASCADE_THRESHOLD})...")
-        X_train_stage1_full = X_train[:, :32]
-        y_train_prob_stage1 = stage1_model.predict_proba(X_train_stage1_full)[:, 1]
-        
-        easy_pos_mask = (y_train == 1) & (y_train_prob_stage1 >= 0.95)
-        keep_mask = ~easy_pos_mask
-        X_train = X_train[keep_mask]
-        y_train = y_train[keep_mask]
-        print(f"  → Filtered CV Train: {X_train.shape} (removed {(~keep_mask).sum()} easy clones)")
+        print(f"  → Filtering easy clones from CV Train set (threshold={CASCADE_STAGE1_THRESHOLD})...")
+        X_train, y_train, n_removed = _apply_cascade_filter(X_train, y_train, stage1_model)
+        print(f"  → Filtered CV Train: {X_train.shape} (removed {n_removed} easy clones)")
 
         model.fit(X_train, y_train, verbose=False)
 
@@ -320,8 +351,10 @@ def main():
         from vectorization.ssl_encoder import extract_ssl_embeddings
         print("---> Extracting SSL embeddings...")
         t_phase_ssl = time.time()
-        ssl_embeddings_all = extract_ssl_embeddings(all_codes, device=args.device)
-        print(f"  → SSL Embeddings extracted in {time.time() - t_phase_ssl:.1f}s")
+        ssl_embeddings_all = extract_ssl_embeddings(
+            all_codes, device=args.device, cache_path=args.ssl_cache
+        )
+        print(f"  → SSL Embeddings ready in {time.time() - t_phase_ssl:.1f}s")
         t_features += (time.time() - t_phase_ssl)
 
     # Keep raw codes split for new features (edit distance, line/char ratios)
@@ -445,20 +478,13 @@ def main():
     cos_tokens_train = X_train[:, 0]
     easy_train_mask = (y_train == 0) | ((y_train == 1) & (cos_tokens_train > CASCADE_THRESHOLD))
     
-    X_train_stage1_easy = X_train[easy_train_mask, :32]
+    X_train_stage1_easy = X_train[easy_train_mask, :STAGE1_FEATURE_COUNT]
     y_train_easy = y_train[easy_train_mask]
     stage1_model.fit(X_train_stage1_easy, y_train_easy)
     
     print("  → Filtering EASY clones from Train set (Two-Stage approach)...")
-    X_train_stage1_full = X_train[:, :32]
-    y_train_prob_stage1 = stage1_model.predict_proba(X_train_stage1_full)[:, 1]
-    
-    easy_pos_mask = (y_train == 1) & (y_train_prob_stage1 >= 0.95)
-    keep_mask_train = ~easy_pos_mask
-    
-    X_train = X_train[keep_mask_train]
-    y_train = y_train[keep_mask_train]
-    print(f"  → Filtered Train matrix: {X_train.shape} (Removed {easy_pos_mask.sum()} easy clones via Stage-1)")
+    X_train, y_train, n_removed_train = _apply_cascade_filter(X_train, y_train, stage1_model)
+    print(f"  → Filtered Train matrix: {X_train.shape} (Removed {n_removed_train} easy clones via Stage-1)")
 
     del X_train_token, train_code_features, train_cf_patterns, train_codes, train_semantic, X_train_svd, train_ssl
     gc.collect()
@@ -476,15 +502,8 @@ def main():
     X_val = X_val.astype(np.float32)
 
     print("  → Filtering EASY clones from Val set (Two-Stage approach)...")
-    X_val_stage1 = X_val[:, :32]
-    y_val_prob_stage1 = stage1_model.predict_proba(X_val_stage1)[:, 1]
-    
-    easy_pos_mask_val = (y_val == 1) & (y_val_prob_stage1 >= 0.95)
-    keep_mask_val = ~easy_pos_mask_val
-    
-    X_val = X_val[keep_mask_val]
-    y_val = y_val[keep_mask_val]
-    print(f"  → Filtered Val matrix: {X_val.shape} (Removed {easy_pos_mask_val.sum()} easy clones via Stage-1)")
+    X_val, y_val, n_removed_val = _apply_cascade_filter(X_val, y_val, stage1_model)
+    print(f"  → Filtered Val matrix: {X_val.shape} (Removed {n_removed_val} easy clones via Stage-1)")
 
     del X_val_token, val_code_features, val_cf_patterns, val_codes, val_semantic, X_val_svd, val_ssl
     gc.collect()
@@ -556,11 +575,11 @@ def main():
     
     # Test evaluation uses the Two-Stage logic
     print("---> Running Two-Stage Inference on Test...")
-    X_test_stage1 = X_test[:, :32]
+    X_test_stage1 = X_test[:, :STAGE1_FEATURE_COUNT]
     y_test_prob_stage1 = stage1_model.predict_proba(X_test_stage1)[:, 1]
     y_test_pred = np.zeros_like(y_test)
     
-    easy_pos_mask_test = y_test_prob_stage1 >= 0.95
+    easy_pos_mask_test = y_test_prob_stage1 >= CASCADE_STAGE1_THRESHOLD
     y_test_pred[easy_pos_mask_test] = 1  # Pre-filter easy clones
     print(f"  → Stage-1 filtered {easy_pos_mask_test.sum()} easy clones immediately without Ensemble.")
     

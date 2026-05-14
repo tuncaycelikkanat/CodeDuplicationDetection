@@ -50,14 +50,15 @@ CodeDuplicationDetection/
 ## Kurulum
 
 ```bash
-# Python 3.11 önerilir
+# Python 3.11 veya 3.12
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 
+# Temel bagimliliklar
 pip install -r requirements.txt
 
-# GPU (NVIDIA CUDA) için opsiyonel:
-pip install torch>=2.1.0
+# GPU / CodeBERT SSL ozellikleri icin (opsiyonel)
+pip install -r requirements-gpu.txt
 ```
 
 ## Dataset Formatı
@@ -84,7 +85,7 @@ python main.py --cv --cv-folds 5 --pairs 400000
 ## Klon Tipi Testi
 
 ```bash
-# Test klonlarını oluştur
+# Test klonlarini olustur
 python utils/generate_test_clones.py
 
 # En son deneyle otomatik test
@@ -92,6 +93,19 @@ python utils/test_automation.py
 
 # Belirli bir deneyle test
 python utils/test_automation.py --exp-id 55 --threshold 0.95
+```
+
+## Deney Karsilastirma
+
+```bash
+# Tum deneyleri karsilastir
+python utils/compare_experiments.py
+
+# Belirli deneyleri karsilastir
+python utils/compare_experiments.py --exp-ids 54 55 56
+
+# Baska bir metrige gore sirala
+python utils/compare_experiments.py --metric mcc
 ```
 
 ## Threshold Optimizasyonu
@@ -103,14 +117,21 @@ python utils/find_best_threshold.py
 ## Web Demo
 
 ```bash
-# En son deneyi yükle
+# En son deneyi yukle
 uvicorn web_demo.app:app --reload
 
-# Belirli bir deneyi yükle
+# Belirli bir deneyi yukle
 EXP_ID=55 uvicorn web_demo.app:app --reload
+
+# Produksiyon CORS ayari
+ALLOWED_ORIGINS="https://example.com" uvicorn web_demo.app:app
 ```
 
-Demo `http://localhost:8000` adresinde açılır.
+Demo `http://localhost:8000` adresinde acilir.
+
+**API Endpoints:**
+- `POST /predict` — Tek cift karsilastirma (SHAP aciklamali)
+- `POST /predict_batch` — Toplu karsilastirma (maks. 500 cift)
 
 ## Deney Yönetimi
 
@@ -131,16 +152,29 @@ Her eğitim otomatik olarak `experiments/exp_NNN_<model>_<pairs>k/` altına kayd
 | Type 3 | Yakın-kopya (küçük ekleme/çıkarma) | Gereksiz değişken eklenmesi |
 | Type 4 | Semantik klon (farklı uygulama, aynı mantık) | İteratif vs özyinelemeli Fibonacci |
 
-## Yapılandırma
+## Yapilandirma
 
-Tüm sabit değerler `config.py` içindedir:
+Tum sabit degerler `config.py` icindedir:
 
 ```python
-CASCADE_THRESHOLD = 0.85   # Kolay klon eşiği
-SVD_N_COMPONENTS  = 50     # TruncatedSVD bileşenleri
-TFIDF_MAX_FEATURES = 500   # TF-IDF kelime hazinesi boyutu
-DEFAULT_PAIRS     = 800_000
-DEFAULT_SEED      = 42
+CASCADE_THRESHOLD         = 0.85   # Kolay klon esigi (token cosine)
+CASCADE_STAGE1_THRESHOLD  = 0.95   # Stage-1 model esiği (HistGBM)
+STAGE1_FEATURE_COUNT      = 32     # Stage-1'in kullandigi ozellik sayisi
+SVD_N_COMPONENTS          = 50     # TruncatedSVD bilesenleri
+TFIDF_MAX_FEATURES        = 500    # TF-IDF kelime hazinesi boyutu
+ENSEMBLE_SVD_START_IDX    = 41     # Ensemble SVD sutun baslangici
+DEFAULT_PAIRS             = 800_000
+DEFAULT_SEED              = 42
+```
+
+## SSL Embedding Cache (opsiyonel)
+
+```bash
+# Ilk calistirmada embedding'leri cikar ve cache'e kaydet
+python main.py --use-ssl --ssl-cache ssl_cache.npy --pairs 200000
+
+# Sonraki calistirmalarda cache'ten yukle
+python main.py --use-ssl --ssl-cache ssl_cache.npy --pairs 800000
 ```
 
 ## Unit Testler

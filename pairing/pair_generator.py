@@ -1,6 +1,7 @@
 import numpy as np
 import math
 from collections import Counter
+from typing import Dict, List, Optional, Tuple
 from scipy.sparse import hstack, csr_matrix
 from tqdm import tqdm
 from rapidfuzz.distance import Levenshtein
@@ -15,11 +16,19 @@ from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard, _tuple_
 # → utils/similarity_utils.py'den import edildi (DRY)
 
 
-def generate_pairs(X_token, labels, num_pairs, processed_codes,
-                   code_features=None, cf_patterns=None,
-                   semantic_features=None, X_svd=None,
-                   ssl_embeddings=None,
-                   random_state=42, positive_ratio=0.5):
+def generate_pairs(
+    X_token: csr_matrix,
+    labels: List[str],
+    num_pairs: int,
+    processed_codes: List[str],
+    code_features: Optional[np.ndarray] = None,
+    cf_patterns: Optional[List[str]] = None,
+    semantic_features: Optional[Dict] = None,
+    X_svd: Optional[np.ndarray] = None,
+    ssl_embeddings: Optional[np.ndarray] = None,
+    random_state: int = 42,
+    positive_ratio: float = 0.5,
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Generate pairs of code samples for clone detection.
 
@@ -120,6 +129,8 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
         code_lengths = np.array([len(c.split()) for c in processed_codes])
         label_cand_lengths = {}
         label_cand_indices = {}
+        # O(1) label lookup — unique_labels.index() önceden O(n) tariyordu
+        label_to_idx: Dict[str, int] = {lbl: i for i, lbl in enumerate(unique_labels)}
         for lbl in unique_labels:
             idxs = label_indices_np[lbl]
             label_cand_lengths[lbl] = code_lengths[idxs]
@@ -135,7 +146,8 @@ def generate_pairs(X_token, labels, num_pairs, processed_codes,
 
         for k, p in enumerate(hard_slots):
             src_lbl = src_labels_arr[k]
-            other_lbl = unique_labels[(unique_labels.index(src_lbl) + np_rng.randint(1, n_labels)) % n_labels]
+            src_lbl_idx = label_to_idx[src_lbl]  # O(1) — önceden O(n_labels)
+            other_lbl = unique_labels[(src_lbl_idx + np_rng.randint(1, n_labels)) % n_labels]
             cand_lengths = label_cand_lengths[other_lbl]
             closest = np.argmin(np.abs(cand_lengths - src_lengths[k]))
             all_j[p] = label_cand_indices[other_lbl][closest]

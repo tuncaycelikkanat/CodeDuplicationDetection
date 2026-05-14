@@ -1,0 +1,26 @@
+# ==============================================================================
+# CodeDuplicationDetection — GPU / Deep Learning Bağımlılıkları
+# ==============================================================================
+# Bu dosya yalnızca CodeBERT SSL embedding'leri (--use-ssl) kullanılacaksa
+# gereklidir. Sadece GPU ortamlarında kurulması önerilir.
+#
+# Kurulum:
+#   pip install -r requirements.txt          # Önce temel bağımlılıklar
+#   pip install -r requirements-gpu.txt      # Sonra GPU/DL bağımlılıkları
+#
+# NVIDIA CUDA ortamı için:
+#   pip install torch>=2.1.0 --index-url https://download.pytorch.org/whl/cu121
+#
+# Intel Arc GPU (XPU) için:
+#   pip install intel-extension-for-pytorch
+# ==============================================================================
+
+# Temel bağımlılıkları da dahil et
+-r requirements.txt
+
+# Deep Learning
+torch>=2.1.0
+transformers>=4.30.0
+
+# Intel Arc GPU (opsiyonel)
+# intel-extension-for-pytorch

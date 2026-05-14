@@ -1,30 +1,40 @@
-# Python Version: 3.11.x (Recommended: 3.11.9)
+# ==============================================================================
+# CodeDuplicationDetection — Temel Bağımlılıklar
+# ==============================================================================
+# Python 3.11 veya 3.12 ile test edilmiştir.
+#
+# Kurulum:
+#   pip install -r requirements.txt
+#
+# GPU / Deep Learning (CodeBERT SSL) için:
+#   pip install -r requirements-gpu.txt
+# ==============================================================================
+
+# Core ML
 scikit-learn>=1.3.0
 scipy>=1.11.0
 xgboost>=2.0.0
-fastapi>=0.100.0
-uvicorn>=0.23.0
-matplotlib>=3.7.0
-tqdm>=4.65.0
 numpy>=1.24.0
 optuna>=3.0.0
+joblib>=1.3.0
+
+# Data / Parsing
+rapidfuzz>=3.0.0
+tqdm>=4.65.0
+
+# Tree-sitter C/C++ parsing
+tree-sitter>=0.21.0
+tree-sitter-cpp>=0.21.0
+
+# Web Demo
+fastapi>=0.100.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
 shap>=0.42.0
 
-pydantic
-rapidfuzz>=3.0.0
+# Visualization
+matplotlib>=3.7.0
 
-# Hardware-specific Optimizations
+# Hardware-specific Optimizations (Intel CPU — opsiyonel, hata vermez)
+# Kurulumu başarısız olursa otomatik olarak atlanır (try/except main.py'de mevcut)
 scikit-learn-intelex>=2024.1.0
-# intel-extension-for-pytorch # Required for Intel Arc GPUs (Laptop)
-
-# ── Opsiyonel: GPU / Deep Learning ───────────────────────────────────────────
-# Aşağıdaki paketler yalnızca CUDA cihaz tespiti veya GPU eğitimi için gereklidir.
-# XGBoost'un kendi device parametresi (device="cuda") ile CUDA kullanılabilir.
-# Yalnızca GPU ortamlarında kurulması önerilir:
-#
-#   pip install torch>=2.1.0 torchvision>=0.16.0 torchaudio>=2.1.0
-#
-torch>=2.1.0
-transformers>=4.30.0
-# torchvision>=0.16.0
-# torchaudio>=2.1.0

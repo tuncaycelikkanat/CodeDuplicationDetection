@@ -86,9 +86,11 @@ def apply_type1(code):
             new_lines.append("")
     return '\n'.join(new_lines)
 
-def apply_type2(code):
-    # simple token replacements
+def apply_type2(code: str) -> str:
+    """Simple token renaming for Type-2 clone generation."""
+    import re
     replacements = {
+        "num_elements": "n",  # reverse order to avoid double-replace
         "n": "num_elements",
         "i": "idx",
         "j": "idx2",
@@ -106,12 +108,17 @@ def apply_type2(code):
         "m": "mid",
         "x": "target",
     }
-    
+    # C/C++ keywords that must never be replaced
+    _SKIP_KEYWORDS = frozenset({
+        "int", "float", "double", "char", "void", "long", "short",
+        "return", "if", "else", "for", "while", "do", "break",
+        "continue", "switch", "case", "struct", "const", "bool",
+    })
     for old, new in replacements.items():
-        # Avoid partial replacements (hacky approach)
-        import re
-        code = re.sub(rf'\b{old}\b', new, code)
-        
+        if old in _SKIP_KEYWORDS or new in _SKIP_KEYWORDS:
+            continue
+        # Word-boundary replacement, but only outside string literals
+        code = re.sub(rf'(?<![a-zA-Z_])\b{re.escape(old)}\b(?![a-zA-Z_0-9])', new, code)
     return code
 
 def apply_type3(code):
@@ -202,7 +209,9 @@ def generate_pairs():
         
         # Check if they belong to different seed algorithms
         if s1[0] != s2[0]:
-            pair_hash = hash(s1[1] + s2[1])
+            # Tuple hash: hash((s1,s2)) ≠ hash((s2,s1)) ve
+            # "AB"+"C" == "A"+"BC" string concaténasyon çakışmasını önler.
+            pair_hash = hash((s1[1], s2[1]))
             if pair_hash not in negative_pairs:
                 negative_pairs.add(pair_hash)
                 

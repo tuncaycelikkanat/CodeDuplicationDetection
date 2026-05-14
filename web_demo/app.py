@@ -20,7 +20,7 @@ _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-from config import CASCADE_THRESHOLD
+from config import CASCADE_THRESHOLD, CASCADE_STAGE1_THRESHOLD, STAGE1_FEATURE_COUNT
 from utils.feature_pipeline import build_pair_vector
 from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard
 
@@ -33,9 +33,14 @@ from preprocessing.code_features import (
 app = FastAPI()
 
 # ================= CORS =================
+# Produksiyonda ALLOWED_ORIGINS env degiskenini ayarlayin:
+# export ALLOWED_ORIGINS="https://yourdomain.com,https://api.yourdomain.com"
+_raw_origins = os.environ.get("ALLOWED_ORIGINS", "")
+_allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()] or ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -113,6 +118,21 @@ if os.path.exists(stage1_path):
     print("   ✅ Stage-1 Lexical model loaded")
 else:
     print("   ⚠️  No Stage-1 Lexical model found")
+
+# Load SSL pipeline (singleton — başlangıçta yüklenir, her requestte yeniden yüklenmez)
+ssl_pipeline = None
+config_path = f"{EXP_PATH}/config.json"
+if os.path.exists(config_path):
+    with open(config_path, "r") as f:
+        _exp_config = json.load(f)
+    if _exp_config.get("use_ssl", False):
+        print("   🔄 Loading SSL pipeline (singleton)...")
+        try:
+            from vectorization.ssl_encoder import build_ssl_pipeline
+            ssl_pipeline = build_ssl_pipeline(device="cpu")
+            print("   ✅ SSL pipeline loaded")
+        except Exception as e:
+            print(f"   ⚠️ SSL pipeline yüklenemedi: {e}")
 
 
 
@@ -216,11 +236,11 @@ def predict(pair: CodePair):
 
         X_pair = build_pair_vector(raw1, raw2, vectorizer, char_vectorizer, svd_model)
 
-        # ---- CASCADE modunda cos_token ön-filtresi ----
+        # ---- CASCADE modunda stage1 ön-filtresi ----
         if stage1_model is not None:
-            X_lexical = X_pair[:, :4]
+            X_lexical = X_pair[:, :STAGE1_FEATURE_COUNT]  # Önce [:32] — stage1 bu kadar özellikle eğitildi
             y_prob_stage1 = float(stage1_model.predict_proba(X_lexical)[0][1])
-            if y_prob_stage1 >= 0.95:
+            if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
                 return {
                     "probability": 1.0,
                     "prediction": "Duplicated",
@@ -292,7 +312,7 @@ def predict(pair: CodePair):
 
         return {
             "probability": round(float(prob), 4),
-            "prediction": "Duplicated" if prob > 0.95 else "Not Duplicated",
+            "prediction": "Duplicated" if prob >= CASCADE_STAGE1_THRESHOLD else "Not Duplicated",
             "cascade_filtered": False,
             "shap": shap_data
         }
@@ -301,3 +321,60 @@ def predict(pair: CodePair):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+
+
+# ================= BATCH PREDICT =================
+class CodePairBatch(BaseModel):
+    pairs: list[dict]  # [{"code1": "...", "code2": "..."}]
+
+
+@app.post("/predict_batch")
+def predict_batch(batch: CodePairBatch):
+    """
+    Multiple code pair prediction endpoint.
+    Input: {"pairs": [{"code1": "...", "code2": "..."}, ...]}
+    Output: {"results": [{"probability": 0.xx, "prediction": "...", "cascade_filtered": bool}, ...]}
+    """
+    if not batch.pairs:
+        raise HTTPException(status_code=400, detail="No pairs provided.")
+    if len(batch.pairs) > 500:
+        raise HTTPException(status_code=400, detail="Maximum 500 pairs per batch request.")
+
+    results = []
+    for item in batch.pairs:
+        code1 = item.get("code1", "").strip()
+        code2 = item.get("code2", "").strip()
+        if not code1 or not code2:
+            results.append({"error": "Both code1 and code2 are required."})
+            continue
+        try:
+            X_pair = build_pair_vector(code1, code2, vectorizer, char_vectorizer, svd_model)
+
+            if stage1_model is not None:
+                X_lexical = X_pair[:, :STAGE1_FEATURE_COUNT]
+                y_prob_stage1 = float(stage1_model.predict_proba(X_lexical)[0][1])
+                if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
+                    results.append({
+                        "probability": 1.0,
+                        "prediction": "Duplicated",
+                        "cascade_filtered": True
+                    })
+                    continue
+
+            if hasattr(model, "predict_proba"):
+                prob = float(model.predict_proba(X_pair)[0][1])
+            elif hasattr(model, "decision_function"):
+                decision = model.decision_function(X_pair)[0]
+                prob = 1 / (1 + math.exp(-decision))
+            else:
+                prob = float(model.predict(X_pair)[0])
+
+            results.append({
+                "probability": round(prob, 4),
+                "prediction": "Duplicated" if prob >= CASCADE_STAGE1_THRESHOLD else "Not Duplicated",
+                "cascade_filtered": False
+            })
+        except Exception as e:
+            results.append({"error": str(e)})
+
+    return {"results": results}

@@ -13,6 +13,10 @@ _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
+from config import CASCADE_STAGE1_THRESHOLD, STAGE1_FEATURE_COUNT
+
+
+
 from utils.feature_pipeline import build_pair_vector
 
 def get_experiment_path(exp_id=None, base_dir="experiments"):
@@ -75,7 +79,8 @@ def calculate_auc(y_true, y_prob):
     from sklearn.metrics import roc_auc_score, average_precision_score
     try:
         return round(roc_auc_score(y_true, y_prob), 4), round(average_precision_score(y_true, y_prob), 4)
-    except:
+    except Exception as e:
+        print(f"⚠️ AUC hesabı başarısız: {e}")
         return 0.0, 0.0
 
 def load_pairs(dir_path, label):
@@ -199,15 +204,16 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
 
             # Cascade Logic
             if stage1_model is not None:
-                X_stage1 = X_pair[:, :32]
+                X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
                 y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
-                if y_prob_stage1 >= 0.95:
+                if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
                     prob = 1.0
                 else:
                     if hasattr(model, "predict_proba"):
                         try:
                             prob = float(model.predict_proba(X_pair)[0][1])
-                        except:
+                        except Exception as e:
+                            print(f"⚠️ predict_proba başarısız: {e}")
                             prob = float(model.predict(X_pair)[0])
                     else:
                         prob = float(model.predict(X_pair)[0])
@@ -274,9 +280,9 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
         cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
 
         if stage1_model is not None:
-            X_stage1 = X_pair[:, :32]
+            X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
             y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
-            if y_prob_stage1 >= 0.95:
+            if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
                 prob = 1.0
             else:
                 prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])

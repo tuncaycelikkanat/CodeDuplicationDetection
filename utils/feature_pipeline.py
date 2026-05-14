@@ -2,6 +2,7 @@ import os
 import sys
 import math
 import numpy as np
+from typing import Optional, Tuple
 from scipy.sparse import hstack, csr_matrix
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -17,12 +18,23 @@ from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard, _tuple_
 
 # ================= PIPELINE =================
 
-def build_pair_vector(raw1, raw2, vectorizer, char_vectorizer=None, svd_model=None, ssl_pipeline=None):
+def build_pair_vector(
+    raw1: str,
+    raw2: str,
+    vectorizer,
+    char_vectorizer=None,
+    svd_model=None,
+    ssl_pipeline=None,
+) -> np.ndarray:
     """
     Dense feature extraction — bir çift kod snippet için.
     Web Demo ve Automation scriptleri tarafından kullanılır.
 
     ⚠️  DENSE ARRAY döndürür (np.float32, shape=(1, F)) — artık sparse matris yok.
+
+    ⚠️  char_vectorizer: Eğitim sırasında bu parametre kullanılmadıysa
+        burada da None geçirilmelidir. Aksi halde feature boyutu eğitimden
+        farklı olur ve model predict_proba'da hata verir.
 
     Feature sırası (pair_generator.py ile birebir eşleştirilmiştir):
         [0]  cos_token         : token cosine similarity  ← CASCADE FİLTRESİ BURAYA BAKAR
