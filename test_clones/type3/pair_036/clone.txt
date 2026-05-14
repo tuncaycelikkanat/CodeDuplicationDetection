@@ -2,6 +2,5 @@ int search(int array_data[], int num_elements, int target) {
     for (int idx = 0; idx < num_elements; idx++)
         if (array_data[idx] == target)
             return idx;
-    // returning result
     return -1;
 }

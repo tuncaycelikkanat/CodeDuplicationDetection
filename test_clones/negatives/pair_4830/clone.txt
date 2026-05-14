@@ -1,0 +1,2 @@
+int gcdH(int a, int b) { return b == 0 ? a : gcdH(b, a % b); }
+int lcmFast(int a, int b) { return (a / gcdH(a, b)) * b; }

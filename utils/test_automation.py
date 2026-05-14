@@ -343,6 +343,33 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
                     f.write(f"{k.ljust(20)}: {rm.get(k)}\n")
 
     print(f"\n✅ Results saved to: {out_dir}")
+    
+    # --- CONSOLE PRETTY PRINT ---
+    print("\n" + "="*85)
+    print(f" EXPERIMENT RESULTS: {os.path.basename(exp_path)} (Threshold: {threshold})")
+    print("="*85)
+    print(f"{'TYPE':<10} | {'F1-SCORE':<8} | {'MCC':<8} | {'PR-AUC':<8} | {'AUC-ROC':<8} | {'TP':<5} | {'FP':<5} | {'TN':<5} | {'FN':<5}")
+    print("-" * 85)
+    
+    types_to_print = ["global"] + [t for t in types if t in report["per_type"]]
+    
+    for t in types_to_print:
+        if t == "global":
+            rm = report["global"]
+            row_name = "GLOBAL"
+        else:
+            rm = report["per_type"][t]
+            row_name = t.upper()
+            
+        f1 = f"{rm.get('f1_score', 0):.4f}"
+        mcc = f"{rm.get('mcc', 0):.4f}"
+        prauc = f"{rm.get('pr_auc', 0):.4f}"
+        aucroc = f"{rm.get('auc_roc', 0):.4f}"
+        tp, fp, tn, fn = rm.get("tp",0), rm.get("fp",0), rm.get("tn",0), rm.get("fn",0)
+        
+        print(f"{row_name:<10} | {f1:<8} | {mcc:<8} | {prauc:<8} | {aucroc:<8} | {tp:<5} | {fp:<5} | {tn:<5} | {fn:<5}")
+        
+    print("="*85 + "\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run automation tests on code clone models.")

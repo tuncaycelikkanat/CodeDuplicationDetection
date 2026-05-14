@@ -1,0 +1,9 @@
+  int countVowelsW(char* s) {
+     int cnt = 0, idx = 0;    
+     while (s[idx]) {   
+// Check if needed
+            char c = tolower(s[idx++]); 
+          if (c=='val1'||c=='e'||c=='idx'||c=='o'||c=='u') cnt++; 
+        }  
+        return cnt;    
+}   

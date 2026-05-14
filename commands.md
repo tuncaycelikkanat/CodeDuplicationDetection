@@ -12,7 +12,7 @@
 
 ---
 
-## 2. Cascade Mimarisi — `main_deprecated.py`
+## 2. Ana Proje — `main.py`
 
 > Aktif eğitim betiği. Dense (89-boyutlu) özellik vektörü, Cascade filtresi, XGBoost veya Ensemble.
 
@@ -35,14 +35,20 @@ python main.py --pairs 500000 --model ensemble --device cpu
 
 ### Sınıf dengesi (positive-ratio)
 ```bash
-# Dengeli eğitim (varsayılan: %50 klon, %50 klon-değil)
+# Dengeli eğitim (eski laboratuvar senaryosu: %50 klon, %50 klon-değil)
 python main.py --positive-ratio 0.5
 
-# Gerçekçi dengesiz sınıf dağılımı (%10 klon)
-python main.py --positive-ratio 0.1
+# Gerçekçi dengesiz sınıf dağılımı (varsayılan: %5 klon)
+python main.py --positive-ratio 0.05
 
 # Precision odaklı eğitim (%20 klon)
 python main.py --positive-ratio 0.2
+```
+
+### Transformer SSL Entegrasyonu
+```bash
+# CodeBERT üzerinden derin öğrenme özellikleri çıkarma (768-boyut)
+python main.py --pairs 500000 --use-ssl --device cuda
 ```
 
 ### Device
@@ -231,7 +237,8 @@ python -c "import config; [print(f'{k}={v}') for k,v in vars(config).items() if 
 | ~~Eski eğitim~~ | `main_deprecated.py` **DEPRECATED** |
 | Cascade eğitimi (XGBoost) | `python main.py --pairs 1000000` |
 | Cascade eğitimi (Ensemble) | `python main.py --pairs 1000000 --model ensemble` |
-| Gerçekçi sınıf dengesi | `... --positive-ratio 0.1` |
+| SSL Eğitimi (CodeBERT) | `python main.py --pairs 500000 --use-ssl` |
+| Gerçekçi sınıf dengesi | `... --positive-ratio 0.05` |
 | GPU eğitimi | `... --device cuda` |
 | Tune + eğitim | `... --tune --tune-trials 50` |
 | Cross-validation | `... --cv --cv-folds 5` |
@@ -246,13 +253,14 @@ python -c "import config; [print(f'{k}={v}') for k,v in vars(config).items() if 
 
 ## 10. Tüm Parametreler Referansı
 
-### `main_deprecated.py`
+### `main.py`
 | Parametre | Tip | Varsayılan | Açıklama |
 |---|---|---|---|
 | `--model` | str | `xgboost` | `xgboost` veya `ensemble` |
 | `--dataset` | str | `data/poj104` | Dataset dizini |
 | `--pairs` | int | `800000` | Üretilecek çift sayısı |
-| `--positive-ratio` | float | `0.5` | Klon çifti oranı (0.1 = gerçekçi) |
+| `--positive-ratio` | float | `0.05` | Klon çifti oranı (0.05 = gerçekçi dünya senaryosu) |
+| `--use-ssl` | flag | — | CodeBERT gömülü (embedding) özelliklerini açar |
 | `--test-size` | float | `0.2` | Test ayrım oranı |
 | `--seed` | int | `42` | Rastgele tohum |
 | `--tune` | flag | — | Optuna tuning aç (sadece xgboost) |

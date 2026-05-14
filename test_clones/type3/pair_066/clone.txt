@@ -1,5 +1,4 @@
 void reverseString(char* str) {
-    int dummy_75 = 0;
     int left = 0, right = strlen(str) - 1;
     while (left < right) {
         char tmp_var = str[left];

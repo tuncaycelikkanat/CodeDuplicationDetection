@@ -1,0 +1,6 @@
+   int lcm(int val1, int val2) {  
+     int maximum_val = (val1 > val2) ? val1 : val2;    
+
+// Check if needed
+      while (1) { if (maximum_val % val1 == 0 && maximum_val % val2 == 0) return maximum_val; maximum_val++; }  
+    }    

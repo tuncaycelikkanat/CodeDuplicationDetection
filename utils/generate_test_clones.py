@@ -140,6 +140,8 @@ def generate_pairs():
     for t in types:
         os.makedirs(os.path.join(out_dir, t))
         
+    all_snippets = [] # Store tuples of (seed_name, code) to generate negatives later
+        
     # Generate Type 1, 2, 3
     seed_keys = list(SEEDS.keys())
     
@@ -162,6 +164,8 @@ def generate_pairs():
                     f.write(base_code)
                 with open(os.path.join(pair_dir, "clone.txt"), "w") as f:
                     f.write(clone_code)
+                all_snippets.append((seed_k, base_code))
+                all_snippets.append((seed_k, clone_code))
                 pair_idx += 1
 
     # Generate Type 4
@@ -179,21 +183,37 @@ def generate_pairs():
                 f.write(c1)
             with open(os.path.join(pair_dir, "clone.txt"), "w") as f:
                 f.write(c2)
+            
+            # Since TYPE_4_PAIRS are in order of SEEDS (fib, fact, binarySearch...) we can roughly assign names or just use a generic 't4_seed'
+            all_snippets.append((f"t4_{pair_idx}", c1))
+            all_snippets.append((f"t4_{pair_idx}", c2))
             pair_idx += 1
 
-    # Generate Negatives
+    # Generate 8930 Negatives to reach 5% positive ratio (470 positives / 0.05 = 9400 total)
+    print("Generating 8930 negative pairs for realistic 0.05 positive ratio...")
     pair_idx = 1
-    for i in range(len(seed_keys)):
-        for j in range(i+1, len(seed_keys)):
-            if pair_idx > 120:
-                break
-            pair_dir = os.path.join(out_dir, "negatives", f"pair_{pair_idx:03d}")
-            os.makedirs(pair_dir)
-            with open(os.path.join(pair_dir, "original.txt"), "w") as f:
-                f.write(SEEDS[seed_keys[i]])
-            with open(os.path.join(pair_dir, "clone.txt"), "w") as f:
-                f.write(SEEDS[seed_keys[j]])
-            pair_idx += 1
+    negative_pairs = set()
+    max_attempts = 100000
+    attempts = 0
+    
+    while pair_idx <= 8930 and attempts < max_attempts:
+        s1 = random.choice(all_snippets)
+        s2 = random.choice(all_snippets)
+        
+        # Check if they belong to different seed algorithms
+        if s1[0] != s2[0]:
+            pair_hash = hash(s1[1] + s2[1])
+            if pair_hash not in negative_pairs:
+                negative_pairs.add(pair_hash)
+                
+                pair_dir = os.path.join(out_dir, "negatives", f"pair_{pair_idx:04d}")
+                os.makedirs(pair_dir)
+                with open(os.path.join(pair_dir, "original.txt"), "w") as f:
+                    f.write(s1[1])
+                with open(os.path.join(pair_dir, "clone.txt"), "w") as f:
+                    f.write(s2[1])
+                pair_idx += 1
+        attempts += 1
 
     print(f"Dataset generated successfully in {out_dir}/")
 
