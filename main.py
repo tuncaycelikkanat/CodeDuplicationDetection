@@ -54,27 +54,16 @@ def _apply_cascade_filter(
     threshold: float = CASCADE_STAGE1_THRESHOLD,
     feature_count: int = STAGE1_FEATURE_COUNT,
 ) -> tuple:
-    """
-    Stage-1 (HistGradientBoosting) modelini kullanarak 'kolay klonları' filtreler.
-    Yüksek olasılıklı pozitif çiftleri egitim setinden çıkarır; model yalnızca
-    zor / Type-4 örnekler üzerinde egitilir.
-
-    Args:
-        X: Feature matrisi (float32 dense array)
-        y: Etiket dizisi
-        stage1_model: Eğitimli Stage-1 modeli
-        threshold: Kolay klon eşiği (varsayılan: CASCADE_STAGE1_THRESHOLD)
-        feature_count: Stage-1'in kullandığı özellik sayısı (varsayılan: STAGE1_FEATURE_COUNT)
-
-    Returns:
-        (X_filtered, y_filtered): Kolay klonlar çıkarılmış matris ve etiketler
-    """
     X_stage1 = X[:, :feature_count]
     y_prob_stage1 = stage1_model.predict_proba(X_stage1)[:, 1]
-    easy_pos_mask = (y == 1) & (y_prob_stage1 >= threshold)
-    easy_neg_mask = (y == 0) & (y_prob_stage1 <= (1.0 - threshold))
     
-    keep_mask = ~(easy_pos_mask | easy_neg_mask)
+    # ROOT CAUSE FIX: We CANNOT filter out Easy Negatives!
+    # If we filter them out in training, Stage-2 never sees a negative and predicts 1 for everything.
+    # If we filter them out in inference, we accidentally throw away all Type-4 (Hard Positives) 
+    # because they also have low lexical similarity!
+    easy_pos_mask = (y == 1) & (y_prob_stage1 >= threshold)
+    
+    keep_mask = ~easy_pos_mask
     
     pos_before = (y == 1).sum()
     neg_before = (y == 0).sum()
@@ -84,9 +73,9 @@ def _apply_cascade_filter(
     
     print(f"    - Cascade Filter Before: {pos_before} Pos, {neg_before} Neg")
     print(f"    - Cascade Filter After:  {pos_after} Pos, {neg_after} Neg")
-    print(f"    - Filtered Easy Pos: {easy_pos_mask.sum()}, Easy Neg: {easy_neg_mask.sum()}")
+    print(f"    - Filtered Easy Pos: {easy_pos_mask.sum()}, Easy Neg: 0")
     
-    return X[keep_mask], y_filtered, (easy_pos_mask.sum() + easy_neg_mask.sum())
+    return X[keep_mask], y_filtered, easy_pos_mask.sum()
 
 
 # <----------> ARGUMENT PARSING <---------->
@@ -630,14 +619,12 @@ def main():
     y_test_pred = np.zeros_like(y_test)
     
     easy_pos_mask_test = y_test_prob_stage1 >= CASCADE_STAGE1_THRESHOLD
-    easy_neg_mask_test = y_test_prob_stage1 <= (1.0 - CASCADE_STAGE1_THRESHOLD)
     
     y_test_pred[easy_pos_mask_test] = 1  # Pre-filter easy clones
-    y_test_pred[easy_neg_mask_test] = 0  # Pre-filter easy negatives
     
-    print(f"  → Stage-1 filtered {easy_pos_mask_test.sum()} Easy Pos and {easy_neg_mask_test.sum()} Easy Neg immediately.")
+    print(f"  → Stage-1 filtered {easy_pos_mask_test.sum()} Easy Pos immediately.")
     
-    hard_mask_test = ~(easy_pos_mask_test | easy_neg_mask_test)
+    hard_mask_test = ~easy_pos_mask_test
     if hard_mask_test.sum() > 0:
         y_test_pred[hard_mask_test] = model.predict(X_test[hard_mask_test])
         
