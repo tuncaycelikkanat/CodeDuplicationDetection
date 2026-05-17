@@ -179,12 +179,12 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
     }
 
     # Evaluate negative pairs ONCE
-    print(f"\\n🚀 Evaluating {len(negatives)} Negative Pairs...")
+    print(f"\n🚀 Evaluating {len(negatives)} Negative Pairs...")
     neg_tp, neg_fp, neg_tn, neg_fn = 0, 0, 0, 0
     neg_y_true, neg_y_prob = [], []
     neg_details = []
     
-    for p in tqdm(negatives, desc=\"Negatives\"):
+    for p in tqdm(negatives, desc="Negatives"):
         X_pair = build_pair_vector(
             p['c1'], p['c2'],
             vectorizer,
@@ -228,7 +228,7 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
             print(f"⚠️ No positive pairs found for {t}. Skipping.")
             continue
         
-        print(f"\\n🚀 Evaluating {t} ({len(positives)} positives)...")
+        print(f"\n🚀 Evaluating {t} ({len(positives)} positives)...")
         
         tp, fp, tn, fn = 0, 0, 0, 0
         y_true, y_prob = [], []

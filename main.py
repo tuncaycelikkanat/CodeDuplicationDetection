@@ -234,7 +234,7 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         print(f"  → Training Stage-1 Lexical/Structural Model (CV)...")
         from sklearn.ensemble import HistGradientBoostingClassifier
         from sklearn.calibration import CalibratedClassifierCV
-        base_stage1 = HistGradientBoostingClassifier(max_iter=50, max_depth=3, random_state=args.seed)
+        base_stage1 = HistGradientBoostingClassifier(max_iter=50, max_depth=3, class_weight='balanced', random_state=args.seed)
         stage1_model = CalibratedClassifierCV(base_stage1, cv=3, method='isotonic')
         
         cos_tok_train = X_train[:, 0]
@@ -515,7 +515,7 @@ def main():
     print("  → Training Stage-1 Lexical/Structural Model (HistGradientBoosting) on EASY pairs...")
     from sklearn.ensemble import HistGradientBoostingClassifier
     from sklearn.calibration import CalibratedClassifierCV
-    base_stage1 = HistGradientBoostingClassifier(max_iter=50, max_depth=3, random_state=RANDOM_STATE)
+    base_stage1 = HistGradientBoostingClassifier(max_iter=50, max_depth=3, class_weight='balanced', random_state=RANDOM_STATE)
     stage1_model = CalibratedClassifierCV(base_stage1, cv=3, method='isotonic')
     
     cos_tokens_train = X_train[:, 0]

@@ -72,11 +72,16 @@ def build_pair_vector(
     feat1, cf1, sem1 = _extract_single(raw1)
     feat2, cf2, sem2 = _extract_single(raw2)
 
-    # AST ratios (14) + AST diffs (14) — pair_generator.py ile aynı sıra
+    # AST ratios (20) + AST diffs (20) — pair_generator.py ile aynı sıra
+    ast_ratios = []
+    ast_diffs = []
     for v1, v2 in zip(feat1, feat2):
         max_val = max(v1, v2)
-        extra.append(min(v1, v2) / max_val if max_val > 0 else 1.0)  # ratio
-        extra.append(abs(v1 - v2))                                     # diff
+        ast_ratios.append(min(v1, v2) / max_val if max_val > 0 else 1.0)  # ratio
+        ast_diffs.append(abs(v1 - v2))                                     # diff
+        
+    extra.extend(ast_ratios)
+    extra.extend(ast_diffs)
 
     # CF pattern similarity
     cf_dist = Levenshtein.distance(cf1, cf2)
