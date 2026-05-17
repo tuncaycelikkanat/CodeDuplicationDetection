@@ -630,10 +630,14 @@ def main():
     y_test_pred = np.zeros_like(y_test)
     
     easy_pos_mask_test = y_test_prob_stage1 >= CASCADE_STAGE1_THRESHOLD
-    y_test_pred[easy_pos_mask_test] = 1  # Pre-filter easy clones
-    print(f"  → Stage-1 filtered {easy_pos_mask_test.sum()} easy clones immediately without Ensemble.")
+    easy_neg_mask_test = y_test_prob_stage1 <= (1.0 - CASCADE_STAGE1_THRESHOLD)
     
-    hard_mask_test = ~easy_pos_mask_test
+    y_test_pred[easy_pos_mask_test] = 1  # Pre-filter easy clones
+    y_test_pred[easy_neg_mask_test] = 0  # Pre-filter easy negatives
+    
+    print(f"  → Stage-1 filtered {easy_pos_mask_test.sum()} Easy Pos and {easy_neg_mask_test.sum()} Easy Neg immediately.")
+    
+    hard_mask_test = ~(easy_pos_mask_test | easy_neg_mask_test)
     if hard_mask_test.sum() > 0:
         y_test_pred[hard_mask_test] = model.predict(X_test[hard_mask_test])
         

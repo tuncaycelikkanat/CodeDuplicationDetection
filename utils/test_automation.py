@@ -202,10 +202,14 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
             y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
             if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
                 prob = 1.0
+            elif y_prob_stage1 <= (1.0 - CASCADE_STAGE1_THRESHOLD):
+                prob = 0.0
             else:
                 prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
         elif "CASCADE" in exp_path and cos_token > CASCADE_STAGE1_THRESHOLD:
             prob = 1.0
+        elif "CASCADE" in exp_path and cos_token < (1.0 - CASCADE_STAGE1_THRESHOLD):
+            prob = 0.0
         else:
             prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
             
@@ -252,6 +256,8 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
                 y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
                 if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
                     prob = 1.0
+                elif y_prob_stage1 <= (1.0 - CASCADE_STAGE1_THRESHOLD):
+                    prob = 0.0
                 else:
                     if hasattr(model, "predict_proba"):
                         try:
@@ -262,6 +268,8 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
                         prob = float(model.predict(X_pair)[0])
             elif "CASCADE" in exp_path and cos_token > CASCADE_STAGE1_THRESHOLD:
                 prob = 1.0
+            elif "CASCADE" in exp_path and cos_token < (1.0 - CASCADE_STAGE1_THRESHOLD):
+                prob = 0.0
             else:
                 if hasattr(model, "predict_proba"):
                     try:
