@@ -1,6 +1,1 @@
-int search(int arr[], int n, int x) {
-    for (int i = 0; i < n; i++)
-        if (arr[i] == x)
-            return i;
-    return -1;
-}
+   void var_4_499(int var_0_662) { var_9_925<int> v_s8; v_s8.var_5_342(var_0_662); while(!v_s8.var_8_752()) { int v_u3=v_s8.var_6_723(); v_s8.var_3_818(); if(!var_10_894[v_u3]) { var_10_894[v_u3]=1; for(int v_v9:var_1_365[v_u3]) v_s8.var_5_342(v_v9); } } }

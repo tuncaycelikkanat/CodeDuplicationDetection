@@ -1,6 +1,1 @@
-int search(int arr[], int n, int x) {
-    for (int i = 0; i < n; i++)
-        if (arr[i] == x)
-            return i;
-    return -1;
-}
+int maxSubArray(int a[], int n) { int m=INT_MIN, end=0; for(int i=0; i<n; i++) {end+=a[i]; if(m<end) m=end; if(end<0) end=0;} return m; }

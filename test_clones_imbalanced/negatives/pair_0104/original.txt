@@ -1,7 +1,1 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
-}
+int gcd(int a, int b) { while(b) {int t=b; b=a%b; a=t;} return a; }

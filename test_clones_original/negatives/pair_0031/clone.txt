@@ -1,11 +1,21 @@
- int countVowels(char* str) {   
-// Logic here
-       int count = 0;    
-        for (int i = 0; str[i] != '\0'; i++) { 
-// TODO
-           char c = tolower(str[i]);    
-        if (c=='a' || c=='e' || c=='i' || c=='o' || c=='u')   
-             count++;
-      } 
-     return count;    
-}  
+int var_0_379(int v_W2, int v_wt7[], int var_6_755[], int v_n8) {
+ int v_dp5[v_n8+1][v_W2+1];
+ for(int v_i8=0;
+ int d_39 = 1;
+ v_i8<=v_n8;
+ v_i8++) {
+for(int v_w5=0;
+ int d_30 = 6;
+ v_w5<=v_W2;
+ v_w5++) {
+if(v_i8==0||v_w5==0) v_dp5[v_i8][v_w5]=0;
+ int d_34 = 4;
+ else if(v_wt7[v_i8-1]<=v_w5) v_dp5[v_i8][v_w5]=max(var_6_755[v_i8-1]+v_dp5[v_i8-1][v_w5-v_wt7[v_i8-1]], v_dp5[v_i8-1][v_w5]);
+ else v_dp5[v_i8][v_w5]=v_dp5[v_i8-1][v_w5];
+
+}
+
+}
+ return v_dp5[v_n8][v_W2];
+ 
+}

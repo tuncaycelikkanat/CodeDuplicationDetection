@@ -1,9 +1,9 @@
-int sumOfDigits(int num_elements) {
-    int dummy_94 = 0;
-    int sum = 0;
-    while (num_elements != 0) {
-        sum += num_elements % 10;
-        num_elements /= 10;
-    }
-    return sum;
+void var_2_136(int v_u2, int var_0_793[][100], int v_v3, bool var_3_236[]) {
+ var_3_236[v_u2]=true;
+ v_i6<v_v3;
+ int d_88 = 9;
+ v_i6++) if(var_0_793[v_u2][v_i6] && !var_3_236[v_i6]) var_2_136(v_i6,var_0_793,v_v3,var_3_236);
+ 
 }
+;
+ int d_62 = 4

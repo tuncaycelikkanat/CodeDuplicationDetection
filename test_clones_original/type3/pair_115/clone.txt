@@ -1,7 +1,9 @@
-int sum(int array_data[], int num_elements) {
-    int total_sum = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-        total_sum += array_data[idx];
-    // returning result
-    return total_sum;
+int var_1_262(int var_0_551[], int v_n5) {
+ int v_m2=var_0_551[0];
+ int d_68 = 10;
+ for(int v_i9=1;
+ v_i9<v_n5;
+ v_i9++) if(var_0_551[v_i9]<v_m2) v_m2=var_0_551[v_i9];
+ return v_m2;
+ 
 }

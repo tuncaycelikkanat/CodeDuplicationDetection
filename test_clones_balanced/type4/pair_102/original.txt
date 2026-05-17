@@ -1,13 +1,1 @@
-int gcd(int val1, int val2) {    
-// TODO
-     while (val2 != 0) {   
-// Check if needed
-          int tmp_var = val2;    
-        val2 = val1 % val2;
-
-// TODO
-        val1 = tmp_var;
-// Logic here
-      }   
-     return val1;  
-} 
+   int var_0_669(int v_a5, int v_b2) { while(v_b2) {int v_t9=v_b2; v_b2=v_a5%v_b2; v_a5=v_t9;} return v_a5; }   

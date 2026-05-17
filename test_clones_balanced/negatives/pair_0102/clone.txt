@@ -1,7 +1,14 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0)
-            return false;
-    return true;
+void var_1_716(int var_0_510[], int v_n2) {
+ for(int v_i1=0;
+ int d_36 = 4;
+ v_i1++) for(int v_j2=0;
+ int d_30 = 4;
+ v_j2<v_n2-v_i1-1;
+ v_j2++) if(var_0_510[v_j2]>var_0_510[v_j2+1]) {
+int v_t4=var_0_510[v_j2];
+ var_0_510[v_j2]=var_0_510[v_j2+1];
+ var_0_510[v_j2+1]=v_t4;
+
+}
+ 
 }

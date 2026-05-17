@@ -1,11 +1,8 @@
-void insertionSort(int array_data[], int num_elements) {
-    for (int idx = 1; idx < num_elements; idx++) {
-        int key = array_data[idx];
-        int idx2 = idx - 1;
-        while (idx2 >= 0 && array_data[idx2] > key) {
-            array_data[idx2 + 1] = array_data[idx2];
-            idx2 = idx2 - 1;
-        }
-        array_data[idx2 + 1] = key;
-    }
+bool var_0_906(int v_n9) {
+ if(v_n9<=1) return false;
+ for(int v_i7=2;
+ v_i7*v_i7<=v_n9;
+ v_i7++) if(v_n9%v_i7==0) return false;
+ return true;
+ 
 }

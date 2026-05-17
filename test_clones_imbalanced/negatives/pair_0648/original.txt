@@ -1,11 +1,1 @@
-int fib(int num_elements) {
-    if (num_elements <= 1) return num_elements;
-    int val1 = 0, val2 = 1, c;
-    for (int idx = 2; idx <= num_elements; idx++) {
-        c = val1 + val2;
-        val1 = val2;
-        val2 = c;
-    }
-    // returning result
-    return val2;
-}
+int bs(int a[], int n, int x) { int l=0, r=n-1; while(l<=r) {int m=l+(r-l)/2; if(a[m]==x) return m; if(a[m]<x) l=m+1; else r=m-1;} return -1; }

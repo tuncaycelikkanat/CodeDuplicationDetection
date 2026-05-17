@@ -1,11 +1,1 @@
-   int findMax(int arr[], int n) { 
-       int max = arr[0];
-// TODO
-       for (int i = 1; i < n; i++)
-// Fix this
-         if (arr[i] > max) 
-               max = arr[i];  
-       return max;  
-
-// Fix this
-} 
+int var_6_974(int var_0_560[], int v_l6, int v_h9) { int v_p5=var_0_560[v_h9]; int v_i7=v_l6-1; for(int v_j8=v_l6; v_j8<v_h9; v_j8++) if(var_0_560[v_j8]<v_p5) {v_i7++; int v_t8=var_0_560[v_i7]; var_0_560[v_i7]=var_0_560[v_j8]; var_0_560[v_j8]=v_t8;} int v_t8=var_0_560[v_i7+1]; var_0_560[v_i7+1]=var_0_560[v_h9]; var_0_560[v_h9]=v_t8; return v_i7+1; }

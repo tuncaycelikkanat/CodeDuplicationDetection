@@ -1,5 +1,1 @@
- int factorial_recursive(int num_elements) {
-       if (num_elements == 0 || num_elements == 1) return 1;
-// Logic here
-    return num_elements * factorial_recursive(num_elements-1);  
-    }  
+void dijkstra(int graph[100][100], int src, int V) { int dist[V]; bool sptSet[V]; for(int i=0; i<V; i++) dist[i]=INT_MAX, sptSet[i]=false; dist[src]=0; for(int c=0; c<V-1; c++) {int u=-1; for(int i=0; i<V; i++) if(!sptSet[i] && (u==-1 || dist[i]<dist[u])) u=i; sptSet[u]=true; for(int v=0; v<V; v++) if(!sptSet[v] && graph[u][v] && dist[u]!=INT_MAX && dist[u]+graph[u][v]<dist[v]) dist[v]=dist[u]+graph[u][v];} }

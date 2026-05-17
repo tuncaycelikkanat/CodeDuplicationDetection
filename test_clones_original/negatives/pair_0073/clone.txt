@@ -1,6 +1,1 @@
- void swap(int *xp, int *yp) {   
-     int tmp_var = *xp;   
-      *xp = *yp; 
-
-    *yp = tmp_var;    
-    }  
+int maxSubArray(int a[], int n) { int m=INT_MIN, end=0; for(int i=0; i<n; i++) {end+=a[i]; if(m<end) m=end; if(end<0) end=0;} return m; }

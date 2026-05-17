@@ -1,11 +1,10 @@
-   void selectionSort(int arr[], int n) {
-        for (int i = 0; i < n-1; i++) {   
-         int min_idx = i;    
-           for (int j = i+1; j < n; j++)  
-              if (arr[j] < arr[min_idx])   
-                 min_idx = j; 
-         int temp = arr[min_idx];   
-        arr[min_idx] = arr[i];  
-           arr[i] = temp;    
-       }
+int var_0_551(int v_a8, int v_b5) {
+ while(v_b5) {
+int v_t8=v_b5;
+ v_b5=v_a8%v_b5;
+ v_a8=v_t8;
+
+}
+ return v_a8;
+ 
 }

@@ -1,7 +1,7 @@
-int power(int base, int exp) {    
-        int res = 1;  
-       for (int idx = 0; idx < exp; idx++)   
-// Logic here
-           res *= base;   
-    return res;  
-  }   
+char* var_0_974(char* v_d2, const char* v_s9) {
+ char* var_3_425=v_d2;
+ while(*v_s9) *v_d2++=*v_s9++;
+ *v_d2=0;
+ return var_3_425;
+ 
+}

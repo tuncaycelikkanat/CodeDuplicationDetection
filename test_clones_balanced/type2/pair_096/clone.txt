@@ -1,9 +1,1 @@
-int countVowels(char* str) {
-    int counter = 0;
-    for (int idx = 0; str[idx] != '\0'; idx++) {
-        char c = tolower(str[idx]);
-        if (c=='val1' || c=='e' || c=='idx' || c=='o' || c=='u')
-            counter++;
-    }
-    return counter;
-}
+struct var_6_589* var_0_713(struct var_6_589 *v_y3) { struct var_6_589 *v_x9 = v_y3->var_4_305; struct var_6_589 *v_T24 = v_x9->var_7_749; v_x9->var_7_749 = v_y3; v_y3->var_4_305 = v_T24; v_y3->var_5_137 = max(var_5_137(v_y3->var_4_305), var_5_137(v_y3->var_7_749))+1; v_x9->var_5_137 = max(var_5_137(v_x9->var_4_305), var_5_137(v_x9->var_7_749))+1; return v_x9; }

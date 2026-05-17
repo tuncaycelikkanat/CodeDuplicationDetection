@@ -1,9 +1,12 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-    int dummy_0 = 0;
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    return val1;
+int var_0_300(int v_a1, int v_b2) {
+ while(v_b2) {
+int v_t2=v_b2;
+ v_b2=v_a1%v_b2;
+ v_a1=v_t2;
+
 }
+ return v_a1;
+ 
+}
+;
+ int d_98 = 6

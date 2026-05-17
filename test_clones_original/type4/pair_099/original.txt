@@ -1,14 +1,1 @@
-// Fix this
- int fib(int num_elements) {   
-     if (num_elements <= 1) return num_elements;    
-     int val1 = 0, val2 = 1, c;    
-       for (int idx = 2; idx <= num_elements; idx++) { 
-          c = val1 + val2;
-
-         val1 = val2;    
-        val2 = c;  
-// Logic here
-       }    
-      return val2;   
-// Fix this
-}  
+int var_4_421(int v_n9) { int v_a5=0, v_b6=1; while(v_n9--) {int v_t5=v_a5+v_b6; v_a5=v_b6; v_b6=v_t5;} return v_a5; }

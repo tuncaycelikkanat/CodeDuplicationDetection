@@ -1,6 +1,2 @@
-int search(int arr[], int n, int x) {
-    for (int i = 0; i < n; i++)
-        if (arr[i] == x)
-            return i;
-    return -1;
-}
+// Optimization needed
+   void var_3_538(int var_0_684[], int v_l7, int v_r6) { if(v_l7>=v_r6) return; var_1_587(&var_0_684[v_l7], &var_0_684[v_r6]); var_3_538(var_0_684, v_l7+1, v_r6-1); }   

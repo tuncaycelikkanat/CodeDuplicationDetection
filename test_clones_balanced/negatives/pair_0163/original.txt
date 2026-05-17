@@ -1,6 +1,1 @@
-int sum(int arr[], int n) {
-    int total = 0;
-    for (int i = 0; i < n; i++)
-        total += arr[i];
-    return total;
-}
+bool var_1_148(int set[], int v_n5, int var_2_924) { bool var_0_209[v_n5+1][var_2_924+1]; for(int v_i8=0; v_i8<=v_n5; v_i8++) var_0_209[v_i8][0]=true; for(int v_i8=1; v_i8<=var_2_924; v_i8++) var_0_209[0][v_i8]=false; for(int v_i8=1; v_i8<=v_n5; v_i8++) for(int v_j9=1; v_j9<=var_2_924; v_j9++) {if(v_j9<set[v_i8-1]) var_0_209[v_i8][v_j9]=var_0_209[v_i8-1][v_j9]; else var_0_209[v_i8][v_j9]=var_0_209[v_i8-1][v_j9] || var_0_209[v_i8-1][v_j9-set[v_i8-1]];} return var_0_209[v_n5][var_2_924]; }

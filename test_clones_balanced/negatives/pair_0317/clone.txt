@@ -1,12 +1,1 @@
-// Check if needed
-  void swapXor(int *xp, int *yp) {
-// Logic here
-    if (xp != yp) {
-// Fix this
-           *xp = *xp ^ *yp;   
-           *yp = *xp ^ *yp;    
-// Logic here
-           *xp = *xp ^ *yp; 
-// Check if needed
-       } 
- } 
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

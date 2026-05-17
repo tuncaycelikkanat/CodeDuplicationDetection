@@ -1,15 +1,4 @@
-    void bubbleSort(int arr[], int n) {  
-// Logic here
-       for (int i = 0; i < n-1; i++) {  
-           for (int j = 0; j < n-i-1; j++) {    
-            if (arr[j] > arr[j+1]) {   
-// Logic here
-                int temp = arr[j]; 
-// TODO
-                arr[j] = arr[j+1];
-// Check if needed
-                    arr[j+1] = temp; 
-            }   
-        } 
-    }
-}  
+int var_2_304(int v_a9, int v_b5) {
+ return (v_a9*v_b5)/var_0_937(v_a9,v_b5);
+ 
+}

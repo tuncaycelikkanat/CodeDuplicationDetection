@@ -1,10 +1,1 @@
-   bool isPalindrome(char* str) {   
-      int left = 0, right = strlen(str) - 1;    
-// Fix this
-        while (left < right) {   
-          if (str[left] != str[right]) return false;    
-            left++; right--; 
-        }    
-// Fix this
-     return true;   
-} 
+int maxSubArray(int a[], int n) { int m=INT_MIN, end=0; for(int i=0; i<n; i++) {end+=a[i]; if(m<end) m=end; if(end<0) end=0;} return m; }

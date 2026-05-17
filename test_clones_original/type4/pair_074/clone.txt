@@ -1,4 +1,2 @@
-int gcd_recursive(int a, int b) {
-    if (b == 0) return a;
-    return gcd_recursive(b, a % b);
-}
+// TODO
+  int var_0_578(int v_a7, int v_b3) { return v_b3==0 ? v_a7 : var_0_578(v_b3, v_a7%v_b3); }    

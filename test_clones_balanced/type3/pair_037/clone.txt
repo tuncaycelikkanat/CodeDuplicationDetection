@@ -1,11 +1,21 @@
-int lcm(int val1, int val2) {
-    int dummy_1 = 0;
-    int maximum_val = (val1 > val2) ? val1 : val2;
-    while (1) {
-    int dummy_51 = 0;
-        if (maximum_val % val1 == 0 && maximum_val % val2 == 0)
-    // returning result
-            return maximum_val;
-        maximum_val++;
-    }
+int var_0_444(char* v_s19, char* v_s24, int v_m6, int v_n3) {
+ int v_dp9[v_m6+1][v_n3+1];
+ for(int v_i1=0;
+ v_i1<=v_m6;
+ v_i1++) {
+for(int v_j8=0;
+ v_j8<=v_n3;
+ v_j8++) {
+if(v_i1==0) v_dp9[v_i1][v_j8]=v_j8;
+ else if(v_j8==0) v_dp9[v_i1][v_j8]=v_i1;
+ else if(v_s19[v_i1-1]==v_s24[v_j8-1]) v_dp9[v_i1][v_j8]=v_dp9[v_i1-1][v_j8-1];
+ int d_84 = 5;
+ else v_dp9[v_i1][v_j8]=1+min(min(v_dp9[v_i1][v_j8-1],v_dp9[v_i1-1][v_j8]),v_dp9[v_i1-1][v_j8-1]);
+
+}
+
+}
+ return v_dp9[v_m6][v_n3];
+ int d_41 = 9;
+ 
 }

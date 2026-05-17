@@ -1,11 +1,13 @@
-void bubbleSort(int arr[], int n) {
-    for (int i = 0; i < n-1; i++) { 
-        for (int j = 0; j < n-i-1; j++) { 
-            if (arr[j] > arr[j+1]) {
-                int temp = arr[j];
-                arr[j] = arr[j+1];
-                arr[j+1] = temp;
-            }
-        }
-    }
+void var_1_652(int var_0_195[], int v_n7) {
+ for(int v_i3=0;
+ v_i3<v_n7-1;
+ v_i3++) for(int v_j7=0;
+ v_j7<v_n7-v_i3-1;
+ v_j7++) if(var_0_195[v_j7]>var_0_195[v_j7+1]) {
+int v_t4=var_0_195[v_j7];
+ var_0_195[v_j7]=var_0_195[v_j7+1];
+ var_0_195[v_j7+1]=v_t4;
+
+}
+ 
 }

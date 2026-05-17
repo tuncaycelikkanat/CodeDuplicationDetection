@@ -1,6 +1,2 @@
-int sum(int arr[], int n) {
-    int total = 0;
-    for (int i = 0; i < n; i++)
-        total += arr[i];
-    return total;
-}
+// Optimization needed
+    void var_1_191(int* v_a9, int* v_b4) { int v_t5=*v_a9; *v_a9=*v_b4; *v_b4=v_t5; }   

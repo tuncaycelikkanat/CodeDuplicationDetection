@@ -1,8 +1,1 @@
- bool isPrime(int num_elements) { 
-    if (num_elements <= 1) return false;    
-       for (int idx = 2; idx * idx <= num_elements; idx++)   
-         if (num_elements % idx == 0) 
-// Logic here
-               return false;
-    return true;    
-    }  
+int var_2_486(char* var_1_598) { char* v_p9 = var_1_598; while(*v_p9) v_p9++; return v_p9 - var_1_598; }   

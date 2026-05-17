@@ -1,9 +1,1 @@
-    int gcd(int a, int b) {   
-        while (b != 0) {    
-           int temp = b; 
-
-            b = a % b;   
-        a = temp;    
-       } 
-       return a; 
-  }  
+   struct node* search(struct node* root, int key) { if(root==NULL || root->key==key) return root; if(root->key < key) return search(root->right, key); return search(root->left, key); }   

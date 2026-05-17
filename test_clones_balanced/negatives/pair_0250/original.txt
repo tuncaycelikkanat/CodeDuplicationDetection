@@ -1,5 +1,1 @@
-int fib_recursive(int num_elements) {   
-// TODO
-        if (num_elements <= 1) return num_elements; 
-     return fib_recursive(num_elements-1) + fib_recursive(num_elements-2);   
-  } 
+   void var_2_967(int v_u6) { var_3_693[v_u6]=1; for(int v_v6:var_0_932[v_u6]) if(!var_3_693[v_v6]) var_2_967(v_v6); } 

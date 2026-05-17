@@ -1,8 +1,1 @@
-   int search(int arr[], int n, int x) {  
-
-        for (int i = 0; i < n; i++)    
-           if (arr[i] == x)
-                return i;  
-       return -1;  
-// Check if needed
-   }   
+   struct Node* rightRotate(struct Node *y) { struct Node *x = y->left; struct Node *T2 = x->right; x->right = y; y->left = T2; y->height = max(height(y->left), height(y->right))+1; x->height = max(height(x->left), height(x->right))+1; return x; }    

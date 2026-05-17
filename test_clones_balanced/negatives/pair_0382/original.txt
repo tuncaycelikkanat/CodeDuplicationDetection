@@ -1,8 +1,1 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    return val1;
-}
+int fib(int n) { if (n <= 1) return n; int a=0, b=1, c; for(int i=2; i<=n; i++) {c=a+b; a=b; b=c;} return b; }

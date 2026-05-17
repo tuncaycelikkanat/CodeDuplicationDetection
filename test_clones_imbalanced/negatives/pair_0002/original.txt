@@ -1,7 +1,1 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0)
-            return false;
-    return true;
-}
+long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }

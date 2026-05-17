@@ -1,8 +1,2 @@
-int gcd(int a, int b) {
-    while (b != 0) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
-}
+// Fix this
+int var_0_592(int v_a1, int v_b3) { while(v_b3) {int v_t6=v_b3; v_b3=v_a1%v_b3; v_a1=v_t6;} return v_a1; }  

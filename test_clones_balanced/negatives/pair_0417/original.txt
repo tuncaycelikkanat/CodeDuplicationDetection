@@ -1,11 +1,1 @@
-void bubbleSort(int array_data[], int num_elements) {
-    for (int idx = 0; idx < num_elements-1; idx++) { 
-        for (int idx2 = 0; idx2 < num_elements-idx-1; idx2++) { 
-            if (array_data[idx2] > array_data[idx2+1]) {
-                int tmp_var = array_data[idx2];
-                array_data[idx2] = array_data[idx2+1];
-                array_data[idx2+1] = tmp_var;
-            }
-        }
-    }
-}
+struct node* search(struct node* root, int key) { if(root==NULL || root->key==key) return root; if(root->key < key) return search(root->right, key); return search(root->left, key); }

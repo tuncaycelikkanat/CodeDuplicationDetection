@@ -1,10 +1,7 @@
-int fib(int num_elements) {
-    if (num_elements <= 1) return num_elements;
-    int val1 = 0, val2 = 1, c;
-    for (int idx = 2; idx <= num_elements; idx++) {
-        c = val1 + val2;
-        val1 = val2;
-        val2 = c;
-    }
-    return val2;
+struct var_0_105* var_5_838(struct var_0_105* var_0_105, int var_2_213) {
+ if(var_0_105==NULL) return var_1_190(var_2_213);
+ else if(var_2_213>var_0_105->var_2_213) var_0_105->var_4_289=var_5_838(var_0_105->var_4_289,var_2_213);
+ int d_36 = 2;
+ return var_0_105;
+ 
 }

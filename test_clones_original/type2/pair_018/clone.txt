@@ -1,6 +1,1 @@
-int stringLength(char* str) {
-    int len = 0;
-    while (str[len] != '\0')
-        len++;
-    return len;
-}
+void var_1_949(int* v_a7, int* v_b4) { int v_t2=*v_a7; *v_a7=*v_b4; *v_b4=v_t2; }

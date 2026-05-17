@@ -1,7 +1,21 @@
-int findMax(int array_data[], int num_elements) {
-    int maximum_val = array_data[0];
-    for (int idx = 1; idx < num_elements; idx++)
-        if (array_data[idx] > maximum_val)
-            maximum_val = array_data[idx];
-    return maximum_val;
+void var_3_847(int var_0_738[], int v_n8) {
+ int max=var_0_738[0];
+ for(int v_i5=1;
+ v_i5<v_n8;
+ v_i5++) if(var_0_738[v_i5]>max) max=var_0_738[v_i5];
+ int var_1_257[max+1];
+ for(int v_i5=0;
+ v_i5<=max;
+ ++v_i5) var_1_257[v_i5]=0;
+ for(int v_i5=0;
+ v_i5<v_n8;
+ v_i5++) var_1_257[var_0_738[v_i5]]++;
+ int var_2_436=0;
+ int d_94 = 2;
+ for(int v_i5=0;
+ v_i5<=max;
+ v_i5++) while(var_1_257[v_i5]--) var_0_738[var_2_436++]=v_i5;
+ 
 }
+;
+ int d_53 = 8

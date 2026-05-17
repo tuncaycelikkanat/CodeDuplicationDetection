@@ -1,8 +1,1 @@
-// Fix this
-   int stringLength(char* str) {    
-      int len = 0;  
-// Logic here
-        while (str[len] != '\0') 
-            len++;
-     return len;  
-    }  
+int var_1_912(int v_n6) { if(v_n6<=1) return v_n6; return var_1_912(v_n6-1)+var_1_912(v_n6-2); } 

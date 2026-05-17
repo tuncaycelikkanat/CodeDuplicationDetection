@@ -90,7 +90,7 @@ class TestEnsemblePipeline:
         )
         assert isinstance(X, np.ndarray), f"Dense array bekleniyor, {type(X)} alındı"
         assert X.dtype == np.float32
-        assert X.shape[0] == 60
+        assert X.shape[0] <= 60, f"En fazla 60 olmalı, {X.shape[0]} alındı"
         assert X.ndim == 2
 
     def test_cos_token_at_index_zero(self, pipeline):

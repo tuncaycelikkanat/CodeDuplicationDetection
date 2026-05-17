@@ -1,7 +1,1 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
-}
+long long var_0_981(int v_n9) { long long var_2_251=1; for(int v_i3=2; v_i3<=v_n9; v_i3++) var_2_251*=v_i3; return var_2_251; }

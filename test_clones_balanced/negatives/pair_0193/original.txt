@@ -1,6 +1,1 @@
-int power(int base, int exp) {    
-        int res = 1;    
-    for (int idx = 0; idx < exp; idx++) 
-           res *= base; 
-      return res;   
-    }  
+void rev(int arr[], int l, int r) { if(l>=r) return; swap(&arr[l], &arr[r]); rev(arr, l+1, r-1); }

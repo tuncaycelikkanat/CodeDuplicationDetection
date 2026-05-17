@@ -78,6 +78,9 @@ _TYPE_INT = re.compile(r'\b(int|long|short|unsigned|signed)\b')
 _TYPE_FLOAT = re.compile(r'\b(float|double)\b')
 _TYPE_CHAR = re.compile(r'\b(char|string)\b')
 _TYPE_STRUCT = re.compile(r'\b(struct|class)\b')
+_TYPE_VOID = re.compile(r'\bvoid\b')
+_TYPE_BOOL = re.compile(r'\bbool\b')
+_TYPE_AUTO = re.compile(r'\bauto\b')
 _PTR = re.compile(r'\*')
 _ARRAY = re.compile(r'\[')
 
@@ -89,15 +92,15 @@ _PTR_DEREF_RE = re.compile(r'\*[a-zA-Z_]\w*')
 
 def _extract_library_calls(code):
     calls = _FUNC_CALL_RE.findall(code)
-    return frozenset(c for c in calls if c in _KNOWN_LIBRARY_FUNCS)
+    return Counter(c for c in calls if c in _KNOWN_LIBRARY_FUNCS)
 
-def _extract_library_categories(calls):
-    categories = set()
-    for call in calls:
+def _extract_library_categories(calls_counter):
+    categories = Counter()
+    for call, count in calls_counter.items():
         for cat, funcs in _LIB_CATEGORIES.items():
             if call in funcs:
-                categories.add(cat)
-    return frozenset(categories)
+                categories[cat] += count
+    return categories
 
 def _extract_data_structures(code):
     structs = set()
@@ -125,20 +128,10 @@ def _math_op_set(code):
 # ================= CODE METRICS & COUNTERS =================
 
 def _strip_comments(code):
-    code = _BLOCK_COMMENT_RE.sub('', code)
+    # Use ' ' instead of '' to avoid token merging (e.g. int/*foo*/x -> intx)
+    code = _BLOCK_COMMENT_RE.sub(' ', code)
     code = _LINE_COMMENT_RE.sub('', code)
     return code
-
-def _count_loops(code): return len(_LOOP_RE.findall(code))
-def _count_branches(code): return len(_BRANCH_RE.findall(code))
-def _count_func_calls(code):
-    calls = _FUNC_CALL_RE.findall(code)
-    return sum(1 for c in calls if c not in _FUNC_CALL_KEYWORDS)
-def _count_operators(code): return len(_OPERATOR_RE.findall(code))
-def _count_returns(code): return len(_RETURN_RE.findall(code))
-
-def _count_array_accesses(code): return len(_ARRAY_ACCESS_RE.findall(code))
-def _count_ptr_derefs(code): return len(_PTR_DEREF_RE.findall(code))
 
 def _compute_nesting_depth(code):
     max_depth, depth = 0, 0
@@ -195,30 +188,14 @@ def _type_profile(code):
         len(_TYPE_FLOAT.findall(code)),
         len(_TYPE_CHAR.findall(code)),
         len(_TYPE_STRUCT.findall(code)),
+        len(_TYPE_VOID.findall(code)),
+        len(_TYPE_BOOL.findall(code)),
+        len(_TYPE_AUTO.findall(code)),
         len(_PTR.findall(code)),
         len(_ARRAY.findall(code))
     ], dtype=np.float32)
 
 # ================= CONTROL FLOW PATTERNS =================
-
-_CF_MAPPING = {
-    'for': 'F', 'while': 'W', 'do': 'D', 'if': 'I', 'else': 'E',
-    'switch': 'S', 'case': 'C', 'return': 'R', 'break': 'B', 'continue': 'N'
-}
-
-_ABSTRACT_CF_MAPPING = {
-    'for': 'L', 'while': 'L', 'do': 'L',
-    'if': 'B', 'else': 'B', 'switch': 'B', 'case': 'B',
-    'return': 'R', 'break': 'J', 'continue': 'J'
-}
-
-def _extract_cf_pattern(code):
-    tokens = _CF_RE.findall(code)
-    return ''.join(_CF_MAPPING.get(t, '') for t in tokens)
-
-def _extract_abstract_cf_pattern(code):
-    tokens = _CF_RE.findall(code)
-    return ''.join(_ABSTRACT_CF_MAPPING.get(t, '') for t in tokens)
 
 def cf_pattern_similarity(pattern1, pattern2):
     if not pattern1 and not pattern2: return 1.0
@@ -302,9 +279,9 @@ def _extract_single(code):
     cf = parser.extract_control_flow(tree)
     
     semantic = {
-        'library_calls': lib_calls,
-        'library_categories': _extract_library_categories(lib_calls),
-        'data_structs': data_structs,
+        'library_calls': dict(lib_calls),
+        'library_categories': dict(_extract_library_categories(lib_calls)),
+        'data_structs': frozenset(data_structs),
         'io_pattern': io_pattern,
         'math_ops': math_ops,
         'skeleton': _extract_skeleton(clean_code),

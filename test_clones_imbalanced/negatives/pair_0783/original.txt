@@ -1,7 +1,1 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
-}
+void bubbleSort(int arr[], int n) { for(int i=0; i<n-1; i++) for(int j=0; j<n-i-1; j++) if(arr[j]>arr[j+1]) {int t=arr[j]; arr[j]=arr[j+1]; arr[j+1]=t;} }

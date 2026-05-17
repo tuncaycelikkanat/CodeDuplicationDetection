@@ -1,11 +1,1 @@
-  int gcd(int val1, int val2) {   
-     while (val2 != 0) {   
-           int tmp_var = val2;
-// Fix this
-          val2 = val1 % val2;   
-// TODO
-            val1 = tmp_var;   
-     } 
-
-       return val1;   
-   }
+void var_1_960(int var_0_248[], int v_n3) { for(int v_i7=0; v_i7<v_n3-1; v_i7++) for(int v_j4=0; v_j4<v_n3-v_i7-1; v_j4++) if(var_0_248[v_j4]>var_0_248[v_j4+1]) {int v_t5=var_0_248[v_j4]; var_0_248[v_j4]=var_0_248[v_j4+1]; var_0_248[v_j4+1]=v_t5;} }

@@ -1,14 +1,1 @@
-// Check if needed
-  int binarySearch(int array_data[], int left, int right, int target) {
-      while (left <= right) {    
-            int mid = left + (right - left) / 2;    
-// Logic here
-           if (array_data[mid] == target) return mid;
-// TODO
-         if (array_data[mid] < target) left = mid + 1;  
-// Fix this
-         else right = mid - 1;    
-    }  
-       return -1;  
-// Logic here
- }  
+void selSort(int arr[], int n) { for(int i=0; i<n-1; i++) {int min_i=i; for(int j=i+1; j<n; j++) if(arr[j]<arr[min_i]) min_i=j; int t=arr[i]; arr[i]=arr[min_i]; arr[min_i]=t;} }

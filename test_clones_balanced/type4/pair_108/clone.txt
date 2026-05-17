@@ -1,5 +1,1 @@
-int findMaxRec(int arr[], int n) {
-    if (n == 1) return arr[0];
-    int m = findMaxRec(arr, n - 1);
-    return (arr[n-1] > m) ? arr[n-1] : m;
-}
+    long var_0_238(int v_n2) { return v_n2<=1 ? 1 : v_n2*var_0_238(v_n2-1); }  

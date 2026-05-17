@@ -1,6 +1,4 @@
-int search(int array_data[], int num_elements, int target) {
-    for (int idx = 0; idx < num_elements; idx++)
-        if (array_data[idx] == target)
-            return idx;
-    return -1;
+int var_2_504(int v_a3, int v_b2) {
+ return (v_a3*v_b2)/var_0_531(v_a3,v_b2);
+ 
 }

@@ -1,7 +1,4 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
+int var_2_193(int v_a8, int v_b1) {
+ return (v_a8*v_b1)/var_0_764(v_a8,v_b1);
+ 
 }

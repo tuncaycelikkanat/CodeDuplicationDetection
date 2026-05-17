@@ -1,8 +1,1 @@
-int sumOfDigits(int num_elements) {
-    int sum = 0;
-    while (num_elements != 0) {
-        sum += num_elements % 10;
-        num_elements /= 10;
-    }
-    return sum;
-}
+void var_2_919(int var_0_869[], int v_l3, int v_m2, int v_r6) { int v_i6=v_l3, v_j8=v_m2+1, v_k1=0; int var_3_469[v_r6-v_l3+1]; while(v_i6<=v_m2 && v_j8<=v_r6) {if(var_0_869[v_i6]<=var_0_869[v_j8]) var_3_469[v_k1++]=var_0_869[v_i6++]; else var_3_469[v_k1++]=var_0_869[v_j8++];} while(v_i6<=v_m2) var_3_469[v_k1++]=var_0_869[v_i6++]; while(v_j8<=v_r6) var_3_469[v_k1++]=var_0_869[v_j8++]; for(v_i6=v_l3,v_k1=0; v_i6<=v_r6; v_i6++,v_k1++) var_0_869[v_i6]=var_3_469[v_k1]; }

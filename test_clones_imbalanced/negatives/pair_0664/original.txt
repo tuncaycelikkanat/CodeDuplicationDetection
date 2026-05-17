@@ -1,7 +1,1 @@
-void swapXor(int *xp, int *yp) {
-    if (xp != yp) {
-        *xp = *xp ^ *yp;
-        *yp = *xp ^ *yp;
-        *xp = *xp ^ *yp;
-    }
-}
+    long var_0_303(int v_n1) { long v_r6=1; while(v_n1>1) v_r6*=v_n1--; return v_r6; }    

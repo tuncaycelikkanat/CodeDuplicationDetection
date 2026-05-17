@@ -1,5 +1,1 @@
- void swap(int *xp, int *yp) {  
-     int tmp_var = *xp;    
-     *xp = *yp;    
-       *yp = tmp_var;
-  }    
+    long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }  

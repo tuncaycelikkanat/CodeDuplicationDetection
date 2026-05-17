@@ -1,8 +1,1 @@
-int lcm(int a, int b) {
-    int max = (a > b) ? a : b;
-    while (1) {
-        if (max % a == 0 && max % b == 0)
-            return max;
-        max++;
-    }
-}
+void bfs(int s, int adj[][100], int v) { bool vis[v]={false}; int q[v], f=0, r=0; q[r++]=s; vis[s]=true; while(f<r) {int curr=q[f++]; for(int i=0; i<v; i++) if(adj[curr][i] && !vis[i]) {vis[i]=true; q[r++]=i;}} }

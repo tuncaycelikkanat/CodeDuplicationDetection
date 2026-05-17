@@ -1,7 +1,15 @@
-// Check if needed
- int stringLengthFor(char* str) {   
-       int len = 0;
-        for (; str[len]; len++);   
-    return len;   
-// Check if needed
-  }    
+int var_5_465(int v_n3) {
+ if (v_n3 <= 1) return v_n3;
+ int v_a4=0, v_b5=1, v_c5;
+ for(int v_i8=2;
+ int d_23 = 3;
+ v_i8<=v_n3;
+ v_i8++) {
+v_c5=v_a4+v_b5;
+ v_a4=v_b5;
+ v_b5=v_c5;
+
+}
+ return v_b5;
+ 
+}

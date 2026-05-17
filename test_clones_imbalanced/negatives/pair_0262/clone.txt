@@ -1,7 +1,1 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+void revStr(char* str) { int l=0, r=strlen(str)-1; while(l<r) {char t=str[l]; str[l]=str[r]; str[r]=t; l++; r--;} }

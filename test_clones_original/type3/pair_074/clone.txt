@@ -1,7 +1,14 @@
-int findMin(int array_data[], int num_elements) {
-    int minimum_val = array_data[0];
-    for (int idx = 1; idx < num_elements; idx++)
-        if (array_data[idx] < minimum_val)
-            minimum_val = array_data[idx];
-    return minimum_val;
+void var_1_793(int v_a6[10][10], int v_b1[10][10], int var_5_639[10][10], int v_n2) {
+ for(int v_i5=0;
+ v_i5<v_n2;
+ v_i5++) for(int v_j2=0;
+ v_j2<v_n2;
+ v_j2++) {
+var_5_639[v_i5][v_j2]=0;
+ for(int v_k9=0;
+ v_k9<v_n2;
+ v_k9++) var_5_639[v_i5][v_j2]+=v_a6[v_i5][v_k9]*v_b1[v_k9][v_j2];
+
+}
+ 
 }

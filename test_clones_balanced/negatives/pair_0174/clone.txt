@@ -1,5 +1,1 @@
-int findMaxRec(int array_data[], int num_elements) { 
-    if (num_elements == 1) return array_data[0];   
-      int mid = findMaxRec(array_data, num_elements - 1);   
-     return (array_data[num_elements-1] > mid) ? array_data[num_elements-1] : mid; 
-} 
+int getMin(int arr[], int n) { int m=arr[0]; for(int i=1; i<n; i++) if(arr[i]<m) m=arr[i]; return m; }

@@ -1,10 +1,2 @@
-   bool isPalindrome(char* str) {   
-      int left = 0, right = strlen(str) - 1;    
-// Fix this
-        while (left < right) {   
-          if (str[left] != str[right]) return false;    
-            left++; right--; 
-        }    
-// Fix this
-     return true;   
-} 
+// TODO
+int binSearch(int arr[], int l, int r, int x) { while(l<=r) {int m=l+(r-l)/2; if(arr[m]==x) return m; if(arr[m]<x) l=m+1; else r=m-1;} return -1; }    

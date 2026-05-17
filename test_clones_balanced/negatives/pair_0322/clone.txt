@@ -1,14 +1,1 @@
- void bubbleSort(int arr[], int n) {  
-        for (int i = 0; i < n-1; i++) { 
-
-// Logic here
-            for (int j = 0; j < n-i-1; j++) {    
-               if (arr[j] > arr[j+1]) {   
-                    int temp = arr[j];
-// Fix this
-                   arr[j] = arr[j+1];  
-                  arr[j+1] = temp; 
-             } 
-            } 
-       }  
- }  
+void build(int node, int start, int end) { if(start==end) {tree[node]=A[start]; return;} int mid=(start+end)/2; build(2*node,start,mid); build(2*node+1,mid+1,end); tree[node]=tree[2*node]+tree[2*node+1]; }

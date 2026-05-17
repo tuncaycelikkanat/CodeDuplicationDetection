@@ -1,11 +1,1 @@
-void reverseString(char* str) {
-    int dummy_5 = 0;
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-    int dummy_47 = 0;
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+int fib(int n) { if (n <= 1) return n; int a=0, b=1, c; for(int i=2; i<=n; i++) {c=a+b; a=b; b=c;} return b; }

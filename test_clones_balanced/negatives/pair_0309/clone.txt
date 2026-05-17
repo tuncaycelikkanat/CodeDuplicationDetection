@@ -1,5 +1,1 @@
-void swap(int *xp, int *yp) {
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
+   int v_bs4(int v_a9[], int v_l3, int v_r8, int v_x7) { if(v_r8>=v_l3) {int v_m2=v_l3+(v_r8-v_l3)/2; if(v_a9[v_m2]==v_x7) return v_m2; if(v_a9[v_m2]>v_x7) return v_bs4(v_a9,v_l3,v_m2-1,v_x7); return v_bs4(v_a9,v_m2+1,v_r8,v_x7);} return -1; }    

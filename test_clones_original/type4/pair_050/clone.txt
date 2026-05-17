@@ -1,8 +1,1 @@
-   void swapXor(int *xp, int *yp) {    
-// TODO
-      if (xp != yp) {
-          *xp = *xp ^ *yp;   
-            *yp = *xp ^ *yp;  
-         *xp = *xp ^ *yp;    
-        }   
-} 
+int getLen(char* str) { char* p = str; while(*p) p++; return p - str; }

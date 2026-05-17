@@ -1,8 +1,1 @@
-int sum(int array_data[], int num_elements) { 
-    int total_sum = 0;    
-    for (int idx = 0; idx < num_elements; idx++)    
-          total_sum += array_data[idx];  
-
-     return total_sum;    
-// Check if needed
-   }  
+bool isPal(char* s) { int len=strlen(s); for(int i=0; i<len/2; i++) if(s[i]!=s[len-1-i]) return false; return true; }

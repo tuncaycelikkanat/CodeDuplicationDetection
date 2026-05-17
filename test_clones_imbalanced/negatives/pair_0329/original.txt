@@ -1,14 +1,1 @@
-// Check if needed
-  int binarySearch(int array_data[], int left, int right, int target) {
-      while (left <= right) {    
-            int mid = left + (right - left) / 2;    
-// Logic here
-           if (array_data[mid] == target) return mid;
-// TODO
-         if (array_data[mid] < target) left = mid + 1;  
-// Fix this
-         else right = mid - 1;    
-    }  
-       return -1;  
-// Logic here
- }  
+int fib(int n) { if (n <= 1) return n; int a=0, b=1, c; for(int i=2; i<=n; i++) {c=a+b; a=b; b=c;} return b; }

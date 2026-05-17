@@ -1,2 +1,13 @@
-   int gcdH(int val1, int val2) { return val2 == 0 ? val1 : gcdH(val2, val1 % val2); }   
-    int lcmFast(int val1, int val2) { return (val1 / gcdH(val1, val2)) * val2; }    
+void var_3_933(char* var_2_867) {
+ int v_l9=0, v_r3=strlen(var_2_867)-1;
+ while(v_l9<v_r3) {
+char v_t2=var_2_867[v_l9];
+ var_2_867[v_l9]=var_2_867[v_r3];
+ var_2_867[v_r3]=v_t2;
+ v_r3--;
+
+}
+ 
+}
+;
+ int d_7 = 3

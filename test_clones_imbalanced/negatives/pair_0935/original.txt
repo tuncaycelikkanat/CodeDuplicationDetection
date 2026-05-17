@@ -1,6 +1,8 @@
-   int sumOfDigits(int num_elements) { 
-       int sum = 0;
-// Fix this
-     while (num_elements != 0) { sum += num_elements % 10; num_elements /= 10; }  
-     return sum; 
-} 
+bool var_0_906(int v_n9) {
+ if(v_n9<=1) return false;
+ for(int v_i7=2;
+ v_i7*v_i7<=v_n9;
+ v_i7++) if(v_n9%v_i7==0) return false;
+ return true;
+ 
+}

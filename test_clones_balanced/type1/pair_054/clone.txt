@@ -1,10 +1,1 @@
-   int findMin(int arr[], int n) { 
-
-       int min = arr[0];    
-     for (int i = 1; i < n; i++)
-         if (arr[i] < min)
-
-                min = arr[i]; 
-// Fix this
-    return min; 
-   } 
+int binSearch(int arr[], int l, int r, int x) { while(l<=r) {int m=l+(r-l)/2; if(arr[m]==x) return m; if(arr[m]<x) l=m+1; else r=m-1;} return -1; }

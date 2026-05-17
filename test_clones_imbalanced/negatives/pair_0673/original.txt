@@ -1,17 +1,11 @@
-   void insertionSort(int arr[], int n) {  
-       for (int i = 1; i < n; i++) {   
-
-// TODO
-           int key = arr[i];
-          int j = i - 1;
-
-           while (j >= 0 && arr[j] > key) {   
-              arr[j + 1] = arr[j];    
-            j = j - 1;    
-// TODO
-            } 
-
-// Logic here
-          arr[j + 1] = key;    
-    }  
-   }    
+long long var_0_429(int v_b1, int v_p2) {
+ long long v_r9=1;
+ while(v_p2){
+ if(v_p2&1) v_r9*=v_b1;
+ v_b1*=v_b1;
+ v_p2>>=1;
+ 
+}
+ return v_r9;
+ 
+}

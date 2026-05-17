@@ -1,6 +1,1 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int idx = 0; idx < exp; idx++)
-        res *= base;
-    return res;
-}
+void var_2_213(int v_u3, int var_0_851[][100], int v_v4, bool var_3_506[]) { var_3_506[v_u3]=true; for(int v_i8=0; v_i8<v_v4; v_i8++) if(var_0_851[v_u3][v_i8] && !var_3_506[v_i8]) var_2_213(v_i8,var_0_851,v_v4,var_3_506); }

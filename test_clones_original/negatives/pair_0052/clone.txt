@@ -1,10 +1,1 @@
-void reverseString(char* str) {
-    int dummy_38 = 0;
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+int lcm(int a, int b) { return (a*b)/gcd(a,b); }  

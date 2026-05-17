@@ -1,10 +1,2 @@
-int fib(int n) {
-    if (n <= 1) return n;
-    int a = 0, b = 1, c;
-    for (int i = 2; i <= n; i++) {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-    return b;
-}
+// Optimization needed
+   void var_3_538(int var_0_684[], int v_l7, int v_r6) { if(v_l7>=v_r6) return; var_1_587(&var_0_684[v_l7], &var_0_684[v_r6]); var_3_538(var_0_684, v_l7+1, v_r6-1); }   

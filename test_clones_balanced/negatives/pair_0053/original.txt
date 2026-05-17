@@ -1,13 +1,1 @@
-   int gcd(int val1, int val2) {
-     while (val2 != 0) {   
-
-           int tmp_var = val2; 
-          val2 = val1 % val2;   
-
-         val1 = tmp_var; 
-// Logic here
-      }    
-// Fix this
-       return val1; 
-
-   }
+ int var_2_718(int var_0_790[], int v_n1) { if(v_n1==0) return 0; return var_0_790[v_n1-1] + var_2_718(var_0_790, v_n1-1); }    

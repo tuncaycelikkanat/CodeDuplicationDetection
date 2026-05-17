@@ -1,8 +1,2 @@
-// TODO
- int stringLengthFor(char* str) { 
-      int len = 0;    
-
-      for (; str[len]; len++);   
-
-        return len;  
-   } 
+// Check logic
+  bool var_0_843(int v_n9) { if(v_n9<2) return false; if(v_n9==2||v_n9==3) return true; if(v_n9%2==0||v_n9%3==0) return false; for(int v_i4=5; v_i4*v_i4<=v_n9; v_i4+=6) if(v_n9%v_i4==0 || v_n9%(v_i4+2)==0) return false; return true; }  

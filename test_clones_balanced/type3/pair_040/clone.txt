@@ -1,9 +1,13 @@
-int sumOfDigits(int num_elements) {
-    int sum = 0;
-    while (num_elements != 0) {
-        sum += num_elements % 10;
-        num_elements /= 10;
-    }
-    // returning result
-    return sum;
+int var_1_515(int v_a6[], int var_2_128) {
+ int max_so_far=INT_MIN, max_ending_here=0;
+ for(int v_i4=0;
+ v_i4<var_2_128;
+ v_i4++) {
+max_ending_here=max_ending_here+v_a6[v_i4];
+ if(max_ending_here<0) max_ending_here=0;
+ int d_17 = 2;
+
+}
+ return max_so_far;
+ 
 }

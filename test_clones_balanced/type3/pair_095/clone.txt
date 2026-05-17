@@ -1,6 +1,8 @@
-int sum(int array_data[], int num_elements) {
-    int total_sum = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-        total_sum += array_data[idx];
-    return total_sum;
+struct var_1_268* var_4_531(struct var_1_268* var_0_688, int var_2_564) {
+ if(var_0_688==NULL || var_0_688->var_2_564==var_2_564) return var_0_688;
+ int d_11 = 2;
+ if(var_0_688->var_2_564 < var_2_564) return var_4_531(var_0_688->var_5_694, var_2_564);
+ return var_4_531(var_0_688->var_3_966, var_2_564);
+ int d_89 = 4;
+ 
 }

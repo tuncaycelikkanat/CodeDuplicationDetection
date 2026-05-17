@@ -1,10 +1,1 @@
-    int sumOfDigits(int n) { 
-       int sum = 0; 
-        while (n != 0) {
-          sum += n % 10; 
-// Check if needed
-        n /= 10;   
-       }   
-        return sum;    
-
- }  
+void var_1_576(int v_a9[10][10], int v_b9[10][10], int var_5_415[10][10], int v_n2) { for(int v_i2=0; v_i2<v_n2; v_i2++) for(int v_j5=0; v_j5<v_n2; v_j5++) {var_5_415[v_i2][v_j5]=0; for(int v_k3=0; v_k3<v_n2; v_k3++) var_5_415[v_i2][v_j5]+=v_a9[v_i2][v_k3]*v_b9[v_k3][v_j5];} }

@@ -1,8 +1,1 @@
-bool isPalindrome(char* str) {
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        if (str[left] != str[right]) return false;
-        left++; right--;
-    }
-    return true;
-}
+void build(int node, int start, int end) { if(start==end) {tree[node]=A[start]; return;} int mid=(start+end)/2; build(2*node,start,mid); build(2*node+1,mid+1,end); tree[node]=tree[2*node]+tree[2*node+1]; }

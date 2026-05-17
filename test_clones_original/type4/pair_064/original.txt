@@ -1,7 +1,1 @@
-// Logic here
-   void swap(int *xp, int *yp) {
-
-       int tmp_var = *xp;
-    *xp = *yp;    
-        *yp = tmp_var; 
-    }    
+int var_2_263(char* var_0_383) { int v_l9=0; while(var_0_383[v_l9]) v_l9++; return v_l9; }   

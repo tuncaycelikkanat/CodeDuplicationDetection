@@ -1,7 +1,1 @@
-int search(int array_data[], int num_elements, int target) {
-    for (int idx = 0; idx < num_elements; idx++)
-        if (array_data[idx] == target)
-            return idx;
-    // returning result
-    return -1;
-}
+void var_10_669(struct var_4_210 *var_0_751, const char *var_6_211) { struct var_4_210 *var_9_616 = var_0_751; for (int v_i4 = 0; v_i4 < strlen(var_6_211); v_i4++) { int var_1_758 = var_6_211[v_i4] - 'v_a9'; if (!var_9_616->var_7_933[var_1_758]) var_9_616->var_7_933[var_1_758] = var_3_128(); var_9_616 = var_9_616->var_7_933[var_1_758]; } var_9_616->var_5_914 = true; }

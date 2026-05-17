@@ -1,7 +1,1 @@
-// Check if needed
- int stringLengthFor(char* str) {   
-       int len = 0;
-        for (; str[len]; len++);   
-    return len;   
-// Check if needed
-  }    
+ int var_2_253(int v_n2) { int v_c3=0; while(v_n2) {v_n2&=v_n2-1; v_c3++;} return v_c3; }

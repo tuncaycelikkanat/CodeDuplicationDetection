@@ -1,11 +1,1 @@
-void insertionSort(int array_data[], int num_elements) {
-    for (int idx = 1; idx < num_elements; idx++) {
-        int key = array_data[idx];
-        int idx2 = idx - 1;
-        while (idx2 >= 0 && array_data[idx2] > key) {
-            array_data[idx2 + 1] = array_data[idx2];
-            idx2 = idx2 - 1;
-        }
-        array_data[idx2 + 1] = key;
-    }
-}
+struct var_0_411* var_5_869(struct var_0_411* var_0_411, int var_2_159) { if(var_0_411==NULL) return var_1_902(var_2_159); if(var_2_159<var_0_411->var_2_159) var_0_411->var_3_917=var_5_869(var_0_411->var_3_917,var_2_159); else if(var_2_159>var_0_411->var_2_159) var_0_411->var_4_542=var_5_869(var_0_411->var_4_542,var_2_159); return var_0_411; }

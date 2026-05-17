@@ -1,6 +1,1 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int i = 0; i < exp; i++)
-        res *= base;
-    return res;
-}
+ bool var_0_402(int v_n1) { if(v_n1<2) return false; for(int v_i4=2; v_i4*v_i4<=v_n1; v_i4++) if(v_n1%v_i4==0) return false; return true; }

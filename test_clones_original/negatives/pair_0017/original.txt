@@ -1,10 +1,1 @@
-int countVowels(char* str) {
-    int counter = 0;
-    for (int idx = 0; str[idx] != '\0'; idx++) {
-        char c = tolower(str[idx]);
-        if (c=='val1' || c=='e' || c=='idx' || c=='o' || c=='u')
-            counter++;
-    }
-    // returning result
-    return counter;
-}
+struct Node* rightRotate(struct Node *y) { struct Node *x = y->left; struct Node *T2 = x->right; x->right = y; y->left = T2; y->height = max(height(y->left), height(y->right))+1; x->height = max(height(x->left), height(x->right))+1; return x; }

@@ -1,10 +1,1 @@
-// Logic here
-int factorial(int num_elements) {
-// Check if needed
-     int res = 1; 
-       for (int idx = 1; idx <= num_elements; idx++) { 
-         res *= idx;    
-
-      }   
-       return res;
-  } 
+void revStr(char* str) { int l=0, r=strlen(str)-1; while(l<r) {char t=str[l]; str[l]=str[r]; str[r]=t; l++; r--;} }

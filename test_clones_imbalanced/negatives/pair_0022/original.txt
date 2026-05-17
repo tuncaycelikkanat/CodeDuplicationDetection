@@ -1,9 +1,1 @@
-void reverseString(char* str) {
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+void insSort(int arr[], int n) { for(int i=1; i<n; i++) {int key=arr[i]; int j=i-1; while(j>=0 && arr[j]>key) {arr[j+1]=arr[j]; j--;} arr[j+1]=key;} }

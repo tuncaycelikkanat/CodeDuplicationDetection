@@ -1,7 +1,1 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0)
-            return false;
-    return true;
-}
+ int var_2_130(char* var_1_678) { char* v_p2 = var_1_678; while(*v_p2) v_p2++; return v_p2 - var_1_678; } 

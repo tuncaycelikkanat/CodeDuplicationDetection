@@ -1,9 +1,2 @@
-void reverseString(char* str) {
-    int l = 0, r = strlen(str) - 1;
-    while (l < r) {
-        char temp = str[l];
-        str[l] = str[r];
-        str[r] = temp;
-        l++; r--;
-    }
-}
+// Fix this
+    void var_2_245(int v_u5) { var_3_627[v_u5]=1; for(int v_v3:var_0_182[v_u5]) if(!var_3_627[v_v3]) var_2_245(v_v3); }  

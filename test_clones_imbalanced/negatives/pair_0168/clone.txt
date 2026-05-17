@@ -1,6 +1,1 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int i = 0; i < exp; i++)
-        res *= base;
-    return res;
-}
+   int var_2_939(int var_0_482[], int v_n5) { if(v_n5==0) return 0; return var_0_482[v_n5-1] + var_2_939(var_0_482, v_n5-1); } 

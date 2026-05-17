@@ -1,9 +1,1 @@
-void reverseString(char* str) {
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+    int getMin(int arr[], int n) { int m=arr[0]; for(int i=1; i<n; i++) if(arr[i]<m) m=arr[i]; return m; }    

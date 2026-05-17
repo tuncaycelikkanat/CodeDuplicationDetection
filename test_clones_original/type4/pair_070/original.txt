@@ -1,4 +1,1 @@
-int lcm(int a, int b) {
-    int max = (a > b) ? a : b;
-    while (1) { if (max % a == 0 && max % b == 0) return max; max++; }
-}
+   int v_bs1(int v_a3[], int v_n2, int v_x8) { int v_l9=0, v_r9=v_n2-1; while(v_l9<=v_r9) {int v_m4=v_l9+(v_r9-v_l9)/2; if(v_a3[v_m4]==v_x8) return v_m4; if(v_a3[v_m4]<v_x8) v_l9=v_m4+1; else v_r9=v_m4-1;} return -1; }  

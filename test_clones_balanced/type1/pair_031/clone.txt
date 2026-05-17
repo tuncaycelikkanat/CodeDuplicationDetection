@@ -1,13 +1,1 @@
-void reverseString(char* str) {
-        int l = 0, r = strlen(str) - 1; 
-// TODO
-      while (l < r) {    
-// Fix this
-          char temp = str[l];    
-          str[l] = str[r];    
-          str[r] = temp; 
-// Logic here
-           l++; r--;
-      }  
-
-   }
+   void dijkstra(int graph[100][100], int src, int V) { int dist[V]; bool sptSet[V]; for(int i=0; i<V; i++) dist[i]=INT_MAX, sptSet[i]=false; dist[src]=0; for(int c=0; c<V-1; c++) {int u=-1; for(int i=0; i<V; i++) if(!sptSet[i] && (u==-1 || dist[i]<dist[u])) u=i; sptSet[u]=true; for(int v=0; v<V; v++) if(!sptSet[v] && graph[u][v] && dist[u]!=INT_MAX && dist[u]+graph[u][v]<dist[v]) dist[v]=dist[u]+graph[u][v];} }  

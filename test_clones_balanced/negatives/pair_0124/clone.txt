@@ -1,5 +1,1 @@
-int sumDigRec(int num_elements) {    
-// TODO
-        if (num_elements == 0) return 0;
-        return num_elements % 10 + sumDigRec(num_elements / 10);    
-}
+int arrSum(int arr[], int n) { int s=0; for(int i=0; i<n; i++) s+=arr[i]; return s; }

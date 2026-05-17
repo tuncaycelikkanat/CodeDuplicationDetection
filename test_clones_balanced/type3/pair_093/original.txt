@@ -1,7 +1,1 @@
-int findMax(int arr[], int n) {
-    int max = arr[0];
-    for (int i = 1; i < n; i++)
-        if (arr[i] > max)
-            max = arr[i];
-    return max;
-}
+void insert(struct TrieNode *root, const char *key) { struct TrieNode *pCrawl = root; for (int i = 0; i < strlen(key); i++) { int index = key[i] - 'a'; if (!pCrawl->children[index]) pCrawl->children[index] = getNode(); pCrawl = pCrawl->children[index]; } pCrawl->isEndOfWord = true; }

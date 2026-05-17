@@ -1,9 +1,1 @@
-    int findMin(int arr[], int n) {    
-    int min = arr[0]; 
-    for (int i = 1; i < n; i++)  
-
-// Logic here
-         if (arr[i] < min)   
-             min = arr[i]; 
-      return min;
- }   
+int var_0_381(char* v_s18, char* v_s29, int v_m2, int v_n6) { int v_dp4[v_m2+1][v_n6+1]; for(int v_i1=0; v_i1<=v_m2; v_i1++) {for(int v_j8=0; v_j8<=v_n6; v_j8++) {if(v_i1==0) v_dp4[v_i1][v_j8]=v_j8; else if(v_j8==0) v_dp4[v_i1][v_j8]=v_i1; else if(v_s18[v_i1-1]==v_s29[v_j8-1]) v_dp4[v_i1][v_j8]=v_dp4[v_i1-1][v_j8-1]; else v_dp4[v_i1][v_j8]=1+min(min(v_dp4[v_i1][v_j8-1],v_dp4[v_i1-1][v_j8]),v_dp4[v_i1-1][v_j8-1]);}} return v_dp4[v_m2][v_n6]; }

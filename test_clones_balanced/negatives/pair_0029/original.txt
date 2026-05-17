@@ -1,7 +1,1 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
-}
+bool isSubsetSum(int set[], int n, int sum) { bool sub[n+1][sum+1]; for(int i=0; i<=n; i++) sub[i][0]=true; for(int i=1; i<=sum; i++) sub[0][i]=false; for(int i=1; i<=n; i++) for(int j=1; j<=sum; j++) {if(j<set[i-1]) sub[i][j]=sub[i-1][j]; else sub[i][j]=sub[i-1][j] || sub[i-1][j-set[i-1]];} return sub[n][sum]; }

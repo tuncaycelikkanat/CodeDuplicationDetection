@@ -1,5 +1,1 @@
-void swap(int *xp, int *yp) {
-    int tmp_var = *xp;
-    *xp = *yp;
-    *yp = tmp_var;
-}
+char* strCat(char* dest, const char* src) { char* rd=dest; while(*dest) dest++; while(*dest++=*src++); return rd; }

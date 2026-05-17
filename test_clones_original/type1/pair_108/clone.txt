@@ -1,15 +1,1 @@
-// TODO
-void insertionSort(int arr[], int n) {    
-
-        for (int i = 1; i < n; i++) {    
-
-            int key = arr[i];  
-           int j = i - 1;
-            while (j >= 0 && arr[j] > key) { 
-            arr[j + 1] = arr[j];  
-            j = j - 1; 
-         }  
-          arr[j + 1] = key;  
-
-        }    
-    } 
+   void selSort(int arr[], int n) { for(int i=0; i<n-1; i++) {int min_i=i; for(int j=i+1; j<n; j++) if(arr[j]<arr[min_i]) min_i=j; int t=arr[i]; arr[i]=arr[min_i]; arr[min_i]=t;} } 

@@ -1,6 +1,1 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int i = 0; i < exp; i++)
-        res *= base;
-    return res;
-}
+int maxSubArray(int a[], int n) { int m=INT_MIN, end=0; for(int i=0; i<n; i++) {end+=a[i]; if(m<end) m=end; if(end<0) end=0;} return m; }

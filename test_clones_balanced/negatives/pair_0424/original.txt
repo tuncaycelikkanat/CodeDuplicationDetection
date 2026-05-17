@@ -1,10 +1,1 @@
-// Fix this
-   int sumOfDigits(int n) {  
-       int sum = 0;    
-    while (n != 0) {  
-            sum += n % 10; 
-           n /= 10; 
-     }
-       return sum;    
-// Logic here
-    }   
+void mergeSort(int arr[], int l, int r) { if(l<r) {int m=l+(r-l)/2; mergeSort(arr,l,m); mergeSort(arr,m+1,r); merge(arr,l,m,r);} }

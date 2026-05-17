@@ -1,11 +1,1 @@
-void bubbleSort(int array_data[], int num_elements) {
-    for (int idx = 0; idx < num_elements-1; idx++) { 
-        for (int idx2 = 0; idx2 < num_elements-idx-1; idx2++) { 
-            if (array_data[idx2] > array_data[idx2+1]) {
-                int tmp_var = array_data[idx2];
-                array_data[idx2] = array_data[idx2+1];
-                array_data[idx2+1] = tmp_var;
-            }
-        }
-    }
-}
+int var_2_458(int v_i7, int var_0_125[]) { while(var_0_125[v_i7]) v_i7=var_0_125[v_i7]; return v_i7; } void var_1_821(int v_i7, int v_j9, int var_0_125[]) { if(v_i7!=v_j9) {var_0_125[v_j9]=v_i7; return;} }

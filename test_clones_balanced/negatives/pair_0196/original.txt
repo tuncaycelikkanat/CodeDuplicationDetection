@@ -1,7 +1,1 @@
-    int sumOfDigits(int num_elements) {   
-
-     int sum = 0;  
-       while (num_elements != 0) { sum += num_elements % 10; num_elements /= 10; }    
-
-     return sum;    
-}   
+void selSort(int arr[], int n) { for(int i=0; i<n-1; i++) {int min_i=i; for(int j=i+1; j<n; j++) if(arr[j]<arr[min_i]) min_i=j; int t=arr[i]; arr[i]=arr[min_i]; arr[min_i]=t;} }

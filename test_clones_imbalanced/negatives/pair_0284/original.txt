@@ -1,10 +1,1 @@
-int fib(int n) {
-    if (n <= 1) return n;
-    int a = 0, b = 1, c;
-    for (int i = 2; i <= n; i++) {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-    return b;
-}
+int maxSubArray(int a[], int n) { int m=INT_MIN, end=0; for(int i=0; i<n; i++) {end+=a[i]; if(m<end) m=end; if(end<0) end=0;} return m; }

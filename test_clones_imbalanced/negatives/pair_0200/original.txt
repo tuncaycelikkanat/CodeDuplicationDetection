@@ -1,11 +1,1 @@
-void selectionSort(int array_data[], int num_elements) {
-    for (int idx = 0; idx < num_elements-1; idx++) {
-        int min_idx = idx;
-        for (int idx2 = idx+1; idx2 < num_elements; idx2++)
-            if (array_data[idx2] < array_data[min_idx])
-                min_idx = idx2;
-        int tmp_var = array_data[min_idx];
-        array_data[min_idx] = array_data[idx];
-        array_data[idx] = tmp_var;
-    }
-}
+    long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }  

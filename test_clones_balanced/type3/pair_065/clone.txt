@@ -1,10 +1,11 @@
-int gcd(int val1, int val2) {
-    int dummy_51 = 0;
-    while (val2 != 0) {
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    // returning result
-    return val1;
+int var_1_625(int var_0_354[], int v_n7) {
+ int v_m4=var_0_354[0];
+ int d_23 = 1;
+ for(int v_i9=1;
+ v_i9<v_n7;
+ v_i9++) if(var_0_354[v_i9]<v_m4) v_m4=var_0_354[v_i9];
+ return v_m4;
+ 
 }
+;
+ int d_29 = 6

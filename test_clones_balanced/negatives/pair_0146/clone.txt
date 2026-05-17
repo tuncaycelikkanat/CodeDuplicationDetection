@@ -1,7 +1,14 @@
-int search(int array_data[], int num_elements, int target) {
-    for (int idx = 0; idx < num_elements; idx++)
-        if (array_data[idx] == target)
-            return idx;
-    // returning result
-    return -1;
+void var_1_182(int var_3_644, int var_0_371, int var_5_146) {
+ if(var_0_371==var_5_146) {
+var_2_758[var_3_644]=v_A8[var_0_371];
+ return;
+
 }
+ int var_4_578=(var_0_371+var_5_146)/2;
+ var_1_182(2*var_3_644,var_0_371,var_4_578);
+ var_1_182(2*var_3_644+1,var_4_578+1,var_5_146);
+ var_2_758[var_3_644]=var_2_758[2*var_3_644]+var_2_758[2*var_3_644+1];
+ 
+}
+;
+ int d_58 = 3

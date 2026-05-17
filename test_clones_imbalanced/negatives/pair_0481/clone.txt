@@ -1,13 +1,1 @@
- int fib(int n) {
-// Logic here
-       if (n <= 1) return n;    
-      int a = 0, b = 1, c;
-        for (int i = 2; i <= n; i++) {
-
-        c = a + b;  
-          a = b;   
-         b = c;    
-// TODO
-        } 
-     return b;   
- } 
+int var_4_438(int var_0_823[], int v_l9, int v_r2, int v_x8) { while(v_l9<=v_r2) {int v_m6=v_l9+(v_r2-v_l9)/2; if(var_0_823[v_m6]==v_x8) return v_m6; if(var_0_823[v_m6]<v_x8) v_l9=v_m6+1; else v_r2=v_m6-1;} return -1; }

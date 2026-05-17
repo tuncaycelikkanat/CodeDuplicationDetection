@@ -1,10 +1,1 @@
-  int gcd(int a, int b) {    
-      while (b != 0) {   
-          int temp = b; 
-
-        b = a % b;
-          a = temp;    
-        } 
-        return a;  
-// TODO
-}  
+   void var_3_117(int var_0_849[], int v_n6) { for(int var_7_352=1; var_7_352<=v_n6-1; var_7_352=2*var_7_352) { for(int var_2_895=0; var_2_895<v_n6-1; var_2_895+=2*var_7_352) { int var_5_925 = min(var_2_895 + var_7_352 - 1, v_n6-1); int var_6_174 = min(var_2_895 + 2*var_7_352 - 1, v_n6-1); var_1_334(var_0_849, var_2_895, var_5_925, var_6_174); } } }  

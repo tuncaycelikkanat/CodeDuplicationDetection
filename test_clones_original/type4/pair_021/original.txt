@@ -1,7 +1,1 @@
-int stringLength(char* str) {   
-// TODO
-     int len = 0; 
-      while (str[len] != '\0')    
-         len++;    
-        return len;  
-  }   
+bool var_0_864(int v_n3) { if(v_n3<2) return false; for(int v_i2=2; v_i2*v_i2<=v_n3; v_i2++) if(v_n3%v_i2==0) return false; return true; }

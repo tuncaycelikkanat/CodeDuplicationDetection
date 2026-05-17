@@ -1,7 +1,1 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0)
-            return false;
-    return true;
-}
+struct var_6_589* var_0_713(struct var_6_589 *v_y3) { struct var_6_589 *v_x9 = v_y3->var_4_305; struct var_6_589 *v_T24 = v_x9->var_7_749; v_x9->var_7_749 = v_y3; v_y3->var_4_305 = v_T24; v_y3->var_5_137 = max(var_5_137(v_y3->var_4_305), var_5_137(v_y3->var_7_749))+1; v_x9->var_5_137 = max(var_5_137(v_x9->var_4_305), var_5_137(v_x9->var_7_749))+1; return v_x9; }

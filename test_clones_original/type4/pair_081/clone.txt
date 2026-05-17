@@ -1,13 +1,1 @@
-    int countVowelsW(char* s) {   
-    int cnt = 0, idx = 0; 
-
-       while (s[idx]) {    
-
-           char c = tolower(s[idx++]);    
-// Check if needed
-         if (c=='val1'||c=='e'||c=='idx'||c=='o'||c=='u') cnt++;
-// Fix this
-      }    
-// Fix this
-      return cnt;   
-    }   
+ int var_1_922(int v_a6[], int v_l8, int v_h1) { if(v_l8==v_h1) return v_a6[v_l8]; int v_m6=(v_l8+v_h1)/2; return max(max(var_1_922(v_a6,v_l8,v_m6), var_1_922(v_a6,v_m6+1,v_h1)), var_0_963(v_a6,v_l8,v_m6,v_h1)); }   

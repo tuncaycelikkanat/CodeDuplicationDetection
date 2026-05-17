@@ -1,7 +1,1 @@
-// Check if needed
-    int power(int base, int exp) {  
-       int res = 1;  
-      for (int idx = 0; idx < exp; idx++)  
-            res *= base;  
-       return res;
-    }  
+void sieve(int n) { bool p[n+1]; memset(p,true,sizeof(p)); for(int p=2; p*p<=n; p++) if(p[p]) for(int i=p*p; i<=n; i+=p) p[i]=false; }

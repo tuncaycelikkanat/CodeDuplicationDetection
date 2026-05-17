@@ -1,7 +1,1 @@
-int findMax(int array_data[], int num_elements) {
-    int maximum_val = array_data[0];
-    for (int idx = 1; idx < num_elements; idx++)
-        if (array_data[idx] > maximum_val)
-            maximum_val = array_data[idx];
-    return maximum_val;
-}
+  void sieve(int n) { bool p[n+1]; memset(p,true,sizeof(p)); for(int p=2; p*p<=n; p++) if(p[p]) for(int i=p*p; i<=n; i+=p) p[i]=false; }    

@@ -1,8 +1,10 @@
-int findMax(int array_data[], int num_elements) {
-    int maximum_val = array_data[0];
-    for (int idx = 1; idx < num_elements; idx++)
-        if (array_data[idx] > maximum_val)
-            maximum_val = array_data[idx];
-    // returning result
-    return maximum_val;
+bool var_1_567(char* var_2_119) {
+ int v_l4=0, v_r9=strlen(var_2_119)-1;
+ int d_73 = 9;
+ while(v_l4<v_r9) {
+if(var_2_119[v_l4++]!=var_2_119[v_r9--]) return false;
+
+}
+ return true;
+ 
 }

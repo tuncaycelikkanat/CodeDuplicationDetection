@@ -1,5 +1,1 @@
-void swap(int *xp, int *yp) {
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
+   bool var_1_756(char* v_s5, int v_l3, int v_r8) { if(v_l3>=v_r8) return true; if(v_s5[v_l3]!=v_s5[v_r8]) return false; return var_1_756(v_s5, v_l3+1, v_r8-1); }  

@@ -1,0 +1,82 @@
+Experiment: /home/tuncay/PycharmProjects/CodeDuplicationDetection/experiments/exp_066_CASCADE_XGBoost_2k
+Threshold: 0.59
+========================================
+GLOBAL METRICS
+========================================
+precision           : 0.6981
+recall              : 0.74
+f1_score            : 0.7184
+accuracy            : 0.971
+mcc                 : 0.7035
+balanced_accuracy   : 0.8616
+tp                  : 37
+fp                  : 16
+tn                  : 934
+fn                  : 13
+auc_roc             : 0.8961
+pr_auc              : 0.5771
+total_pairs         : 1000
+
+========================================
+TYPE1 METRICS
+========================================
+total_pairs         : 962
+precision           : 0.4286
+recall              : 1.0
+f1_score            : 0.6
+accuracy            : 0.9834
+mcc                 : 0.6491
+auc_roc             : 0.988
+pr_auc              : 0.4279
+tp                  : 12
+fp                  : 16
+tn                  : 934
+fn                  : 0
+
+========================================
+TYPE2 METRICS
+========================================
+total_pairs         : 962
+precision           : 0.4286
+recall              : 1.0
+f1_score            : 0.6
+accuracy            : 0.9834
+mcc                 : 0.6491
+auc_roc             : 0.9884
+pr_auc              : 0.5217
+tp                  : 12
+fp                  : 16
+tn                  : 934
+fn                  : 0
+
+========================================
+TYPE3 METRICS
+========================================
+total_pairs         : 962
+precision           : 0.4286
+recall              : 1.0
+f1_score            : 0.6
+accuracy            : 0.9834
+mcc                 : 0.6491
+auc_roc             : 0.9925
+pr_auc              : 0.5348
+tp                  : 12
+fp                  : 16
+tn                  : 934
+fn                  : 0
+
+========================================
+TYPE4 METRICS
+========================================
+total_pairs         : 964
+precision           : 0.0588
+recall              : 0.0714
+f1_score            : 0.0645
+accuracy            : 0.9699
+mcc                 : 0.0496
+auc_roc             : 0.6557
+pr_auc              : 0.0499
+tp                  : 1
+fp                  : 16
+tn                  : 934
+fn                  : 13

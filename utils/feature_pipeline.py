@@ -22,7 +22,6 @@ def build_pair_vector(
     raw1: str,
     raw2: str,
     vectorizer,
-    char_vectorizer=None,
     svd_model=None,
     ssl_pipeline=None,
     ssl_pca=None,
@@ -43,7 +42,6 @@ def build_pair_vector(
         [41..90] svd_diff            (sadece svd_model verilmisse, 50 boyut)
         [91..154] ssl_pca_diff       (sadece ssl_pipeline + ssl_pca verilmisse, 64 boyut)
 
-    UYARI — char_vectorizer: Egitimde kullanilmadiysa None gecirin.
     UYARI — ssl_pca: Egitimde fit edilmis PCA nesnesi.  ssl_pipeline ile birlikte
              verilmezse SSL ozellikleri feature vektorune eklenmez (boyut uyumsuzlugu).
     """
@@ -69,13 +67,6 @@ def build_pair_vector(
 
     # extra başlar: cos_token, length_ratio, manhattan, euclidean
     extra = [cos_token, length_ratio, manhattan, euclidean]
-
-    char_diff = None
-    if char_vectorizer is not None:
-        C1 = char_vectorizer.transform([code1])
-        C2 = char_vectorizer.transform([code2])
-        char_diff = abs(C1 - C2)
-        extra.append(cosine_similarity(C1, C2)[0][0])   # cos_char
 
     # AST + CF + Semantic
     feat1, cf1, sem1 = _extract_single(raw1)

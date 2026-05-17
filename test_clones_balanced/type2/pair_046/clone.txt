@@ -1,6 +1,1 @@
-int search(int array_data[], int num_elements, int target) {
-    for (int idx = 0; idx < num_elements; idx++)
-        if (array_data[idx] == target)
-            return idx;
-    return -1;
-}
+struct var_6_590* var_0_853(struct var_6_590 *v_y3) { struct var_6_590 *v_x6 = v_y3->var_4_463; struct var_6_590 *v_T26 = v_x6->var_7_165; v_x6->var_7_165 = v_y3; v_y3->var_4_463 = v_T26; v_y3->var_5_812 = max(var_5_812(v_y3->var_4_463), var_5_812(v_y3->var_7_165))+1; v_x6->var_5_812 = max(var_5_812(v_x6->var_4_463), var_5_812(v_x6->var_7_165))+1; return v_x6; }

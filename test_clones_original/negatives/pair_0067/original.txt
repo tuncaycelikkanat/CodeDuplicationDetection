@@ -1,10 +1,1 @@
-// Fix this
- int power(int base, int exp) {  
-       int res = 1;    
-// Fix this
-    for (int idx = 0; idx < exp; idx++)  
-           res *= base;    
-// TODO
-    return res;    
-// Fix this
-    }   
+int find(int i, int parent[]) { while(parent[i]) i=parent[i]; return i; } void uni(int i, int j, int parent[]) { if(i!=j) {parent[j]=i; return;} }   

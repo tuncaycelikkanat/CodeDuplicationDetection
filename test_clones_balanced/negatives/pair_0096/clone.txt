@@ -1,9 +1,1 @@
-  int binarySearchRec(int array_data[], int left, int right, int target) {
-        if (right >= left) { 
-            int mid = left + (right - left) / 2; 
-           if (array_data[mid] == target) return mid;    
-           if (array_data[mid] > target) return binarySearchRec(array_data, left, mid - 1, target);   
-           return binarySearchRec(array_data, mid + 1, right, target);  
-    }   
-    return -1;    
-   } 
+    int var_2_889(char* var_1_514) { char* v_p8 = var_1_514; while(*v_p8) v_p8++; return v_p8 - var_1_514; } 

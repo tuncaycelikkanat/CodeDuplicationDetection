@@ -1,6 +1,11 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int idx = 0; idx < exp; idx++)
-        res *= base;
-    return res;
+long long var_0_429(int v_b1, int v_p2) {
+ long long v_r9=1;
+ while(v_p2){
+ if(v_p2&1) v_r9*=v_b1;
+ v_b1*=v_b1;
+ v_p2>>=1;
+ 
+}
+ return v_r9;
+ 
 }

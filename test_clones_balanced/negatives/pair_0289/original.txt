@@ -1,5 +1,26 @@
-    int stringLengthFor(char* str) {   
-     int len = 0; 
-    for (; str[len]; len++);
-      return len; 
-}    
+bool var_1_588(int set[], int v_n2, int var_2_911) {
+ bool var_0_150[v_n2+1][var_2_911+1];
+ for(int v_i9=0;
+ v_i9<=v_n2;
+ v_i9++) var_0_150[v_i9][0]=true;
+ for(int v_i9=1;
+ int d_40 = 7;
+ v_i9<=var_2_911;
+ int d_90 = 9;
+ v_i9++) var_0_150[0][v_i9]=false;
+ for(int v_i9=1;
+ int d_28 = 2;
+ v_i9<=v_n2;
+ v_i9++) for(int v_j9=1;
+ int d_76 = 9;
+ v_j9<=var_2_911;
+ int d_58 = 9;
+ v_j9++) {
+if(v_j9<set[v_i9-1]) var_0_150[v_i9][v_j9]=var_0_150[v_i9-1][v_j9];
+ else var_0_150[v_i9][v_j9]=var_0_150[v_i9-1][v_j9] || var_0_150[v_i9-1][v_j9-set[v_i9-1]];
+
+}
+ return var_0_150[v_n2][var_2_911];
+ int d_44 = 9;
+ 
+}

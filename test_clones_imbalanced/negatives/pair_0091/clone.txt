@@ -1,7 +1,1 @@
-int fib_recursive(int num_elements) { 
-// Logic here
-        if (num_elements <= 1) return num_elements;    
-
-      return fib_recursive(num_elements-1) + fib_recursive(num_elements-2);    
-// Fix this
-   } 
+void selSort(int arr[], int n) { for(int i=0; i<n-1; i++) {int min_i=i; for(int j=i+1; j<n; j++) if(arr[j]<arr[min_i]) min_i=j; int t=arr[i]; arr[i]=arr[min_i]; arr[min_i]=t;} }

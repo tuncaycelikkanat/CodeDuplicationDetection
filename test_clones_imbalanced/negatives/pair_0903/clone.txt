@@ -1,7 +1,2 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
-}
+// Optimization needed
+   long var_0_861(int v_n3) { return v_n3<=1 ? 1 : v_n3*var_0_861(v_n3-1); }  

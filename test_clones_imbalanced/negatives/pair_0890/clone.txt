@@ -1,11 +1,2 @@
-void reverseString(char* str) {
-    int dummy_5 = 0;
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-    int dummy_47 = 0;
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+// Fix this
+ bool var_1_365(char* v_s9, int v_l4, int v_r1) { if(v_l4>=v_r1) return true; if(v_s9[v_l4]!=v_s9[v_r1]) return false; return var_1_365(v_s9, v_l4+1, v_r1-1); }   

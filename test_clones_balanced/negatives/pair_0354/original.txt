@@ -1,8 +1,1 @@
-int sumOfDigits(int n) {
-    int sum = 0;
-    while (n != 0) {
-        sum += n % 10;
-        n /= 10;
-    }
-    return sum;
-}
+long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }

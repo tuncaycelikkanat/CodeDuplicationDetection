@@ -1,8 +1,1 @@
-    bool isPrime(int n) {  
-     if (n <= 1) return false; 
-        for (int i = 2; i * i <= n; i++)  
-// Check if needed
-           if (n % i == 0)    
-            return false;  
-       return true; 
-  }
+int countVowels(char* s) { int c=0; for(int i=0; s[i]; i++) {char x=tolower(s[i]); if(x=='a'||x=='e'||x=='i'||x=='o'||x=='u') c++;} return c; }

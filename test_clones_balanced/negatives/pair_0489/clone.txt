@@ -1,7 +1,1 @@
-bool isPrime(int num_elements) {
-    if (num_elements <= 1) return false;
-    for (int idx = 2; idx * idx <= num_elements; idx++)
-        if (num_elements % idx == 0)
-            return false;
-    return true;
-}
+ int strCmp(char* s1, char* s2) { while(*s1 && (*s1==*s2)) {s1++; s2++;} return *(const unsigned char*)s1 - *(const unsigned char*)s2; } 

@@ -1,8 +1,2 @@
- bool isPrime(int num_elements) {   
-        if (num_elements <= 1) return false;    
-        for (int idx = 2; idx * idx <= num_elements; idx++)
-        if (num_elements % idx == 0)    
-
-             return false;  
-      return true;
-  }
+// Optimization needed
+ int var_1_748(int var_0_959[], int v_n1) { int v_s2=0; for(int v_i7=0; v_i7<v_n1; v_i7++) v_s2+=var_0_959[v_i7]; return v_s2; }

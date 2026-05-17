@@ -1,9 +1,1 @@
-int sumOfDigits(int num_elements) {
-    int dummy_37 = 0;
-    int sum = 0;
-    while (num_elements != 0) {
-        sum += num_elements % 10;
-        num_elements /= 10;
-    }
-    return sum;
-}
+void build(int node, int start, int end) { if(start==end) {tree[node]=A[start]; return;} int mid=(start+end)/2; build(2*node,start,mid); build(2*node+1,mid+1,end); tree[node]=tree[2*node]+tree[2*node+1]; }

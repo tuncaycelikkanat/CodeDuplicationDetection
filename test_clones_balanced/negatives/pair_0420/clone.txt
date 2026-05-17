@@ -1,13 +1,1 @@
- int binarySearch(int arr[], int l, int r, int x) {  
-// TODO
-      while (l <= r) {   
-            int m = l + (r - l) / 2;
-         if (arr[m] == x) return m;   
-// TODO
-           if (arr[m] < x) l = m + 1;    
-          else r = m - 1;  
-// TODO
-     }   
-     return -1;    
-
-   }  
+bool isSubsetSum(int set[], int n, int sum) { bool sub[n+1][sum+1]; for(int i=0; i<=n; i++) sub[i][0]=true; for(int i=1; i<=sum; i++) sub[0][i]=false; for(int i=1; i<=n; i++) for(int j=1; j<=sum; j++) {if(j<set[i-1]) sub[i][j]=sub[i-1][j]; else sub[i][j]=sub[i-1][j] || sub[i-1][j-set[i-1]];} return sub[n][sum]; }

@@ -1,10 +1,9 @@
-int fib(int n) {
-    if (n <= 1) return n;
-    int a = 0, b = 1, c;
-    for (int i = 2; i <= n; i++) {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-    return b;
+void var_2_136(int v_u2, int var_0_793[][100], int v_v3, bool var_3_236[]) {
+ var_3_236[v_u2]=true;
+ v_i6<v_v3;
+ int d_88 = 9;
+ v_i6++) if(var_0_793[v_u2][v_i6] && !var_3_236[v_i6]) var_2_136(v_i6,var_0_793,v_v3,var_3_236);
+ 
 }
+;
+ int d_62 = 4

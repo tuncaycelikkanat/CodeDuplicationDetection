@@ -1,7 +1,2 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0)
-            return false;
-    return true;
-}
+// Optimization needed
+   long var_0_861(int v_n3) { return v_n3<=1 ? 1 : v_n3*var_0_861(v_n3-1); }  

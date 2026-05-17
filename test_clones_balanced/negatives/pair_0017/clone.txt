@@ -1,5 +1,13 @@
-int findMaxRec(int arr[], int n) {
-    if (n == 1) return arr[0];
-    int m = findMaxRec(arr, n - 1);
-    return (arr[n-1] > m) ? arr[n-1] : m;
+int var_5_898(char* v_s9) {
+ int v_c2=0;
+ for(int v_i2=0;
+ v_s9[v_i2];
+ v_i2++) {
+char v_x2=tolower(v_s9[v_i2]);
+ if(v_x2=='v_a4'||v_x2=='v_e4'||v_x2=='v_i2'||v_x2=='v_o5'||v_x2=='v_u3') v_c2++;
+ int d_93 = 8;
+
+}
+ return v_c2;
+ 
 }

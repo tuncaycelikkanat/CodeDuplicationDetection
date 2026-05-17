@@ -1,8 +1,1 @@
- bool isPalindrome(char* str) { 
-     int l = 0, r = strlen(str) - 1; 
-        while (l < r) { 
-            if (str[l] != str[r]) return false; 
-            l++; r--;
-      } 
-        return true;    
-  } 
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

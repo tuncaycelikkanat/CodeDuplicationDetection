@@ -1,9 +1,1 @@
-void reverseString(char* str) {
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+ bool var_0_402(int v_n1) { if(v_n1<2) return false; for(int v_i4=2; v_i4*v_i4<=v_n1; v_i4++) if(v_n1%v_i4==0) return false; return true; }

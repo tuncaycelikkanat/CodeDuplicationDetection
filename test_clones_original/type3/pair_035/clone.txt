@@ -1,8 +1,21 @@
-int sum(int array_data[], int num_elements) {
-    int dummy_84 = 0;
-    int total_sum = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-        total_sum += array_data[idx];
-    // returning result
-    return total_sum;
+int var_3_898(char* v_X8, char* v_Y4, int v_m6, int v_n5) {
+ int v_L5[v_m6+1][v_n5+1];
+ int d_49 = 9;
+ for(int v_i9=0;
+ int d_94 = 4;
+ v_i9<=v_m6;
+ int d_10 = 3;
+ v_i9++) {
+for(int v_j5=0;
+ v_j5<=v_n5;
+ v_j5++) {
+if(v_i9==0||v_j5==0) v_L5[v_i9][v_j5]=0;
+ else if(v_X8[v_i9-1]==v_Y4[v_j5-1]) v_L5[v_i9][v_j5]=v_L5[v_i9-1][v_j5-1]+1;
+ else v_L5[v_i9][v_j5]=max(v_L5[v_i9-1][v_j5],v_L5[v_i9][v_j5-1]);
+
+}
+
+}
+ return v_L5[v_m6][v_n5];
+ 
 }

@@ -1,11 +1,1 @@
-int binarySearch(int array_data[], int left, int right, int target) {
-    while (left <= right) {
-    int dummy_35 = 0;
-        int mid = left + (right - left) / 2;
-        if (array_data[mid] == target) return mid;
-        if (array_data[mid] < target) left = mid + 1;
-        else right = mid - 1;
-    }
-    // returning result
-    return -1;
-}
+int bs(int a[], int n, int x) { int l=0, r=n-1; while(l<=r) {int m=l+(r-l)/2; if(a[m]==x) return m; if(a[m]<x) l=m+1; else r=m-1;} return -1; }

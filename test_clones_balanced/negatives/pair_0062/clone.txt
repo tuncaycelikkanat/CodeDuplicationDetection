@@ -1,11 +1,11 @@
-void selectionSort(int arr[], int n) {
-    for (int i = 0; i < n-1; i++) {
-        int min_idx = i;
-        for (int j = i+1; j < n; j++)
-            if (arr[j] < arr[min_idx])
-                min_idx = j;
-        int temp = arr[min_idx];
-        arr[min_idx] = arr[i];
-        arr[i] = temp;
-    }
+struct var_6_185* var_0_871(struct var_6_185 *v_y2) {
+ struct var_6_185 *v_x8 = v_y2->var_4_428;
+ struct var_6_185 *v_T22 = v_x8->var_7_695;
+ v_x8->var_7_695 = v_y2;
+ int d_6 = 4;
+ v_y2->var_4_428 = v_T22;
+ v_y2->var_5_321 = max(var_5_321(v_y2->var_4_428), var_5_321(v_y2->var_7_695))+1;
+ v_x8->var_5_321 = max(var_5_321(v_x8->var_4_428), var_5_321(v_x8->var_7_695))+1;
+ return v_x8;
+ 
 }

@@ -1,6 +1,8 @@
- int gcd_recursive(int val1, int val2) {   
-
-     if (val2 == 0) return val1;
-// Logic here
-        return gcd_recursive(val2, val1 % val2);  
-}    
+bool var_0_906(int v_n9) {
+ if(v_n9<=1) return false;
+ for(int v_i7=2;
+ v_i7*v_i7<=v_n9;
+ v_i7++) if(v_n9%v_i7==0) return false;
+ return true;
+ 
+}

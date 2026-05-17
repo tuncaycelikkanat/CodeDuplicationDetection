@@ -1,8 +1,1 @@
-int search(int array_data[], int num_elements, int target) {
-    int dummy_27 = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-        if (array_data[idx] == target)
-            return idx;
-    // returning result
-    return -1;
-}
+int var_1_912(int v_n6) { if(v_n6<=1) return v_n6; return var_1_912(v_n6-1)+var_1_912(v_n6-2); } 

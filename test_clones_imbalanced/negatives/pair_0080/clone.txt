@@ -1,17 +1,1 @@
-   void insertionSort(int arr[], int n) {  
-       for (int i = 1; i < n; i++) {   
-
-// TODO
-           int key = arr[i];
-          int j = i - 1;
-
-           while (j >= 0 && arr[j] > key) {   
-              arr[j + 1] = arr[j];    
-            j = j - 1;    
-// TODO
-            } 
-
-// Logic here
-          arr[j + 1] = key;    
-    }  
-   }    
+    void revStr(char* str) { int l=0, r=strlen(str)-1; while(l<r) {char t=str[l]; str[l]=str[r]; str[r]=t; l++; r--;} }

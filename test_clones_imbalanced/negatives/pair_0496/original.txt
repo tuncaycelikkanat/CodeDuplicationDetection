@@ -1,14 +1,1 @@
-void bubbleSort(int arr[], int n) {    
-      for (int i = 0; i < n-1; i++) {     
-
-        for (int j = 0; j < n-i-1; j++) {  
-// Fix this
-              if (arr[j] > arr[j+1]) {    
-                   int temp = arr[j];  
-                  arr[j] = arr[j+1];
-                arr[j+1] = temp;   
-            }  
-// Check if needed
-         }    
-       }
-}  
+int var_1_275(int v_a1[], int v_l1, int v_h5) { if(v_l1==v_h5) return v_a1[v_l1]; int v_m3=(v_l1+v_h5)/2; return max(max(var_1_275(v_a1,v_l1,v_m3), var_1_275(v_a1,v_m3+1,v_h5)), var_0_279(v_a1,v_l1,v_m3,v_h5)); }  

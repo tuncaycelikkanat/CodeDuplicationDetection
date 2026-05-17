@@ -1,8 +1,1 @@
-int sumOfDigits(int n) {
-    int sum = 0;
-    while (n != 0) {
-        sum += n % 10;
-        n /= 10;
-    }
-    return sum;
-}
+void dfsUtil(int u, int adj[][100], int v, bool vis[]) { vis[u]=true; for(int i=0; i<v; i++) if(adj[u][i] && !vis[i]) dfsUtil(i,adj,v,vis); }

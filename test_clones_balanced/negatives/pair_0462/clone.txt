@@ -1,9 +1,1 @@
-    int countVowels(char* str) {   
-     int counter = 0; 
-       for (int idx = 0; str[idx] != '\0'; idx++) {  
-          char c = tolower(str[idx]);   
-        if (c=='val1'||c=='e'||c=='idx'||c=='o'||c=='u') counter++;    
-     }   
-
-       return counter;   
-    }  
+void matMult(int a[10][10], int b[10][10], int res[10][10], int n) { for(int i=0; i<n; i++) for(int j=0; j<n; j++) {res[i][j]=0; for(int k=0; k<n; k++) res[i][j]+=a[i][k]*b[k][j];} }

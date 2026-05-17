@@ -1,11 +1,1 @@
-void insertionSort(int array_data[], int num_elements) {
-    for (int idx = 1; idx < num_elements; idx++) {
-        int key = array_data[idx];
-        int idx2 = idx - 1;
-        while (idx2 >= 0 && array_data[idx2] > key) {
-            array_data[idx2 + 1] = array_data[idx2];
-            idx2 = idx2 - 1;
-        }
-        array_data[idx2 + 1] = key;
-    }
-}
+int fib(int n) { if (n <= 1) return n; int a=0, b=1, c; for(int i=2; i<=n; i++) {c=a+b; a=b; b=c;} return b; }   

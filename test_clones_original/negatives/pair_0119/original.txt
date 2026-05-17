@@ -1,15 +1,1 @@
- int fib(int num_elements) {
-       if (num_elements <= 1) return num_elements;    
-// Check if needed
-        int val1 = 0, val2 = 1, c; 
-       for (int idx = 2; idx <= num_elements; idx++) {    
-// Logic here
-            c = val1 + val2; 
-// TODO
-        val1 = val2; 
-// Logic here
-            val2 = c; 
-      }  
-
-      return val2;    
-    }   
+void topSortUtil(int v, bool vis[], stack<int>& Stack) { vis[v]=true; for(auto i=adj[v].begin(); i!=adj[v].end(); ++i) if(!vis[*i]) topSortUtil(*i, vis, Stack); Stack.push(v); }  

@@ -1,10 +1,1 @@
-// TODO
-  int findMax(int array_data[], int num_elements) {    
-        int maximum_val = array_data[0];
-      for (int idx = 1; idx < num_elements; idx++)
-// TODO
-          if (array_data[idx] > maximum_val)   
-               maximum_val = array_data[idx];    
-
-      return maximum_val;
- }  
+void build(int node, int start, int end) { if(start==end) {tree[node]=A[start]; return;} int mid=(start+end)/2; build(2*node,start,mid); build(2*node+1,mid+1,end); tree[node]=tree[2*node]+tree[2*node+1]; }

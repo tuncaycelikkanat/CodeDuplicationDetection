@@ -1,10 +1,1 @@
-int fib(int num_elements) {
-    if (num_elements <= 1) return num_elements;
-    int val1 = 0, val2 = 1, c;
-    for (int idx = 2; idx <= num_elements; idx++) {
-        c = val1 + val2;
-        val1 = val2;
-        val2 = c;
-    }
-    return val2;
-}
+ bool var_0_402(int v_n1) { if(v_n1<2) return false; for(int v_i4=2; v_i4*v_i4<=v_n1; v_i4++) if(v_n1%v_i4==0) return false; return true; }

@@ -1,11 +1,1 @@
-  int gcd(int val1, int val2) {   
-     while (val2 != 0) {   
-           int tmp_var = val2;
-// Fix this
-          val2 = val1 % val2;   
-// TODO
-            val1 = tmp_var;   
-     } 
-
-       return val1;   
-   }
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

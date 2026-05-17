@@ -1,10 +1,2 @@
-int lcm(int val1, int val2) {
-    int maximum_val = (val1 > val2) ? val1 : val2;
-    while (1) {
-    int dummy_13 = 0;
-        if (maximum_val % val1 == 0 && maximum_val % val2 == 0)
-    // returning result
-            return maximum_val;
-        maximum_val++;
-    }
-}
+// TODO
+    void insert(struct TrieNode *root, const char *key) { struct TrieNode *pCrawl = root; for (int i = 0; i < strlen(key); i++) { int index = key[i] - 'a'; if (!pCrawl->children[index]) pCrawl->children[index] = getNode(); pCrawl = pCrawl->children[index]; } pCrawl->isEndOfWord = true; }    

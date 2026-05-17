@@ -1,8 +1,1 @@
-int lcm(int a, int b) {
-    int max = (a > b) ? a : b;
-    while (1) {
-        if (max % a == 0 && max % b == 0)
-            return max;
-        max++;
-    }
-}
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

@@ -1,5 +1,1 @@
-void swap(int *xp, int *yp) {
-    int tmp_var = *xp;
-    *xp = *yp;
-    *yp = tmp_var;
-}
+void topSortUtil(int v, bool vis[], stack<int>& Stack) { vis[v]=true; for(auto i=adj[v].begin(); i!=adj[v].end(); ++i) if(!vis[*i]) topSortUtil(*i, vis, Stack); Stack.push(v); }

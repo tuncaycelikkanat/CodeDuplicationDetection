@@ -1,5 +1,2 @@
-int sumDigRec(int num_elements) { 
-       if (num_elements == 0) return 0;  
-// Logic here
-        return num_elements % 10 + sumDigRec(num_elements / 10);
-    }  
+// TODO
+  bool isPal(char* str) { int l=0, r=strlen(str)-1; while(l<r) {if(str[l++]!=str[r--]) return false;} return true; }

@@ -1,8 +1,2 @@
-    bool isPrime(int n) {  
-     if (n <= 1) return false; 
-        for (int i = 2; i * i <= n; i++)  
-// Check if needed
-           if (n % i == 0)    
-            return false;  
-       return true; 
-  }
+// Optimization needed
+   void bfs(int s, int adj[][100], int v) { bool vis[v]={false}; int q[v], f=0, r=0; q[r++]=s; vis[s]=true; while(f<r) {int curr=q[f++]; for(int i=0; i<v; i++) if(adj[curr][i] && !vis[i]) {vis[i]=true; q[r++]=i;}} } 

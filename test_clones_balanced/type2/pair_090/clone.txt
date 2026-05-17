@@ -1,6 +1,1 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int idx = 0; idx < exp; idx++)
-        res *= base;
-    return res;
-}
+int var_1_471(int v_a8[], int var_2_857) { int max_so_far=INT_MIN, max_ending_here=0; for(int v_i5=0; v_i5<var_2_857; v_i5++) {max_ending_here=max_ending_here+v_a8[v_i5]; if(max_so_far<max_ending_here) max_so_far=max_ending_here; if(max_ending_here<0) max_ending_here=0;} return max_so_far; }

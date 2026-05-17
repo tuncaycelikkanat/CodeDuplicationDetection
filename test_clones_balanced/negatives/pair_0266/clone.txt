@@ -1,13 +1,1 @@
-void reverseString(char* str) {
-        int l = 0, r = strlen(str) - 1; 
-// TODO
-      while (l < r) {    
-// Fix this
-          char temp = str[l];    
-          str[l] = str[r];    
-          str[r] = temp; 
-// Logic here
-           l++; r--;
-      }  
-
-   }
+int getMin(int arr[], int n) { int m=arr[0]; for(int i=1; i<n; i++) if(arr[i]<m) m=arr[i]; return m; }

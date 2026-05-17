@@ -1,6 +1,1 @@
-    int search(int arr[], int n, int x) {
-       for (int i = 0; i < n; i++)    
-         if (arr[i] == x) 
-               return i;    
-       return -1; 
-   } 
+ int var_2_130(char* var_1_678) { char* v_p2 = var_1_678; while(*v_p2) v_p2++; return v_p2 - var_1_678; } 

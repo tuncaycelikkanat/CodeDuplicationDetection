@@ -1,8 +1,1 @@
- int power(int base, int exp) {
-      int res = 1;    
-// Logic here
-     for (int idx = 0; idx < exp; idx++)  
-// TODO
-          res *= base;    
-    return res;
-    }    
+long var_0_564(int v_n4) { return v_n4<=1 ? 1 : v_n4*var_0_564(v_n4-1); } 

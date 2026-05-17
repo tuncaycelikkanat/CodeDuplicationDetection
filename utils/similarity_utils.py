@@ -8,14 +8,27 @@ Tüm import'lar buradan yapılmalıdır.
 """
 
 
-def _jaccard_sim(set_a, set_b):
-    """Jaccard benzerliği iki küme arasında. İkisi de boşsa 1.0 döner."""
-    if not set_a and not set_b:
+def _jaccard_sim(obj_a, obj_b):
+    """
+    Jaccard benzerliği iki küme veya multiset (dict/Counter) arasında.
+    İkisi de boşsa 1.0 döner.
+    """
+    if not obj_a and not obj_b:
         return 1.0
-    if not set_a or not set_b:
+    if not obj_a or not obj_b:
         return 0.0
-    union = len(set_a | set_b)
-    return len(set_a & set_b) / union if union > 0 else 1.0
+        
+    if isinstance(obj_a, (set, frozenset)):
+        union = len(obj_a | obj_b)
+        return len(obj_a & obj_b) / union if union > 0 else 1.0
+    elif isinstance(obj_a, dict):
+        # Multiset Jaccard: sum(min(A, B)) / sum(max(A, B))
+        keys = set(obj_a.keys()) | set(obj_b.keys())
+        intersection_sum = sum(min(obj_a.get(k, 0), obj_b.get(k, 0)) for k in keys)
+        union_sum = sum(max(obj_a.get(k, 0), obj_b.get(k, 0)) for k in keys)
+        return intersection_sum / union_sum if union_sum > 0 else 1.0
+    
+    return 0.0
 
 
 def _string_bigram_jaccard(s1, s2):

@@ -1,11 +1,1 @@
-void bubbleSort(int arr[], int n) {
-    for (int i = 0; i < n-1; i++) { 
-        for (int j = 0; j < n-i-1; j++) { 
-            if (arr[j] > arr[j+1]) {
-                int temp = arr[j];
-                arr[j] = arr[j+1];
-                arr[j+1] = temp;
-            }
-        }
-    }
-}
+void insert(struct TrieNode *root, const char *key) { struct TrieNode *pCrawl = root; for (int i = 0; i < strlen(key); i++) { int index = key[i] - 'a'; if (!pCrawl->children[index]) pCrawl->children[index] = getNode(); pCrawl = pCrawl->children[index]; } pCrawl->isEndOfWord = true; }

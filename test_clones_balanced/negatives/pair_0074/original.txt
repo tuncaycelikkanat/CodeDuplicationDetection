@@ -1,8 +1,6 @@
-int gcd(int a, int b) {
-    while (b != 0) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
+void var_1_563(int* v_a8, int* v_b2) {
+ int v_t8=*v_a8;
+ *v_a8=*v_b2;
+ *v_b2=v_t8;
+ 
 }

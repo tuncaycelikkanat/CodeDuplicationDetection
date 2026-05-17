@@ -1,7 +1,1 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
-}
+int var_4_438(int var_0_823[], int v_l9, int v_r2, int v_x8) { while(v_l9<=v_r2) {int v_m6=v_l9+(v_r2-v_l9)/2; if(var_0_823[v_m6]==v_x8) return v_m6; if(var_0_823[v_m6]<v_x8) v_l9=v_m6+1; else v_r2=v_m6-1;} return -1; }

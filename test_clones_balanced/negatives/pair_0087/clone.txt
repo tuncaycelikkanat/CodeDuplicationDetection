@@ -1,9 +1,1 @@
-int countVowels(char* str) {
-    int counter = 0;
-    for (int idx = 0; str[idx] != '\0'; idx++) {
-        char c = tolower(str[idx]);
-        if (c=='val1' || c=='e' || c=='idx' || c=='o' || c=='u')
-            counter++;
-    }
-    return counter;
-}
+void sieve(int n) { bool p[n+1]; memset(p,true,sizeof(p)); for(int p=2; p*p<=n; p++) if(p[p]) for(int i=p*p; i<=n; i+=p) p[i]=false; }

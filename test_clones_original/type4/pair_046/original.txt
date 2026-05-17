@@ -1,10 +1,1 @@
-  int gcd(int val1, int val2) {   
-// Fix this
-      while (val2 != 0) {    
-        int tmp_var = val2;  
-
-        val2 = val1 % val2;
-        val1 = tmp_var;    
-        }   
-    return val1;   
- }
+    int var_0_200(int v_a8, int v_b8) { while(v_b8) {int v_t9=v_b8; v_b8=v_a8%v_b8; v_a8=v_t9;} return v_a8; }    

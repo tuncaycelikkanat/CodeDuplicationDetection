@@ -1,3 +1,1 @@
-// TODO
-    int gcdH(int val1, int val2) { return val2 == 0 ? val1 : gcdH(val2, val1 % val2); }
- int lcmFast(int val1, int val2) { return (val1 / gcdH(val1, val2)) * val2; } 
+    int v_bs2(int v_a5[], int v_l4, int v_r1, int v_x5) { if(v_r1>=v_l4) {int v_m9=v_l4+(v_r1-v_l4)/2; if(v_a5[v_m9]==v_x5) return v_m9; if(v_a5[v_m9]>v_x5) return v_bs2(v_a5,v_l4,v_m9-1,v_x5); return v_bs2(v_a5,v_m9+1,v_r1,v_x5);} return -1; }

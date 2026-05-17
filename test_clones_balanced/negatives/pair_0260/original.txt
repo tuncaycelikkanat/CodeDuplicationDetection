@@ -1,6 +1,1 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int i = 0; i < exp; i++)
-        res *= base;
-    return res;
-}
+int var_6_186(int var_0_157[], int v_l7, int v_h4) { int v_p7=var_0_157[v_h4]; int v_i6=v_l7-1; for(int v_j6=v_l7; v_j6<v_h4; v_j6++) if(var_0_157[v_j6]<v_p7) {v_i6++; int v_t4=var_0_157[v_i6]; var_0_157[v_i6]=var_0_157[v_j6]; var_0_157[v_j6]=v_t4;} int v_t4=var_0_157[v_i6+1]; var_0_157[v_i6+1]=var_0_157[v_h4]; var_0_157[v_h4]=v_t4; return v_i6+1; }

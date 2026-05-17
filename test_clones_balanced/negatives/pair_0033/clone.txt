@@ -1,9 +1,9 @@
-int countVowels(char* str) {
-    int count = 0;
-    for (int i = 0; str[i] != '\0'; i++) {
-        char c = tolower(str[i]);
-        if (c=='a' || c=='e' || c=='i' || c=='o' || c=='u')
-            count++;
-    }
-    return count;
+void var_0_218(int v_n1) {
+ bool v_p4[v_n1+1];
+ memset(v_p4,true,sizeof(v_p4));
+ for(int v_p4=2;
+ v_p4*v_p4<=v_n1;
+ v_p4++) if(v_p4[v_p4]) for(int v_i3=v_p4*v_p4;
+ v_i3+=v_p4) v_p4[v_i3]=false;
+ 
 }

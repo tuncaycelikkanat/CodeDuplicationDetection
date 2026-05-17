@@ -1,5 +1,1 @@
-void swap(int *xp, int *yp) {
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
+int countVowels(char* s) { int c=0; for(int i=0; s[i]; i++) {char x=tolower(s[i]); if(x=='a'||x=='e'||x=='i'||x=='o'||x=='u') c++;} return c; }

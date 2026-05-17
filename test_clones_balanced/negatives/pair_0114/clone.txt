@@ -1,13 +1,1 @@
-   int fib(int num_elements) {  
-      if (num_elements <= 1) return num_elements;
-       int val1 = 0, val2 = 1, c;   
-     for (int idx = 2; idx <= num_elements; idx++) {   
-
-          c = val1 + val2;
-           val1 = val2;  
-        val2 = c; 
-
-        }    
-    return val2;    
-
-   }  
+ void var_3_275(int var_0_530[], int v_n2) { for(int var_7_988=1; var_7_988<=v_n2-1; var_7_988=2*var_7_988) { for(int var_2_391=0; var_2_391<v_n2-1; var_2_391+=2*var_7_988) { int var_5_484 = min(var_2_391 + var_7_988 - 1, v_n2-1); int var_6_825 = min(var_2_391 + 2*var_7_988 - 1, v_n2-1); var_1_491(var_0_530, var_2_391, var_5_484, var_6_825); } } }

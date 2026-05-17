@@ -1,6 +1,1 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int i = 0; i < exp; i++)
-        res *= base;
-    return res;
-}
+struct var_1_639* var_4_136(struct var_1_639* var_0_329, int var_2_429) { if(var_0_329==NULL || var_0_329->var_2_429==var_2_429) return var_0_329; if(var_0_329->var_2_429 < var_2_429) return var_4_136(var_0_329->var_5_421, var_2_429); return var_4_136(var_0_329->var_3_715, var_2_429); }

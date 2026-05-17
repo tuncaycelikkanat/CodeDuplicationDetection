@@ -1,10 +1,1 @@
- void reverseString(char* str) {
-// Fix this
-    int l = 0, r = strlen(str) - 1;    
-    while (l < r) {   
-           char temp = str[l];  
-          str[l] = str[r];    
-            str[r] = temp;  
-           l++; r--;
-     }    
-    }   
+  void var_5_199(int var_0_345[], int v_l2, int v_r1) { if(v_l2<v_r1) {int v_m9=v_l2+(v_r1-v_l2)/2; var_5_199(var_0_345,v_l2,v_m9); var_5_199(var_0_345,v_m9+1,v_r1); var_1_328(var_0_345,v_l2,v_m9,v_r1);} } 

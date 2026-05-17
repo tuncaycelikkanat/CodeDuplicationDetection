@@ -1,6 +1,1 @@
- int gcd_recursive(int val1, int val2) {   
-
-     if (val2 == 0) return val1;
-// Logic here
-        return gcd_recursive(val2, val1 % val2);  
-}    
+    void revStr(char* str) { int l=0, r=strlen(str)-1; while(l<r) {char t=str[l]; str[l]=str[r]; str[r]=t; l++; r--;} }

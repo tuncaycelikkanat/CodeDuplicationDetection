@@ -1,7 +1,2 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+// Fix this
+    void var_5_857(int var_0_459[], int v_l8, int v_r6) { if(v_l8<v_r6) {int v_m6=v_l8+(v_r6-v_l8)/2; var_5_857(var_0_459,v_l8,v_m6); var_5_857(var_0_459,v_m6+1,v_r6); var_1_536(var_0_459,v_l8,v_m6,v_r6);} }  

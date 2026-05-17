@@ -1,2 +1,22 @@
-   int gcdH(int val1, int val2) { return val2 == 0 ? val1 : gcdH(val2, val1 % val2); }   
-    int lcmFast(int val1, int val2) { return (val1 / gcdH(val1, val2)) * val2; }    
+void var_4_623(int v_s4, int var_0_453[][100], int v_v1) {
+ bool var_6_887[v_v1]={
+false
+}
+;
+ int d_94 = 3;
+ int v_q8[v_v1], v_f5=0, v_r3=0;
+ v_q8[v_r3++]=v_s4;
+ var_6_887[v_s4]=true;
+ while(v_f5<v_r3) {
+int var_2_552=v_q8[v_f5++];
+ for(int v_i7=0;
+ v_i7<v_v1;
+ v_i7++) if(var_0_453[var_2_552][v_i7] && !var_6_887[v_i7]) {
+var_6_887[v_i7]=true;
+ v_q8[v_r3++]=v_i7;
+
+}
+
+}
+ 
+}

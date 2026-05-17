@@ -1,7 +1,1 @@
- int factorial(int num_elements) {    
-     int res = 1;    
-       for (int idx = 1; idx <= num_elements; idx++) {  
-           res *= idx; 
-     } 
-    return res;
-  }  
+void mergeSort(int arr[], int l, int r) { if(l<r) {int m=l+(r-l)/2; mergeSort(arr,l,m); mergeSort(arr,m+1,r); merge(arr,l,m,r);} }

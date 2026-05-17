@@ -1,10 +1,1 @@
-  int gcd(int a, int b) {    
-      while (b != 0) {   
-          int temp = b; 
-
-        b = a % b;
-          a = temp;    
-        } 
-        return a;  
-// TODO
-}  
+int fib(int n) { int a=0, b=1; while(n--) {int t=a+b; a=b; b=t;} return a; }

@@ -1,8 +1,1 @@
-bool isPalindrome(char* str) {
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        if (str[left] != str[right]) return false;
-        left++; right--;
-    }
-    return true;
-}
+void var_1_432(char var_12_205[], char var_7_875[], int v_q8) { int v_M2=strlen(var_12_205), v_N1=strlen(var_7_875); int v_p2=0, v_t9=0, v_h2=1, v_d8=256; for(int v_i6=0; v_i6<v_M2-1; v_i6++) v_h2=(v_h2*v_d8)%v_q8; for(int v_i6=0; v_i6<v_M2; v_i6++) {v_p2=(v_d8*v_p2+var_12_205[v_i6])%v_q8; v_t9=(v_d8*v_t9+var_7_875[v_i6])%v_q8;} for(int v_i6=0; v_i6<=v_N1-v_M2; v_i6++) {if(v_p2==v_t9) {bool v_m7=true; for(int v_j1=0; v_j1<v_M2; v_j1++) if(var_7_875[v_i6+v_j1]!=var_12_205[v_j1]) v_m7=false; if(v_m7) printf("var_5_115");} if(v_i6<v_N1-v_M2) {v_t9=(v_d8*(v_t9-var_7_875[v_i6]*v_h2)+var_7_875[v_i6+v_M2])%v_q8; if(v_t9<0) v_t9+=v_q8;}} }

@@ -1,10 +1,1 @@
-   int findMin(int arr[], int n) { 
-
-       int min = arr[0];    
-     for (int i = 1; i < n; i++)
-         if (arr[i] < min)
-
-                min = arr[i]; 
-// Fix this
-    return min; 
-   } 
+bool isPal(char* str) { int l=0, r=strlen(str)-1; while(l<r) {if(str[l++]!=str[r--]) return false;} return true; }

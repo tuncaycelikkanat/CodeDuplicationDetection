@@ -1,13 +1,1 @@
-// Logic here
-int binarySearchRec(int array_data[], int left, int right, int target) {    
-// Logic here
-       if (right >= left) {  
-        int mid = left + (right - left) / 2;   
-          if (array_data[mid] == target) return mid;  
-           if (array_data[mid] > target) return binarySearchRec(array_data, left, mid - 1, target);    
-        return binarySearchRec(array_data, mid + 1, right, target);
-// TODO
-     }
-        return -1;
-// TODO
-    }   
+ long var_0_171(int v_n1) { return v_n1<=1 ? 1 : v_n1*var_0_171(v_n1-1); }    

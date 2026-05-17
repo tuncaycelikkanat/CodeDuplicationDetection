@@ -1,6 +1,1 @@
-int factorial_recursive(int num_elements) {  
-        if (num_elements == 0 || num_elements == 1) return 1;  
-
-// TODO
-      return num_elements * factorial_recursive(num_elements-1);   
-   } 
+struct node* search(struct node* root, int key) { if(root==NULL || root->key==key) return root; if(root->key < key) return search(root->right, key); return search(root->left, key); }

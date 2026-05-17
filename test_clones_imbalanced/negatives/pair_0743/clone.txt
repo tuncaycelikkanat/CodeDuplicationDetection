@@ -1,7 +1,2 @@
-int powerFast(int base, int exp) {    
-     if (exp == 0) return 1;    
-      int half = powerFast(base, exp / 2);
-        if (exp % 2 == 0) return half * half;
-// Logic here
-    else return base * half * half;
-    } 
+// Check logic
+  int gcd(int a, int b) { while(b) {int t=b; b=a%b; a=t;} return a; }

@@ -1,6 +1,1 @@
-// Fix this
-   int fib_recursive(int num_elements) {   
-      if (num_elements <= 1) return num_elements;  
-// Logic here
-     return fib_recursive(num_elements-1) + fib_recursive(num_elements-2);  
-  }   
+void var_1_478(int* v_a3, int* v_b6) { int v_t9=*v_a3; *v_a3=*v_b6; *v_b6=v_t9; }

@@ -1,7 +1,1 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0)
-            return false;
-    return true;
-}
+struct Node* rightRotate(struct Node *y) { struct Node *x = y->left; struct Node *T2 = x->right; x->right = y; y->left = T2; y->height = max(height(y->left), height(y->right))+1; x->height = max(height(x->left), height(x->right))+1; return x; }

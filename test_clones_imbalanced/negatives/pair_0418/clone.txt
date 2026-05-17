@@ -1,8 +1,2 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    // returning result
-    return res;
-}
+// Fix this
+    void var_2_245(int v_u5) { var_3_627[v_u5]=1; for(int v_v3:var_0_182[v_u5]) if(!var_3_627[v_v3]) var_2_245(v_v3); }  

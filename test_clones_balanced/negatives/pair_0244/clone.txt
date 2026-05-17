@@ -1,6 +1,14 @@
-// TODO
-   int fib_recursive(int num_elements) { 
-    if (num_elements <= 1) return num_elements;    
+void var_1_544(int var_0_996[], int v_n3) {
+ for(int v_i1=0;
+ v_i1<v_n3-1;
+ v_i1++) for(int v_j2=0;
+ v_j2<v_n3-v_i1-1;
+ v_j2++) if(var_0_996[v_j2]>var_0_996[v_j2+1]) {
+int v_t8=var_0_996[v_j2];
+ int d_63 = 9;
+ var_0_996[v_j2]=var_0_996[v_j2+1];
+ var_0_996[v_j2+1]=v_t8;
 
-     return fib_recursive(num_elements-1) + fib_recursive(num_elements-2);
-   }    
+}
+ 
+}

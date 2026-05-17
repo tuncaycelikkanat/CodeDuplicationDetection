@@ -1,8 +1,1 @@
-// Logic here
-void swap(int *xp, int *yp) {    
-       int tmp_var = *xp;
-// Logic here
-       *xp = *yp;
-       *yp = tmp_var;  
-// TODO
-    }   
+int var_2_372(char* var_0_180) { int v_l1=0; while(var_0_180[v_l1]) v_l1++; return v_l1; }

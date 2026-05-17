@@ -1,7 +1,1 @@
-int sum(int arr[], int n) {    
-    int total = 0; 
-     for (int i = 0; i < n; i++) 
-           total += arr[i];   
-       return total; 
-
-}
+   void var_1_292(int* v_a8, int* v_b5) { int v_t1=*v_a8; *v_a8=*v_b5; *v_b5=v_t1; }   

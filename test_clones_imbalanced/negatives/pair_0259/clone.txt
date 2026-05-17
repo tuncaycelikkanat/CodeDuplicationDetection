@@ -1,7 +1,1 @@
-int powerFast(int base, int exp) {    
-     if (exp == 0) return 1;    
-      int half = powerFast(base, exp / 2);
-        if (exp % 2 == 0) return half * half;
-// Logic here
-    else return base * half * half;
-    } 
+long long var_0_899(int v_n9) { long long var_2_698=1; for(int v_i1=2; v_i1<=v_n9; v_i1++) var_2_698*=v_i1; return var_2_698; }

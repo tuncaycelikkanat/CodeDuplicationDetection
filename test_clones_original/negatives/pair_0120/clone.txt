@@ -1,14 +1,11 @@
-// Logic here
-  int binarySearch(int arr[], int l, int r, int x) {    
-// Fix this
-     while (l <= r) {  
-          int m = l + (r - l) / 2;   
-          if (arr[m] == x) return m;
-// Check if needed
-        if (arr[m] < x) l = m + 1; 
-          else r = m - 1; 
-
-        }   
-
-        return -1;
-   } 
+long long var_0_816(int v_b2, int v_p6) {
+ long long v_r8=1;
+ while(v_p6){
+ if(v_p6&1) v_r8*=v_b2;
+ v_b2*=v_b2;
+ v_p6>>=1;
+ 
+}
+ return v_r8;
+ 
+}

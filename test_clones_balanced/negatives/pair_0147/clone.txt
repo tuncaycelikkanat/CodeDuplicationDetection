@@ -1,8 +1,1 @@
-int lcm(int a, int b) {
-    int max = (a > b) ? a : b;
-    while (1) {
-        if (max % a == 0 && max % b == 0)
-            return max;
-        max++;
-    }
-}
+void merge(int arr[], int l, int m, int r) { int i=l, j=m+1, k=0; int temp[r-l+1]; while(i<=m && j<=r) {if(arr[i]<=arr[j]) temp[k++]=arr[i++]; else temp[k++]=arr[j++];} while(i<=m) temp[k++]=arr[i++]; while(j<=r) temp[k++]=arr[j++]; for(i=l,k=0; i<=r; i++,k++) arr[i]=temp[k]; }

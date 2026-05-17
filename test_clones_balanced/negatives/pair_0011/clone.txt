@@ -1,7 +1,1 @@
-int findMin(int arr[], int n) {
-    int min = arr[0];
-    for (int i = 1; i < n; i++)
-        if (arr[i] < min)
-            min = arr[i];
-    return min;
-}
+int countVowels(char* s) { int c=0; for(int i=0; s[i]; i++) {char x=tolower(s[i]); if(x=='a'||x=='e'||x=='i'||x=='o'||x=='u') c++;} return c; }

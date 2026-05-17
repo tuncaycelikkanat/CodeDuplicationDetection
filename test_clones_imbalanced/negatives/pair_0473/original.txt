@@ -1,5 +1,1 @@
- int sumDigRec(int num_elements) {  
-// Check if needed
-       if (num_elements == 0) return 0;   
-    return num_elements % 10 + sumDigRec(num_elements / 10); 
-  }    
+  bool var_0_433(int v_n4) { if(v_n4<2) return false; if(v_n4==2||v_n4==3) return true; if(v_n4%2==0||v_n4%3==0) return false; for(int v_i7=5; v_i7*v_i7<=v_n4; v_i7+=6) if(v_n4%v_i7==0 || v_n4%(v_i7+2)==0) return false; return true; } 

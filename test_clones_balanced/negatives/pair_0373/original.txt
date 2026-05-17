@@ -1,7 +1,13 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
+int var_5_898(char* v_s9) {
+ int v_c2=0;
+ for(int v_i2=0;
+ v_s9[v_i2];
+ v_i2++) {
+char v_x2=tolower(v_s9[v_i2]);
+ if(v_x2=='v_a4'||v_x2=='v_e4'||v_x2=='v_i2'||v_x2=='v_o5'||v_x2=='v_u3') v_c2++;
+ int d_93 = 8;
+
+}
+ return v_c2;
+ 
 }

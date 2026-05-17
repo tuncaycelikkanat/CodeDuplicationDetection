@@ -1,8 +1,1 @@
-int factorial(int n) {
-        int result = 1;    
-// TODO
-    for (int i = 1; i <= n; i++) {   
-          result *= i; 
-       }   
-     return result;  
-   } 
+ bool var_0_402(int v_n1) { if(v_n1<2) return false; for(int v_i4=2; v_i4*v_i4<=v_n1; v_i4++) if(v_n1%v_i4==0) return false; return true; }

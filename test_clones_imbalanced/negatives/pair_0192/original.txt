@@ -1,7 +1,1 @@
-int powerFast(int base, int exp) {    
-     if (exp == 0) return 1;    
-      int half = powerFast(base, exp / 2);
-        if (exp % 2 == 0) return half * half;
-// Logic here
-    else return base * half * half;
-    } 
+int binSearch(int arr[], int l, int r, int x) { while(l<=r) {int m=l+(r-l)/2; if(arr[m]==x) return m; if(arr[m]<x) l=m+1; else r=m-1;} return -1; }

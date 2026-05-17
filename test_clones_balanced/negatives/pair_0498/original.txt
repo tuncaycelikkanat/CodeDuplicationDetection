@@ -1,10 +1,1 @@
-int binarySearch(int array_data[], int left, int right, int target) {   
-      while (left <= right) {
-          int mid = left + (right - left) / 2;  
-          if (array_data[mid] == target) return mid; 
-        if (array_data[mid] < target) left = mid + 1;    
-        else right = mid - 1;    
-
-    } 
-      return -1;  
-  }
+   int var_2_849(char* var_1_927) { char* v_p3 = var_1_927; while(*v_p3) v_p3++; return v_p3 - var_1_927; }

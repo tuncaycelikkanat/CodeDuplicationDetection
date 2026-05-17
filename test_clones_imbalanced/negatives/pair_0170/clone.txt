@@ -1,10 +1,1 @@
-// Logic here
-int factorial(int num_elements) {
-// Check if needed
-     int res = 1; 
-       for (int idx = 1; idx <= num_elements; idx++) { 
-         res *= idx;    
-
-      }   
-       return res;
-  } 
+int var_2_689(int var_0_464[], int v_n1, int v_x8) { for(int v_i1=0; v_i1<v_n1; v_i1++) if(var_0_464[v_i1]==v_x8) return v_i1; return -1; }

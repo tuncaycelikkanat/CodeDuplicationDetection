@@ -1,11 +1,1 @@
-    int binarySearchRec(int array_data[], int left, int right, int target) { 
-     if (right >= left) {
-         int mid = left + (right - left) / 2;  
-        if (array_data[mid] == target) return mid;   
-          if (array_data[mid] > target) return binarySearchRec(array_data, left, mid - 1, target); 
-// Fix this
-        return binarySearchRec(array_data, mid + 1, right, target);  
-      }    
-    return -1;  
-// Fix this
-  }
+int binSearch(int arr[], int l, int r, int x) { while(l<=r) {int m=l+(r-l)/2; if(arr[m]==x) return m; if(arr[m]<x) l=m+1; else r=m-1;} return -1; }

@@ -1,11 +1,1 @@
-void reverseString(char* str) {
-    int dummy_5 = 0;
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-    int dummy_47 = 0;
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+int gcd(int a, int b) { while(b) {int t=b; b=a%b; a=t;} return a; }

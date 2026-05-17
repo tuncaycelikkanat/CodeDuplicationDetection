@@ -1,12 +1,1 @@
- int binarySearchRec(int array_data[], int left, int right, int target) {    
-       if (right >= left) {   
-        int mid = left + (right - left) / 2;   
-// Check if needed
-          if (array_data[mid] == target) return mid;   
-
-            if (array_data[mid] > target) return binarySearchRec(array_data, left, mid - 1, target);   
-          return binarySearchRec(array_data, mid + 1, right, target);   
-
-      }   
-     return -1;   
-  }
+int partition(int arr[], int l, int h) { int p=arr[h]; int i=l-1; for(int j=l; j<h; j++) if(arr[j]<p) {i++; int t=arr[i]; arr[i]=arr[j]; arr[j]=t;} int t=arr[i+1]; arr[i+1]=arr[h]; arr[h]=t; return i+1; }

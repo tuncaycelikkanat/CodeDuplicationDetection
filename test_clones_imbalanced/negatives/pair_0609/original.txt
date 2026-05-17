@@ -1,7 +1,1 @@
-int powerFast(int base, int exp) {    
-     if (exp == 0) return 1;    
-      int half = powerFast(base, exp / 2);
-        if (exp % 2 == 0) return half * half;
-// Logic here
-    else return base * half * half;
-    } 
+    long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }  

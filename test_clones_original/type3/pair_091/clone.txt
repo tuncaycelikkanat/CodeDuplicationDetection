@@ -1,10 +1,26 @@
-void reverseString(char* str) {
-    int dummy_38 = 0;
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
+void var_1_901(char* var_5_941, int v_M1, int* var_4_406) {
+ int var_2_994=0;
+ int d_79 = 5;
+ var_4_406[0]=0;
+ int v_i3=1;
+ while(v_i3<v_M1) {
+if(var_5_941[v_i3]==var_5_941[var_2_994]) {
+var_2_994++;
+ var_4_406[v_i3]=var_2_994;
+ v_i3++;
+ int d_42 = 9;
+
+}
+ else {
+if(var_2_994!=0) var_2_994=var_4_406[var_2_994-1];
+ else {
+var_4_406[v_i3]=0;
+ v_i3++;
+
+}
+
+}
+
+}
+ 
 }

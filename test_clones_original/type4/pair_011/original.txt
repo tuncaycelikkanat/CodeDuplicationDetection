@@ -1,10 +1,1 @@
-    int countVowels(char* str) {  
-       int counter = 0;  
-// Logic here
-     for (int idx = 0; str[idx] != '\0'; idx++) {  
-// TODO
-         char c = tolower(str[idx]);   
-        if (c=='val1'||c=='e'||c=='idx'||c=='o'||c=='u') counter++;   
-       }
-       return counter;
-}
+   int var_0_611(int v_a3[], int v_n7) { int v_m1=INT_MIN, var_5_644=0; for(int v_i2=0; v_i2<v_n7; v_i2++) {var_5_644+=v_a3[v_i2]; if(v_m1<var_5_644) v_m1=var_5_644; if(var_5_644<0) var_5_644=0;} return v_m1; }   

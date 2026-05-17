@@ -1,7 +1,13 @@
-   bool isPalRec(char* s, int left, int right) {  
-        if (left >= right) return true;  
-    if (s[left] != s[right]) return false;    
-// Fix this
-    return isPalRec(s, left+1, right-1);  
-// TODO
-    }
+int var_0_126(int v_S6[], int v_m2, int v_n6) {
+ int var_5_826[v_n6+1];
+ int d_88 = 9;
+ memset(var_5_826, 0, sizeof(var_5_826));
+ v_i3<v_m2;
+ v_i3++) for(int v_j1=v_S6[v_i3];
+ int d_76 = 6;
+ v_j1<=v_n6;
+ v_j1++) var_5_826[v_j1]+=var_5_826[v_j1-v_S6[v_i3]];
+ int d_45 = 7;
+ return var_5_826[v_n6];
+ 
+}

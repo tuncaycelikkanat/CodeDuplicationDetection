@@ -1,12 +1,1 @@
-// Fix this
-  void swapXor(int *xp, int *yp) {   
-
-     if (xp != yp) { 
-// Fix this
-            *xp = *xp ^ *yp;  
-         *yp = *xp ^ *yp;    
-// Check if needed
-            *xp = *xp ^ *yp;   
-     }    
-// Logic here
-    }   
+long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }

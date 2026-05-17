@@ -1,8 +1,1 @@
-   int findMax(int arr[], int n) {   
-       int max = arr[0]; 
-
-    for (int i = 1; i < n; i++)    
-        if (arr[i] > max)  
-               max = arr[i];
-       return max;    
-    }  
+  int find(int i, int parent[]) { while(parent[i]) i=parent[i]; return i; } void uni(int i, int j, int parent[]) { if(i!=j) {parent[j]=i; return;} }   

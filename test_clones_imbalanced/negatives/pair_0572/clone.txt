@@ -1,8 +1,1 @@
- int findMaxRec(int array_data[], int num_elements) {   
-    if (num_elements == 1) return array_data[0];   
-       int mid = findMaxRec(array_data, num_elements - 1);
-
-// TODO
-    return (array_data[num_elements-1] > mid) ? array_data[num_elements-1] : mid; 
-// TODO
- }
+void selSort(int arr[], int n) { for(int i=0; i<n-1; i++) {int min_i=i; for(int j=i+1; j<n; j++) if(arr[j]<arr[min_i]) min_i=j; int t=arr[i]; arr[i]=arr[min_i]; arr[min_i]=t;} }

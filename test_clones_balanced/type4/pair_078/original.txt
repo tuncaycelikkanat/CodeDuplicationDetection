@@ -1,8 +1,1 @@
-void swap(int *xp, int *yp) {    
-    int tmp_var = *xp;   
-// Check if needed
-      *xp = *yp; 
-
-// Check if needed
-        *yp = tmp_var;    
-}
+int getLen(char* str) { int l=0; while(str[l]) l++; return l; }

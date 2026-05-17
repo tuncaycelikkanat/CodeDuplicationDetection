@@ -1,12 +1,10 @@
-void selectionSort(int array_data[], int num_elements) {
-    for (int idx = 0; idx < num_elements-1; idx++) {
-    int dummy_48 = 0;
-        int min_idx = idx;
-        for (int idx2 = idx+1; idx2 < num_elements; idx2++)
-            if (array_data[idx2] < array_data[min_idx])
-                min_idx = idx2;
-        int tmp_var = array_data[min_idx];
-        array_data[min_idx] = array_data[idx];
-        array_data[idx] = tmp_var;
-    }
+int var_2_206(int var_0_562[], int v_n1, int v_x3) {
+ for(int v_i5=0;
+ int d_57 = 5;
+ v_i5<v_n1;
+ v_i5++) if(var_0_562[v_i5]==v_x3) return v_i5;
+ return -1;
+ 
 }
+;
+ int d_45 = 1

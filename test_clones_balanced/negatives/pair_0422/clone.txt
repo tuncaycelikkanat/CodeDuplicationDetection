@@ -1,13 +1,1 @@
-   int fib(int num_elements) {  
-      if (num_elements <= 1) return num_elements;
-       int val1 = 0, val2 = 1, c;   
-     for (int idx = 2; idx <= num_elements; idx++) {   
-
-          c = val1 + val2;
-           val1 = val2;  
-        val2 = c; 
-
-        }    
-    return val2;    
-
-   }  
+void heapify(int arr[], int n, int i) { int lg=i, l=2*i+1, r=2*i+2; if(l<n && arr[l]>arr[lg]) lg=l; if(r<n && arr[r]>arr[lg]) lg=r; if(lg!=i) {int t=arr[i]; arr[i]=arr[lg]; arr[lg]=t; heapify(arr,n,lg);} }

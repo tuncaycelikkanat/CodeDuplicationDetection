@@ -1,7 +1,2 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0)
-            return false;
-    return true;
-}
+// Optimization needed
+  void heapify(int arr[], int n, int i) { int lg=i, l=2*i+1, r=2*i+2; if(l<n && arr[l]>arr[lg]) lg=l; if(r<n && arr[r]>arr[lg]) lg=r; if(lg!=i) {int t=arr[i]; arr[i]=arr[lg]; arr[lg]=t; heapify(arr,n,lg);} }    

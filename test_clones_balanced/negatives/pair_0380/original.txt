@@ -1,6 +1,1 @@
-int powerFast(int base, int exp) {
-    if (exp == 0) return 1;
-    int half = powerFast(base, exp / 2);
-    if (exp % 2 == 0) return half * half;
-    else return base * half * half;
-}
+int var_1_517(int v_a2[], int v_l8, int v_h5) { if(v_l8==v_h5) return v_a2[v_l8]; int v_m7=(v_l8+v_h5)/2; return max(max(var_1_517(v_a2,v_l8,v_m7), var_1_517(v_a2,v_m7+1,v_h5)), var_0_708(v_a2,v_l8,v_m7,v_h5)); }   

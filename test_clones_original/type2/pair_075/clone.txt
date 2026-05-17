@@ -1,6 +1,1 @@
-int sum(int array_data[], int num_elements) {
-    int total_sum = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-        total_sum += array_data[idx];
-    return total_sum;
-}
+void var_0_101(int v_n7) { bool v_p5[v_n7+1]; memset(v_p5,true,sizeof(v_p5)); for(int v_p5=2; v_p5*v_p5<=v_n7; v_p5++) if(v_p5[v_p5]) for(int v_i3=v_p5*v_p5; v_i3<=v_n7; v_i3+=v_p5) v_p5[v_i3]=false; }

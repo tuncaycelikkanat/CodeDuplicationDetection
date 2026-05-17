@@ -1,7 +1,1 @@
-int fib_recursive(int num_elements) { 
-// Logic here
-        if (num_elements <= 1) return num_elements;    
-
-      return fib_recursive(num_elements-1) + fib_recursive(num_elements-2);    
-// Fix this
-   } 
+long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }

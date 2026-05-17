@@ -1,7 +1,1 @@
-int fib_recursive(int num_elements) { 
-// Logic here
-        if (num_elements <= 1) return num_elements;    
-
-      return fib_recursive(num_elements-1) + fib_recursive(num_elements-2);    
-// Fix this
-   } 
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

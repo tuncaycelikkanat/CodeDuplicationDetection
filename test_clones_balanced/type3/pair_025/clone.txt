@@ -1,9 +1,9 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-    int dummy_0 = 0;
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    return val1;
+void var_0_218(int v_n1) {
+ bool v_p4[v_n1+1];
+ memset(v_p4,true,sizeof(v_p4));
+ for(int v_p4=2;
+ v_p4*v_p4<=v_n1;
+ v_p4++) if(v_p4[v_p4]) for(int v_i3=v_p4*v_p4;
+ v_i3+=v_p4) v_p4[v_i3]=false;
+ 
 }

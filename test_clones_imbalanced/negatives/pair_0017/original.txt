@@ -1,7 +1,1 @@
-int fib_recursive(int num_elements) { 
-// Logic here
-        if (num_elements <= 1) return num_elements;    
-
-      return fib_recursive(num_elements-1) + fib_recursive(num_elements-2);    
-// Fix this
-   } 
+    int var_2_527(char* var_0_370) { int v_l8=0; while(var_0_370[v_l8]) v_l8++; return v_l8; } 

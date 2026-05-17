@@ -1,6 +1,1 @@
-int powerFast(int base, int exp) {
-    if (exp == 0) return 1;
-    int half = powerFast(base, exp / 2);
-    if (exp % 2 == 0) return half * half;
-    else return base * half * half;
-}
+ void var_1_338(int* v_a8, int* v_b4) { if(v_a8!=v_b4) { *v_a8=*v_a8^*v_b4; *v_b4=*v_a8^*v_b4; *v_a8=*v_a8^*v_b4; } }    

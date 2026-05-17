@@ -1,8 +1,10 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    // returning result
-    return res;
+int var_0_551(int v_a8, int v_b5) {
+ while(v_b5) {
+int v_t8=v_b5;
+ v_b5=v_a8%v_b5;
+ v_a8=v_t8;
+
+}
+ return v_a8;
+ 
 }

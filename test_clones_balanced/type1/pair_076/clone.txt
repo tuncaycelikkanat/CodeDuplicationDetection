@@ -1,12 +1,1 @@
- int countVowels(char* str) { 
-        int count = 0;    
-     for (int i = 0; str[i] != '\0'; i++) { 
-
-        char c = tolower(str[i]); 
-            if (c=='a' || c=='e' || c=='i' || c=='o' || c=='u') 
-             count++;
-// Logic here
-        } 
-// TODO
-    return count;  
-  } 
+ int strCmp(char* s1, char* s2) { while(*s1 && (*s1==*s2)) {s1++; s2++;} return *(const unsigned char*)s1 - *(const unsigned char*)s2; } 

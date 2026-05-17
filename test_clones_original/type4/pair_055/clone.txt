@@ -1,4 +1,1 @@
-  int sumDigRec(int num_elements) {   
-      if (num_elements == 0) return 0;  
-       return num_elements % 10 + sumDigRec(num_elements / 10);
-    }    
+void rev(int arr[], int l, int r) { if(l>=r) return; swap(&arr[l], &arr[r]); rev(arr, l+1, r-1); }

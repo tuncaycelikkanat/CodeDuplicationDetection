@@ -1,7 +1,19 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0)
-            return false;
-    return true;
+int var_3_753(char* v_X9, char* v_Y1, int v_m9, int v_n4) {
+ int v_L3[v_m9+1][v_n4+1];
+ for(int v_i3=0;
+ v_i3<=v_m9;
+ v_i3++) {
+for(int v_j4=0;
+ int d_77 = 3;
+ v_j4<=v_n4;
+ v_j4++) {
+if(v_i3==0||v_j4==0) v_L3[v_i3][v_j4]=0;
+ else if(v_X9[v_i3-1]==v_Y1[v_j4-1]) v_L3[v_i3][v_j4]=v_L3[v_i3-1][v_j4-1]+1;
+ else v_L3[v_i3][v_j4]=max(v_L3[v_i3-1][v_j4],v_L3[v_i3][v_j4-1]);
+
+}
+
+}
+ return v_L3[v_m9][v_n4];
+ 
 }

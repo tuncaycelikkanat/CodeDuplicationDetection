@@ -1,5 +1,1 @@
-void swap(int *xp, int *yp) {
-    int tmp_var = *xp;
-    *xp = *yp;
-    *yp = tmp_var;
-}
+void var_13_184(struct var_8_263* var_7_526, int var_5_426) { int v_V4=var_7_526->v_V4, v_E5=var_7_526->v_E5; int var_10_885[v_V4]; for(int v_i9=0; v_i9<v_V4; v_i9++) var_10_885[v_i9]=INT_MAX; var_10_885[var_5_426]=0; for(int v_i9=1; v_i9<=v_V4-1; v_i9++) for(int v_j1=0; v_j1<v_E5; v_j1++) {int v_u7=var_7_526->var_11_904[v_j1].var_5_426; int v_v6=var_7_526->var_11_904[v_j1].var_4_441; int var_0_412=var_7_526->var_11_904[v_j1].var_0_412; if(var_10_885[v_u7]!=INT_MAX && var_10_885[v_u7]+var_0_412<var_10_885[v_v6]) var_10_885[v_v6]=var_10_885[v_u7]+var_0_412;} }

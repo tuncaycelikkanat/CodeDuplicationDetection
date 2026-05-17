@@ -1,9 +1,1 @@
-void reverseString(char* str) {
-    int l = 0, r = strlen(str) - 1;
-    while (l < r) {
-        char temp = str[l];
-        str[l] = str[r];
-        str[r] = temp;
-        l++; r--;
-    }
-}
+  int var_1_436(int v_a6[], int v_l9, int v_h4) { if(v_l9==v_h4) return v_a6[v_l9]; int v_m9=(v_l9+v_h4)/2; return max(max(var_1_436(v_a6,v_l9,v_m9), var_1_436(v_a6,v_m9+1,v_h4)), var_0_807(v_a6,v_l9,v_m9,v_h4)); }  

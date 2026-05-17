@@ -1,6 +1,1 @@
-int sum(int array_data[], int num_elements) {
-    int total_sum = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-        total_sum += array_data[idx];
-    return total_sum;
-}
+struct var_6_267* var_0_239(struct var_6_267 *v_y3) { struct var_6_267 *v_x9 = v_y3->var_4_319; struct var_6_267 *v_T23 = v_x9->var_7_700; v_x9->var_7_700 = v_y3; v_y3->var_4_319 = v_T23; v_y3->var_5_381 = max(var_5_381(v_y3->var_4_319), var_5_381(v_y3->var_7_700))+1; v_x9->var_5_381 = max(var_5_381(v_x9->var_4_319), var_5_381(v_x9->var_7_700))+1; return v_x9; }

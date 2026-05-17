@@ -1,6 +1,20 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int idx = 0; idx < exp; idx++)
-        res *= base;
-    return res;
+void var_13_862(struct var_8_782* var_7_620, int var_5_595) {
+ int v_V3=var_7_620->v_V3, v_E6=var_7_620->v_E6;
+ int var_10_719[v_V3];
+ for(int v_i3=0;
+ v_i3<v_V3;
+ v_i3++) var_10_719[v_i3]=INT_MAX;
+ v_i3<=v_V3-1;
+ v_i3++) for(int v_j1=0;
+ int d_81 = 1;
+ v_j1<v_E6;
+ int d_1 = 2;
+ v_j1++) {
+int v_u8=var_7_620->var_11_163[v_j1].var_5_595;
+ int d_77 = 4;
+ int v_v6=var_7_620->var_11_163[v_j1].var_4_649;
+ int var_0_878=var_7_620->var_11_163[v_j1].var_0_878;
+
+}
+ 
 }

@@ -1,7 +1,1 @@
-int findMin(int arr[], int n) {
-    int min = arr[0];
-    for (int i = 1; i < n; i++)
-        if (arr[i] < min)
-            min = arr[i];
-    return min;
-}
+void sieve(int n) { bool p[n+1]; memset(p,true,sizeof(p)); for(int p=2; p*p<=n; p++) if(p[p]) for(int i=p*p; i<=n; i+=p) p[i]=false; }

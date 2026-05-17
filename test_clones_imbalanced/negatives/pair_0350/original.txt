@@ -1,6 +1,2 @@
-// Logic here
-    int factorial_recursive(int num_elements) { 
-    if (num_elements == 0 || num_elements == 1) return 1;  
-
-    return num_elements * factorial_recursive(num_elements-1); 
-  }
+// Fix this
+ bool var_1_365(char* v_s9, int v_l4, int v_r1) { if(v_l4>=v_r1) return true; if(v_s9[v_l4]!=v_s9[v_r1]) return false; return var_1_365(v_s9, v_l4+1, v_r1-1); }   

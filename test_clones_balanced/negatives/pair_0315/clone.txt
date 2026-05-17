@@ -1,10 +1,1 @@
-int fib(int n) {
-    if (n <= 1) return n;
-    int a = 0, b = 1, c;
-    for (int i = 2; i <= n; i++) {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-    return b;
-}
+void var_1_680(char var_12_321[], char var_7_122[], int v_q4) { int v_M5=strlen(var_12_321), v_N2=strlen(var_7_122); int v_p7=0, v_t9=0, v_h3=1, v_d2=256; for(int v_i9=0; v_i9<v_M5-1; v_i9++) v_h3=(v_h3*v_d2)%v_q4; for(int v_i9=0; v_i9<v_M5; v_i9++) {v_p7=(v_d2*v_p7+var_12_321[v_i9])%v_q4; v_t9=(v_d2*v_t9+var_7_122[v_i9])%v_q4;} for(int v_i9=0; v_i9<=v_N2-v_M5; v_i9++) {if(v_p7==v_t9) {bool v_m8=true; for(int v_j6=0; v_j6<v_M5; v_j6++) if(var_7_122[v_i9+v_j6]!=var_12_321[v_j6]) v_m8=false; if(v_m8) printf("var_5_561");} if(v_i9<v_N2-v_M5) {v_t9=(v_d2*(v_t9-var_7_122[v_i9]*v_h3)+var_7_122[v_i9+v_M5])%v_q4; if(v_t9<0) v_t9+=v_q4;}} }

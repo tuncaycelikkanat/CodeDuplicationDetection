@@ -1,12 +1,1 @@
-  int countVowels(char* str) {  
-// TODO
-     int count = 0;  
-       for (int i = 0; str[i] != '\0'; i++) { 
-            char c = tolower(str[i]);   
-
-        if (c=='a' || c=='e' || c=='i' || c=='o' || c=='u')    
-               count++;   
-        }  
-    return count;
-// Fix this
-    }   
+   int arrSum(int arr[], int n) { int s=0; for(int i=0; i<n; i++) s+=arr[i]; return s; } 

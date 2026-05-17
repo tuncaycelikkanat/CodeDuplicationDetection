@@ -1,12 +1,1 @@
-  void reverseString(char* str) {  
-     int l = 0, r = strlen(str) - 1; 
-     while (l < r) {  
-// Fix this
-            char temp = str[l];  
-// Check if needed
-           str[l] = str[r];   
-          str[r] = temp;
-// TODO
-        l++; r--;  
-    }   
- }    
+long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }   

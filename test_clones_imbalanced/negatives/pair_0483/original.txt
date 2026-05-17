@@ -1,9 +1,1 @@
-// Fix this
-  int power(int base, int exp) {    
-     int res = 1;    
-        for (int idx = 0; idx < exp; idx++)
-        res *= base;  
-       return res;
-
-// Fix this
-    } 
+  int lcm(int a, int b) { return (a*b)/gcd(a,b); }  

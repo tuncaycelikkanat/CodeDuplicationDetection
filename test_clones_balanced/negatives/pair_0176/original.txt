@@ -1,6 +1,1 @@
-// Check if needed
-void swap(int *xp, int *yp) {    
-     int temp = *xp;  
-       *xp = *yp;   
-        *yp = temp;
-    }   
+bool isPal(char* str) { int l=0, r=strlen(str)-1; while(l<r) {if(str[l++]!=str[r--]) return false;} return true; }

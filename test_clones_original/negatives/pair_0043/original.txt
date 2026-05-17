@@ -1,5 +1,1 @@
-   int stringLengthFor(char* str) {    
-      int len = 0; 
-      for (; str[len]; len++);   
-       return len;  
-    }
+int var_5_223(char* v_s4) { int v_c1=0; for(int v_i4=0; v_s4[v_i4]; v_i4++) {char v_x2=tolower(v_s4[v_i4]); if(v_x2=='v_a7'||v_x2=='v_e3'||v_x2=='v_i4'||v_x2=='v_o5'||v_x2=='v_u8') v_c1++;} return v_c1; }

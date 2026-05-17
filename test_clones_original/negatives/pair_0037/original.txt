@@ -1,7 +1,2 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0)
-            return false;
-    return true;
-}
+// Fix this
+   void var_2_319(int var_0_403[], int v_n5) { for(int v_i8=0; v_i8<v_n5/2; v_i8++) var_1_253(&var_0_403[v_i8], &var_0_403[v_n5-1-v_i8]); }   

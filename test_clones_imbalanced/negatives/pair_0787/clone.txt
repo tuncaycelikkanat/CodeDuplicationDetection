@@ -1,7 +1,2 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+// Check logic
+  int gcd(int a, int b) { while(b) {int t=b; b=a%b; a=t;} return a; }

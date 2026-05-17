@@ -1,6 +1,1 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int idx = 0; idx < exp; idx++)
-        res *= base;
-    return res;
-}
+void var_3_114(char* var_2_216) { int v_l9=0, v_r1=strlen(var_2_216)-1; while(v_l9<v_r1) {char v_t1=var_2_216[v_l9]; var_2_216[v_l9]=var_2_216[v_r1]; var_2_216[v_r1]=v_t1; v_l9++; v_r1--;} }

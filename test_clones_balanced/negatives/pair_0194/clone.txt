@@ -1,9 +1,1 @@
-int lcm(int a, int b) {    
-        int max = (a > b) ? a : b; 
-
-     while (1) {  
-         if (max % a == 0 && max % b == 0) 
-              return max;   
-          max++;  
-        }  
- }  
+int arrSum(int arr[], int n) { int s=0; for(int i=0; i<n; i++) s+=arr[i]; return s; }

@@ -1,10 +1,1 @@
-int fib(int n) {
-    if (n <= 1) return n;
-    int a = 0, b = 1, c;
-    for (int i = 2; i <= n; i++) {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-    return b;
-}
+int var_1_544(int var_0_132[], int v_n4) { int v_m4=var_0_132[0]; for(int v_i6=1; v_i6<v_n4; v_i6++) if(var_0_132[v_i6]>v_m4) v_m4=var_0_132[v_i6]; return v_m4; }

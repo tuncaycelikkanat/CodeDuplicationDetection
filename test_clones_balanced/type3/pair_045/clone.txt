@@ -1,8 +1,8 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    return val1;
+struct var_1_520* var_4_425(struct var_1_520* var_0_668, int var_2_263) {
+ if(var_0_668==NULL || var_0_668->var_2_263==var_2_263) return var_0_668;
+ int d_33 = 6;
+ if(var_0_668->var_2_263 < var_2_263) return var_4_425(var_0_668->var_5_301, var_2_263);
+ return var_4_425(var_0_668->var_3_911, var_2_263);
+ int d_57 = 6;
+ 
 }

@@ -25,7 +25,7 @@ class GPUXGBClassifier(XGBClassifier):
         return super().predict_proba(X, **kwargs)
 
 
-def build_xgboost(random_state, device="cpu"):
+def build_xgboost(random_state, device="cpu", scale_pos_weight=1.0):
     # XGBoost device mapping: 'cuda' for NVIDIA, 'cpu' for everything else
     xgb_device = device if device == "cuda" else "cpu"
 
@@ -49,11 +49,11 @@ def build_xgboost(random_state, device="cpu"):
         reg_lambda=1.0,             # 0.15→1.0: strong L2 weight shrinkage
         
         # ── Class Balance ──
-        scale_pos_weight=1.0,
+        scale_pos_weight=scale_pos_weight,
         
         # ── Early Stopping ──
         early_stopping_rounds=50,   # 30→50: wait longer before giving up (learning_rate is slow)
-        eval_metric="logloss",
+        eval_metric="aucpr",
         
         # ── System ──
         random_state=random_state,

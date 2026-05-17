@@ -1,10 +1,1 @@
-  int gcd(int a, int b) {    
-      while (b != 0) {   
-          int temp = b; 
-
-        b = a % b;
-          a = temp;    
-        } 
-        return a;  
-// TODO
-}  
+ bool var_1_690(char* v_s9) { int var_2_618=strlen(v_s9); for(int v_i3=0; v_i3<var_2_618/2; v_i3++) if(v_s9[v_i3]!=v_s9[var_2_618-1-v_i3]) return false; return true; }    

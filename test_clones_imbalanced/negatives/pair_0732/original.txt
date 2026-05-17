@@ -1,10 +1,1 @@
-// Logic here
-int factorial(int num_elements) {
-// Check if needed
-     int res = 1; 
-       for (int idx = 1; idx <= num_elements; idx++) { 
-         res *= idx;    
-
-      }   
-       return res;
-  } 
+    int var_2_527(char* var_0_370) { int v_l8=0; while(var_0_370[v_l8]) v_l8++; return v_l8; } 

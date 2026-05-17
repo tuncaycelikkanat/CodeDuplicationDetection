@@ -1,7 +1,1 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+int v_bs3(int v_a7[], int v_l5, int v_r7, int v_x6) { if(v_r7>=v_l5) {int v_m4=v_l5+(v_r7-v_l5)/2; if(v_a7[v_m4]==v_x6) return v_m4; if(v_a7[v_m4]>v_x6) return v_bs3(v_a7,v_l5,v_m4-1,v_x6); return v_bs3(v_a7,v_m4+1,v_r7,v_x6);} return -1; }

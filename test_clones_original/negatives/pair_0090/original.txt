@@ -1,10 +1,2 @@
-void reverseString(char* str) {
-    int dummy_82 = 0;
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+// Check logic
+   int v_bs5(int v_a3[], int v_n4, int v_x4) { int v_l1=0, v_r9=v_n4-1; while(v_l1<=v_r9) {int v_m4=v_l1+(v_r9-v_l1)/2; if(v_a3[v_m4]==v_x4) return v_m4; if(v_a3[v_m4]<v_x4) v_l1=v_m4+1; else v_r9=v_m4-1;} return -1; }  

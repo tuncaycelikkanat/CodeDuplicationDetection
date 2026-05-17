@@ -1,7 +1,1 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
-}
+int var_0_538(int v_S3[], int v_m6, int v_n8) { int var_5_334[v_n8+1]; memset(var_5_334, 0, sizeof(var_5_334)); var_5_334[0]=1; for(int v_i8=0; v_i8<v_m6; v_i8++) for(int v_j3=v_S3[v_i8]; v_j3<=v_n8; v_j3++) var_5_334[v_j3]+=var_5_334[v_j3-v_S3[v_i8]]; return var_5_334[v_n8]; }

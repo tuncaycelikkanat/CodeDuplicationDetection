@@ -1,10 +1,1 @@
-  int gcd(int a, int b) {    
-      while (b != 0) {   
-          int temp = b; 
-
-        b = a % b;
-          a = temp;    
-        } 
-        return a;  
-// TODO
-}  
+bool var_0_447(int v_n7) { if(v_n7<=1) return false; for(int v_i2=2; v_i2*v_i2<=v_n7; v_i2++) if(v_n7%v_i2==0) return false; return true; }

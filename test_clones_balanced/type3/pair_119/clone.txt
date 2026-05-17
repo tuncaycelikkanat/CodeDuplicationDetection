@@ -1,5 +1,11 @@
-void swap(int *xp, int *yp) {
-    int tmp_var = *xp;
-    *xp = *yp;
-    *yp = tmp_var;
+int var_2_228(int v_n8) {
+ int v_s9=0;
+ int d_55 = 9;
+ while(v_n8) {
+v_s9+=v_n8%10;
+ v_n8/=10;
+
+}
+ return v_s9;
+ 
 }

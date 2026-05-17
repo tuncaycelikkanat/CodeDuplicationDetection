@@ -1,10 +1,1 @@
-// Logic here
-int sum(int array_data[], int num_elements) {    
-        int total_sum = 0;   
-
-// Logic here
-     for (int idx = 0; idx < num_elements; idx++) 
-          total_sum += array_data[idx];    
-     return total_sum;  
-
-    }
+ bool var_1_590(char* v_s7) { int var_2_219=strlen(v_s7); for(int v_i4=0; v_i4<var_2_219/2; v_i4++) if(v_s7[v_i4]!=v_s7[var_2_219-1-v_i4]) return false; return true; } 

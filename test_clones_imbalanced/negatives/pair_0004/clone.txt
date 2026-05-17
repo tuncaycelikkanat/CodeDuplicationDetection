@@ -1,5 +1,1 @@
- int sumDigRec(int num_elements) {  
-// Check if needed
-       if (num_elements == 0) return 0;   
-    return num_elements % 10 + sumDigRec(num_elements / 10); 
-  }    
+int bs(int a[], int n, int x) { int l=0, r=n-1; while(l<=r) {int m=l+(r-l)/2; if(a[m]==x) return m; if(a[m]<x) l=m+1; else r=m-1;} return -1; }

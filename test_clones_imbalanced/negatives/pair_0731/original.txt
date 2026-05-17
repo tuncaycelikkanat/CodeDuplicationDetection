@@ -1,5 +1,1 @@
- void swap(int *xp, int *yp) {  
-     int tmp_var = *xp;    
-     *xp = *yp;    
-       *yp = tmp_var;
-  }    
+long long var_0_899(int v_n9) { long long var_2_698=1; for(int v_i1=2; v_i1<=v_n9; v_i1++) var_2_698*=v_i1; return var_2_698; }

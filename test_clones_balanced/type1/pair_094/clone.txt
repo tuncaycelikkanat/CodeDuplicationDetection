@@ -1,9 +1,2 @@
-// Check if needed
-  int findMin(int arr[], int n) {    
-        int min = arr[0];    
-     for (int i = 1; i < n; i++) 
-
-         if (arr[i] < min)
-               min = arr[i];   
-      return min;    
-}  
+// TODO
+   struct node* insert(struct node* node, int key) { if(node==NULL) return newNode(key); if(key<node->key) node->left=insert(node->left,key); else if(key>node->key) node->right=insert(node->right,key); return node; }   

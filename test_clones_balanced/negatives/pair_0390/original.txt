@@ -1,6 +1,19 @@
-int sum(int array_data[], int num_elements) {
-    int total_sum = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-        total_sum += array_data[idx];
-    return total_sum;
+int var_0_457(char* v_s19, char* v_s28, int v_m8, int v_n2) {
+ int v_dp3[v_m8+1][v_n2+1];
+ v_i2<=v_m8;
+ v_i2++) {
+for(int v_j5=0;
+ v_j5<=v_n2;
+ v_j5++) {
+if(v_i2==0) v_dp3[v_i2][v_j5]=v_j5;
+ else if(v_j5==0) v_dp3[v_i2][v_j5]=v_i2;
+ else if(v_s19[v_i2-1]==v_s28[v_j5-1]) v_dp3[v_i2][v_j5]=v_dp3[v_i2-1][v_j5-1];
+ int d_0 = 5;
+ else v_dp3[v_i2][v_j5]=1+min(min(v_dp3[v_i2][v_j5-1],v_dp3[v_i2-1][v_j5]),v_dp3[v_i2-1][v_j5-1]);
+
+}
+
+}
+ return v_dp3[v_m8][v_n2];
+ 
 }

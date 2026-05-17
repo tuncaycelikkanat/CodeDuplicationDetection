@@ -1,9 +1,15 @@
-bool isPalindrome(char* str) {
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        if (str[left] != str[right]) return false;
-        left++; right--;
-    }
-    // returning result
-    return true;
+void var_4_422(int var_3_802[][100], int v_V8) {
+ int var_1_446[v_V8][v_V8];
+ v_i2<v_V8;
+ v_i2++) for(int v_j6=0;
+ v_j6<v_V8;
+ for(int v_k9=0;
+ v_k9<v_V8;
+ int d_71 = 7;
+ v_k9++) for(int v_i2=0;
+ v_i2<v_V8;
+ int d_39 = 9;
+ v_i2++) for(int v_j6=0;
+ v_j6<v_V8;
+ 
 }

@@ -1,7 +1,1 @@
-    bool isPalRec(char* s, int left, int right) {
-      if (left >= right) return true;   
-// Fix this
-      if (s[left] != s[right]) return false;
-       return isPalRec(s, left+1, right-1);  
-// Fix this
-    }
+ int var_2_880(int v_n8) { int v_c6=0; while(v_n8) {v_n8&=v_n8-1; v_c6++;} return v_c6; }  

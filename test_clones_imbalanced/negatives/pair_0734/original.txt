@@ -1,11 +1,1 @@
-    int binarySearchRec(int array_data[], int left, int right, int target) { 
-     if (right >= left) {
-         int mid = left + (right - left) / 2;  
-        if (array_data[mid] == target) return mid;   
-          if (array_data[mid] > target) return binarySearchRec(array_data, left, mid - 1, target); 
-// Fix this
-        return binarySearchRec(array_data, mid + 1, right, target);  
-      }    
-    return -1;  
-// Fix this
-  }
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

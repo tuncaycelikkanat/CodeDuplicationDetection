@@ -1,11 +1,21 @@
-void selectionSort(int array_data[], int num_elements) {
-    for (int idx = 0; idx < num_elements-1; idx++) {
-        int min_idx = idx;
-        for (int idx2 = idx+1; idx2 < num_elements; idx2++)
-            if (array_data[idx2] < array_data[min_idx])
-                min_idx = idx2;
-        int tmp_var = array_data[min_idx];
-        array_data[min_idx] = array_data[idx];
-        array_data[idx] = tmp_var;
-    }
+int var_0_614(char* v_s18, char* v_s24, int v_m4, int v_n5) {
+ int v_dp8[v_m4+1][v_n5+1];
+ for(int v_i6=0;
+ int d_19 = 3;
+ v_i6<=v_m4;
+ v_i6++) {
+for(int v_j7=0;
+ v_j7<=v_n5;
+ int d_68 = 7;
+ v_j7++) {
+if(v_i6==0) v_dp8[v_i6][v_j7]=v_j7;
+ else if(v_j7==0) v_dp8[v_i6][v_j7]=v_i6;
+ else if(v_s18[v_i6-1]==v_s24[v_j7-1]) v_dp8[v_i6][v_j7]=v_dp8[v_i6-1][v_j7-1];
+ else v_dp8[v_i6][v_j7]=1+min(min(v_dp8[v_i6][v_j7-1],v_dp8[v_i6-1][v_j7]),v_dp8[v_i6-1][v_j7-1]);
+
+}
+
+}
+ return v_dp8[v_m4][v_n5];
+ 
 }

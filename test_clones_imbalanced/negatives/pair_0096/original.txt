@@ -1,8 +1,2 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    return val1;
-}
+// TODO
+ void insSort(int arr[], int n) { for(int i=1; i<n; i++) {int key=arr[i]; int j=i-1; while(j>=0 && arr[j]>key) {arr[j+1]=arr[j]; j--;} arr[j+1]=key;} }    

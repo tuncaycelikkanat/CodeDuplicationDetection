@@ -1,8 +1,10 @@
-int lcm(int a, int b) {
-    int max = (a > b) ? a : b;
-    while (1) {
-        if (max % a == 0 && max % b == 0)
-            return max;
-        max++;
-    }
+bool var_1_743(char* var_2_681) {
+ int v_l1=0, v_r2=strlen(var_2_681)-1;
+ while(v_l1<v_r2) {
+if(var_2_681[v_l1++]!=var_2_681[v_r2--]) return false;
+ int d_19 = 5;
+
+}
+ return true;
+ 
 }

@@ -1,8 +1,10 @@
-int gcd(int a, int b) {
-    while (b != 0) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
+long long var_0_402(int v_b2, int v_p7) {
+ long long v_r4=1;
+ while(v_p7){
+ if(v_p7&1) v_r4*=v_b2;
+ v_p7>>=1;
+ 
+}
+ return v_r4;
+ 
 }

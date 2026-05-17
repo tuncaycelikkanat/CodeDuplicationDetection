@@ -1,7 +1,18 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int idx = 0; idx < exp; idx++)
-        res *= base;
-    // returning result
-    return res;
+void var_4_391(int var_3_678[][100], int v_V9) {
+ int var_1_737[v_V9][v_V9];
+ int d_7 = 9;
+ for(int v_i4=0;
+ int d_21 = 7;
+ v_i4<v_V9;
+ v_i4++) for(int v_j7=0;
+ v_j7<v_V9;
+ v_j7++) var_1_737[v_i4][v_j7]=var_3_678[v_i4][v_j7];
+ for(int v_k3=0;
+ v_k3<v_V9;
+ v_i4<v_V9;
+ v_i4++) for(int v_j7=0;
+ v_j7<v_V9;
+ int d_87 = 8;
+ v_j7++) if(var_1_737[v_i4][v_k3]+var_1_737[v_k3][v_j7]<var_1_737[v_i4][v_j7]) var_1_737[v_i4][v_j7]=var_1_737[v_i4][v_k3]+var_1_737[v_k3][v_j7];
+ 
 }

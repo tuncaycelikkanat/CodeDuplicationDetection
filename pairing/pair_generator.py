@@ -9,6 +9,7 @@ from joblib import Parallel, delayed
 
 from preprocessing.code_features import cf_pattern_similarity
 from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard, _tuple_bigram_jaccard
+from config import HARD_MINING_RATIO
 
 
 # ================= SEMANTIC SIMILARITY HELPERS =================
@@ -46,8 +47,7 @@ def generate_pairs(
         [33..37] semantic Jaccard/cosine features   -- if semantic_features provided
         [38] type_profile_cosine
         [39..88] SVD diff (50 dims)                 -- if X_svd provided
-        [89] ssl_cosine_similarity                  -- if ssl_embeddings provided
-        [90] ssl_euclidean_distance                 -- if ssl_embeddings provided
+        [89..152] SSL PCA embedding abs diff        -- if ssl_embeddings provided (64 dims)
 
     Args:
         positive_ratio: Fraction of pairs that should be positive (clone) pairs.
@@ -122,8 +122,8 @@ def generate_pairs(
     pairs_y[neg_indices_mask] = 0
 
     # ---- Hard Mining Preparations ----
-    num_hard_neg = int(len(neg_indices_mask) * 0.30)
-    num_hard_pos = int(len(pos_indices) * 0.30)
+    num_hard_neg = int(len(neg_indices_mask) * HARD_MINING_RATIO)
+    num_hard_pos = int(len(pos_indices) * HARD_MINING_RATIO)
 
     if num_hard_neg > 0 or num_hard_pos > 0:
         code_lengths = np.array([len(c.split()) for c in processed_codes])
@@ -136,9 +136,9 @@ def generate_pairs(
             label_cand_lengths[lbl] = code_lengths[idxs]
             label_cand_indices[lbl] = idxs
 
-    # ---- Hard Negative Mining: replace 30% of easy negatives ----
+    # ---- Hard Negative Mining: replace easy negatives ----
     if num_hard_neg > 0:
-        print("  → Hard negative mining (vectorized)...")
+        print(f"  → Hard negative mining (vectorized) - {num_hard_neg} pairs...")
         hard_slots = np_rng.choice(neg_indices_mask, size=min(num_hard_neg, len(neg_indices_mask)), replace=False)
         src_indices = all_i[hard_slots]
         src_labels_arr = np.array([labels[idx] for idx in src_indices])
@@ -152,24 +152,61 @@ def generate_pairs(
             closest = np.argmin(np.abs(cand_lengths - src_lengths[k]))
             all_j[p] = label_cand_indices[other_lbl][closest]
 
-    # ---- Hard Positive Mining: replace 30% of easy positives ----
+    # ---- Hard Positive Mining: replace easy positives ----
     if num_hard_pos > 0:
-        print("  → Hard positive mining (vectorized)...")
+        print(f"  → Hard positive mining (TF-IDF Cosine distance) - {num_hard_pos} pairs...")
         hard_pos_slots = np_rng.choice(pos_indices, size=min(num_hard_pos, len(pos_indices)), replace=False)
         src_indices = all_i[hard_pos_slots]
         src_labels_arr = np.array([labels[idx] for idx in src_indices])
-        src_lengths = code_lengths[src_indices]
 
         for k, p in enumerate(hard_pos_slots):
             src_lbl = src_labels_arr[k]
-            cand_lengths = label_cand_lengths[src_lbl]
             cand_indices = label_cand_indices[src_lbl]
             
-            # Find the MOST DIFFERENT length (farthest) in the SAME class
-            # to force the model to learn from positive structural anomalies (Type-4 Code Clones)
-            if len(cand_lengths) > 1:
-                farthest = np.argmax(np.abs(cand_lengths - src_lengths[k]))
+            # Find the LEAST SIMILAR (farthest) in TF-IDF space in the SAME class
+            # This simulates Type-4 clones much better than just length differences
+            if len(cand_indices) > 1:
+                src_vec = X_token[src_indices[k]]
+                cand_vecs = X_token[cand_indices]
+                
+                # Compute dot product (since tf-idf vectors aren't L2 normalized now, we need true cosine)
+                # Note: The vectorizer has norm=None now, so we compute cosine sim manually
+                dot_prods = src_vec.dot(cand_vecs.T).toarray()[0]
+                norm_src = np.sqrt((src_vec.data ** 2).sum())
+                norm_cands = np.sqrt(cand_vecs.power(2).sum(axis=1)).A1
+                denoms = norm_src * norm_cands
+                denoms[denoms == 0] = 1.0
+                sims = dot_prods / denoms
+                
+                # Prevent picking itself
+                sims[cand_indices == src_indices[k]] = np.inf
+                farthest = np.argmin(sims)
                 all_j[p] = cand_indices[farthest]
+
+    # ---- Duplicate Pair Filtering ----
+    print("  → Filtering duplicate and self-pairs...")
+    # Force i < j for symmetry
+    swap_mask = all_i > all_j
+    all_i[swap_mask], all_j[swap_mask] = all_j[swap_mask], all_i[swap_mask]
+    
+    # Remove self-pairs (i == j)
+    valid_mask = all_i != all_j
+    all_i = all_i[valid_mask]
+    all_j = all_j[valid_mask]
+    pairs_y = pairs_y[valid_mask]
+    
+    # Remove exact duplicate (i, j) pairs
+    # Using np.unique with axis=0 requires combining them into a 2D array
+    pair_coords = np.column_stack((all_i, all_j))
+    _, unique_idx = np.unique(pair_coords, axis=0, return_index=True)
+    
+    # Sort indices to preserve original random order somewhat
+    unique_idx.sort()
+    all_i = all_i[unique_idx]
+    all_j = all_j[unique_idx]
+    pairs_y = pairs_y[unique_idx]
+    print(f"    - Final unique pairs: {len(all_i)} (dropped {num_pairs - len(all_i)} duplicates)")
+    num_pairs = len(all_i)
 
     # ---- Step 2: Batch token TF-IDF diff (sparse, vectorized) ----
     print("  → Computing token TF-IDF diff (batch)...")

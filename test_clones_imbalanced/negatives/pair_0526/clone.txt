@@ -1,3 +1,1 @@
-int gcdH(int val1, int val2) { return val2 == 0 ? val1 : gcdH(val2, val1 % val2); }    
-
-int lcmFast(int val1, int val2) { return (val1 / gcdH(val1, val2)) * val2; } 
+long long var_0_476(int v_b2, int v_p8) { long long v_r5=1; while(v_p8){ if(v_p8&1) v_r5*=v_b2; v_b2*=v_b2; v_p8>>=1; } return v_r5; }

@@ -1,10 +1,1 @@
-// Logic here
-int factorial(int num_elements) {
-// Check if needed
-     int res = 1; 
-       for (int idx = 1; idx <= num_elements; idx++) { 
-         res *= idx;    
-
-      }   
-       return res;
-  } 
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

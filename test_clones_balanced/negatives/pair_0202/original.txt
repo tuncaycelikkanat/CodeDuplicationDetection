@@ -1,9 +1,1 @@
-   int factorial(int n) {    
-// Fix this
-      int result = 1;    
-        for (int i = 1; i <= n; i++) {   
-// TODO
-        result *= i;
-       }  
-       return result;    
-}   
+  void var_3_637(int var_0_505[], int v_l3, int v_r3) { if(v_l3>=v_r3) return; var_1_901(&var_0_505[v_l3], &var_0_505[v_r3]); var_3_637(var_0_505, v_l3+1, v_r3-1); }  

@@ -1,10 +1,1 @@
-    int lcm(int a, int b) {
-      int max = (a > b) ? a : b;
-     while (1) {
-         if (max % a == 0 && max % b == 0)   
-            return max;  
-// Check if needed
-            max++;
-     }
-
-}    
+void sieve(int n) { bool p[n+1]; memset(p,true,sizeof(p)); for(int p=2; p*p<=n; p++) if(p[p]) for(int i=p*p; i<=n; i+=p) p[i]=false; }

@@ -1,6 +1,12 @@
-int search(int arr[], int n, int x) {
-    for (int i = 0; i < n; i++)
-        if (arr[i] == x)
-            return i;
-    return -1;
+int var_4_617(int var_0_721[], int v_l1, int v_r2, int v_x6) {
+ while(v_l1<=v_r2) {
+int v_m2=v_l1+(v_r2-v_l1)/2;
+ if(var_0_721[v_m2]==v_x6) return v_m2;
+ if(var_0_721[v_m2]<v_x6) v_l1=v_m2+1;
+ else v_r2=v_m2-1;
+
+}
+ return -1;
+ int d_17 = 2;
+ 
 }

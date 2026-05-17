@@ -1,11 +1,1 @@
-void selectionSort(int arr[], int n) {
-    for (int i = 0; i < n-1; i++) {
-        int min_idx = i;
-        for (int j = i+1; j < n; j++)
-            if (arr[j] < arr[min_idx])
-                min_idx = j;
-        int temp = arr[min_idx];
-        arr[min_idx] = arr[i];
-        arr[i] = temp;
-    }
-}
+int var_2_652(int v_a4, int v_b3) { return (v_a4*v_b3)/var_0_552(v_a4,v_b3); }

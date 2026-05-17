@@ -1,2 +1,1 @@
-int gcdH(int a, int b) { return b == 0 ? a : gcdH(b, a % b); }
-int lcmFast(int a, int b) { return (a / gcdH(a, b)) * b; }
+int bs(int a[], int l, int r, int x) { if(r>=l) {int m=l+(r-l)/2; if(a[m]==x) return m; if(a[m]>x) return bs(a,l,m-1,x); return bs(a,m+1,r,x);} return -1; }

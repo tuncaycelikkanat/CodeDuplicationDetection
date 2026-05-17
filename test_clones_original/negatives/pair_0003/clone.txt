@@ -1,7 +1,1 @@
-// Logic here
- bool isPalRec(char* s, int left, int right) {    
-       if (left >= right) return true;    
-
-    if (s[left] != s[right]) return false;
-    return isPalRec(s, left+1, right-1);    
-    } 
+void var_4_986(int var_3_835[][100], int v_V9) { int var_1_191[v_V9][v_V9]; for(int v_i9=0; v_i9<v_V9; v_i9++) for(int v_j2=0; v_j2<v_V9; v_j2++) var_1_191[v_i9][v_j2]=var_3_835[v_i9][v_j2]; for(int v_k9=0; v_k9<v_V9; v_k9++) for(int v_i9=0; v_i9<v_V9; v_i9++) for(int v_j2=0; v_j2<v_V9; v_j2++) if(var_1_191[v_i9][v_k9]+var_1_191[v_k9][v_j2]<var_1_191[v_i9][v_j2]) var_1_191[v_i9][v_j2]=var_1_191[v_i9][v_k9]+var_1_191[v_k9][v_j2]; }

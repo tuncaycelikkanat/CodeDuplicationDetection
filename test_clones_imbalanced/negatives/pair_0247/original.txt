@@ -1,8 +1,1 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;  
-    for (int i = 2; i * i <= n; i++)  
-          if (n % i == 0)   
-// Fix this
-                return false;   
-        return true;    
-} 
+int gcd(int a, int b) { while(b) {int t=b; b=a%b; a=t;} return a; }

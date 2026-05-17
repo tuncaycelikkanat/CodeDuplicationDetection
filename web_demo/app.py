@@ -89,15 +89,7 @@ with open(f"{EXP_PATH}/model.pkl", "rb") as f:
 with open(f"{EXP_PATH}/tfidf.pkl", "rb") as f:
     vectorizer = pickle.load(f)
 
-# Load char TF-IDF vectorizer if available
-char_vectorizer = None
-char_tfidf_path = f"{EXP_PATH}/char_tfidf.pkl"
-if os.path.exists(char_tfidf_path):
-    with open(char_tfidf_path, "rb") as f:
-        char_vectorizer = pickle.load(f)
-    print("   ✅ Char TF-IDF vectorizer loaded")
-else:
-    print("   ⚠️  No char TF-IDF vectorizer found (using legacy mode)")
+# Deprecated char_vectorizer removed
 
 # Load SVD model
 svd_model = None
@@ -172,8 +164,7 @@ def _build_feature_names():
     names.append("manhattan_token")    # Bug #11 düzeltildi: önceden eksikti
     names.append("euclidean_token")    # Bug #11 düzeltildi: önceden eksikti
 
-    if char_vectorizer is not None:
-        names.append("cosine_similarity_char")
+
 
     # AST feature ratios (14) + diffs (14) = 28 — Bug #11 düzeltildi
     for feat_name in AST_FEATURE_NAMES:
@@ -250,7 +241,7 @@ def predict(pair: CodePair):
             raise HTTPException(status_code=400, detail="Both code snippets are required.")
 
         X_pair = build_pair_vector(
-            raw1, raw2, vectorizer, char_vectorizer, svd_model,
+            raw1, raw2, vectorizer, None, svd_model,
             ssl_pipeline=ssl_pipeline, ssl_pca=ssl_pca
         )
 
@@ -367,7 +358,7 @@ def predict_batch(batch: CodePairBatch):
             continue
         try:
             X_pair = build_pair_vector(
-                code1, code2, vectorizer, char_vectorizer, svd_model,
+                code1, code2, vectorizer, None, svd_model,
                 ssl_pipeline=ssl_pipeline, ssl_pca=ssl_pca
             )
 

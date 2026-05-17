@@ -1,13 +1,12 @@
-   int fib(int num_elements) {  
-      if (num_elements <= 1) return num_elements;
-       int val1 = 0, val2 = 1, c;   
-     for (int idx = 2; idx <= num_elements; idx++) {   
+void var_3_797(char* var_2_785) {
+ int v_l7=0, v_r7=strlen(var_2_785)-1;
+ while(v_l7<v_r7) {
+char v_t9=var_2_785[v_l7];
+ var_2_785[v_l7]=var_2_785[v_r7];
+ var_2_785[v_r7]=v_t9;
+ v_l7++;
+ v_r7--;
 
-          c = val1 + val2;
-           val1 = val2;  
-        val2 = c; 
-
-        }    
-    return val2;    
-
-   }  
+}
+ 
+}

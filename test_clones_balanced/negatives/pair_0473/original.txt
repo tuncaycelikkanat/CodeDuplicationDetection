@@ -1,5 +1,2 @@
-void swap(int *xp, int *yp) {
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
+// Optimization needed
+ int var_0_593(int v_a7, int v_b7) { while(v_b7) {int v_t7=v_b7; v_b7=v_a7%v_b7; v_a7=v_t7;} return v_a7; }    

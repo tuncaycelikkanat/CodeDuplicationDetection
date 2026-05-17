@@ -1,8 +1,22 @@
-int sumOfDigits(int num_elements) {
-    int sum = 0;
-    while (num_elements != 0) {
-        sum += num_elements % 10;
-        num_elements /= 10;
-    }
-    return sum;
+void var_13_209(struct var_8_732* var_7_551, int var_5_860) {
+ int v_V3=var_7_551->v_V3, v_E8=var_7_551->v_E8;
+ for(int v_i4=0;
+ int d_46 = 7;
+ v_i4<v_V3;
+ int d_47 = 10;
+ v_i4++) var_10_674[v_i4]=INT_MAX;
+ var_10_674[var_5_860]=0;
+ for(int v_i4=1;
+ v_i4<=v_V3-1;
+ v_i4++) for(int v_j3=0;
+ v_j3<v_E8;
+ int d_91 = 8;
+ v_j3++) {
+int v_u5=var_7_551->var_11_254[v_j3].var_5_860;
+ int v_v8=var_7_551->var_11_254[v_j3].var_4_828;
+ int var_0_630=var_7_551->var_11_254[v_j3].var_0_630;
+ if(var_10_674[v_u5]!=INT_MAX && var_10_674[v_u5]+var_0_630<var_10_674[v_v8]) var_10_674[v_v8]=var_10_674[v_u5]+var_0_630;
+
+}
+ 
 }

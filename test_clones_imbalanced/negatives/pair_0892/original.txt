@@ -1,6 +1,1 @@
- int gcd_recursive(int val1, int val2) {   
-
-     if (val2 == 0) return val1;
-// Logic here
-        return gcd_recursive(val2, val1 % val2);  
-}    
+    long var_0_303(int v_n1) { long v_r6=1; while(v_n1>1) v_r6*=v_n1--; return v_r6; }    

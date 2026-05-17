@@ -1,7 +1,1 @@
-// Check if needed
- int stringLengthFor(char* str) {   
-       int len = 0;
-        for (; str[len]; len++);   
-    return len;   
-// Check if needed
-  }    
+void revStr(char* str) { int l=0, r=strlen(str)-1; while(l<r) {char t=str[l]; str[l]=str[r]; str[r]=t; l++; r--;} }

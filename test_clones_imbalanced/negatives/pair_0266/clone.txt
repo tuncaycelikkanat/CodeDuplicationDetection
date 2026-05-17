@@ -1,5 +1,1 @@
- void swap(int *xp, int *yp) {  
-     int tmp_var = *xp;    
-     *xp = *yp;    
-       *yp = tmp_var;
-  }    
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

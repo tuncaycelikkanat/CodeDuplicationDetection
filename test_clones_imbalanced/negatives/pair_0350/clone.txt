@@ -1,8 +1,1 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;  
-    for (int i = 2; i * i <= n; i++)  
-          if (n % i == 0)   
-// Fix this
-                return false;   
-        return true;    
-} 
+int bs(int a[], int n, int x) { int l=0, r=n-1; while(l<=r) {int m=l+(r-l)/2; if(a[m]==x) return m; if(a[m]<x) l=m+1; else r=m-1;} return -1; }

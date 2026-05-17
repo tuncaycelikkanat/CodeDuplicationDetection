@@ -1,6 +1,1 @@
-   int sumOfDigits(int num_elements) { 
-       int sum = 0;
-// Fix this
-     while (num_elements != 0) { sum += num_elements % 10; num_elements /= 10; }  
-     return sum; 
-} 
+void revStr(char* str) { int l=0, r=strlen(str)-1; while(l<r) {char t=str[l]; str[l]=str[r]; str[r]=t; l++; r--;} }

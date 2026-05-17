@@ -1,16 +1,1 @@
-// Fix this
-void selectionSort(int arr[], int n) {
-     for (int i = 0; i < n-1; i++) {
-            int min_idx = i;    
-           for (int j = i+1; j < n; j++)   
-// Fix this
-             if (arr[j] < arr[min_idx])    
-// Logic here
-                min_idx = j;
-        int temp = arr[min_idx];   
-         arr[min_idx] = arr[i];   
-           arr[i] = temp;
-
-     }    
-
-}
+int var_1_568(int var_0_885[], int v_n8) { int var_1_568[v_n8]; for(int v_i6=0; v_i6<v_n8; v_i6++) var_1_568[v_i6]=1; for(int v_i6=1; v_i6<v_n8; v_i6++) for(int v_j7=0; v_j7<v_i6; v_j7++) if(var_0_885[v_i6]>var_0_885[v_j7] && var_1_568[v_i6]<var_1_568[v_j7]+1) var_1_568[v_i6]=var_1_568[v_j7]+1; int v_m9=0; for(int v_i6=0; v_i6<v_n8; v_i6++) if(v_m9<var_1_568[v_i6]) v_m9=var_1_568[v_i6]; return v_m9; }

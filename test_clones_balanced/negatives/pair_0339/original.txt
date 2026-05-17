@@ -1,9 +1,1 @@
-int binarySearch(int arr[], int l, int r, int x) {
-    while (l <= r) {
-        int m = l + (r - l) / 2;
-        if (arr[m] == x) return m;
-        if (arr[m] < x) l = m + 1;
-        else r = m - 1;
-    }
-    return -1;
-}
+void var_0_705(int v_i3, int var_1_930) { while(v_i3<=v_n5) {var_4_474[v_i3]+=var_1_930; v_i3 += v_i3 & (-v_i3);} }

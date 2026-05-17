@@ -1,13 +1,1 @@
-// TODO
-    bool isPalindrome(char* str) {  
-    int left = 0, right = strlen(str) - 1;    
-      while (left < right) {  
-           if (str[left] != str[right]) return false;    
-// TODO
-          left++; right--;  
-// Check if needed
-        }  
-
-// Fix this
-     return true;
-  }    
+bool var_0_322(int v_n6) { if(v_n6<=1) return false; for(int v_i7=2; v_i7*v_i7<=v_n6; v_i7++) if(v_n6%v_i7==0) return false; return true; }

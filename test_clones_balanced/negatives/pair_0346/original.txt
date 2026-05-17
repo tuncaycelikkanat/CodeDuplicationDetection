@@ -1,7 +1,1 @@
-bool isPrime(int num_elements) {
-    if (num_elements <= 1) return false;
-    for (int idx = 2; idx * idx <= num_elements; idx++)
-        if (num_elements % idx == 0)
-            return false;
-    return true;
-}
+    void insert(struct TrieNode *root, const char *key) { struct TrieNode *pCrawl = root; for (int i = 0; i < strlen(key); i++) { int index = key[i] - 'a'; if (!pCrawl->children[index]) pCrawl->children[index] = getNode(); pCrawl = pCrawl->children[index]; } pCrawl->isEndOfWord = true; } 

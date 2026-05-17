@@ -1,12 +1,1 @@
-// TODO
-  bool isPalindrome(char* str) {
-       int left = 0, right = strlen(str) - 1;    
-// TODO
-     while (left < right) { 
-         if (str[left] != str[right]) return false;   
-           left++; right--;
-       } 
-// Check if needed
-     return true;   
-// Check if needed
- } 
+int countVowels(char* s) { int c=0; for(int i=0; s[i]; i++) {char x=tolower(s[i]); if(x=='a'||x=='e'||x=='i'||x=='o'||x=='u') c++;} return c; }

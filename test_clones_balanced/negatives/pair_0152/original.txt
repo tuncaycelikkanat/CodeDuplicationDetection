@@ -1,10 +1,1 @@
-int fib(int n) {
-    if (n <= 1) return n;
-    int a = 0, b = 1, c;
-    for (int i = 2; i <= n; i++) {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-    return b;
-}
+    bool var_1_874(char* v_s5) { int var_2_331=strlen(v_s5); for(int v_i1=0; v_i1<var_2_331/2; v_i1++) if(v_s5[v_i1]!=v_s5[var_2_331-1-v_i1]) return false; return true; }   

@@ -1,8 +1,2 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    return val1;
-}
+// Optimization needed
+   bool var_1_360(char* v_s4) { int var_2_989=strlen(v_s4); for(int v_i1=0; v_i1<var_2_989/2; v_i1++) if(v_s4[v_i1]!=v_s4[var_2_989-1-v_i1]) return false; return true; } 

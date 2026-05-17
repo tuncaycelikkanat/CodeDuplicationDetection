@@ -1,0 +1,82 @@
+Experiment: /home/tuncay/PycharmProjects/CodeDuplicationDetection/experiments/exp_066_CASCADE_XGBoost_2k
+Threshold: 0.43
+========================================
+GLOBAL METRICS
+========================================
+precision           : 0.9667
+recall              : 0.866
+f1_score            : 0.9136
+accuracy            : 0.8695
+mcc                 : 0.6671
+balanced_accuracy   : 0.8746
+tp                  : 407
+fp                  : 14
+tn                  : 106
+fn                  : 63
+auc_roc             : 0.8895
+pr_auc              : 0.9683
+total_pairs         : 590
+
+========================================
+TYPE1 METRICS
+========================================
+total_pairs         : 240
+precision           : 0.8955
+recall              : 1.0
+f1_score            : 0.9449
+accuracy            : 0.9417
+mcc                 : 0.8894
+auc_roc             : 0.9783
+pr_auc              : 0.9703
+tp                  : 120
+fp                  : 14
+tn                  : 106
+fn                  : 0
+
+========================================
+TYPE2 METRICS
+========================================
+total_pairs         : 240
+precision           : 0.8955
+recall              : 1.0
+f1_score            : 0.9449
+accuracy            : 0.9417
+mcc                 : 0.8894
+auc_roc             : 0.9793
+pr_auc              : 0.9573
+tp                  : 120
+fp                  : 14
+tn                  : 106
+fn                  : 0
+
+========================================
+TYPE3 METRICS
+========================================
+total_pairs         : 240
+precision           : 0.8955
+recall              : 1.0
+f1_score            : 0.9449
+accuracy            : 0.9417
+mcc                 : 0.8894
+auc_roc             : 0.9856
+pr_auc              : 0.9757
+tp                  : 120
+fp                  : 14
+tn                  : 106
+fn                  : 0
+
+========================================
+TYPE4 METRICS
+========================================
+total_pairs         : 230
+precision           : 0.7705
+recall              : 0.4273
+f1_score            : 0.5497
+accuracy            : 0.6652
+mcc                 : 0.3515
+auc_roc             : 0.5978
+pr_auc              : 0.6186
+tp                  : 47
+fp                  : 14
+tn                  : 106
+fn                  : 63

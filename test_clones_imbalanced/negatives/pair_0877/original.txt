@@ -1,11 +1,1 @@
-void reverseString(char* str) {
-    int dummy_5 = 0;
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-    int dummy_47 = 0;
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

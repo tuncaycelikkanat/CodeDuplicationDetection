@@ -1,8 +1,2 @@
-int gcd(int a, int b) {
-    while (b != 0) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
-}
+// Optimization needed
+   long var_0_861(int v_n3) { return v_n3<=1 ? 1 : v_n3*var_0_861(v_n3-1); }  

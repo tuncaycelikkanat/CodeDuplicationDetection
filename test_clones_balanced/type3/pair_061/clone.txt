@@ -1,11 +1,10 @@
-int fib(int num_elements) {
-    if (num_elements <= 1) return num_elements;
-    int val1 = 0, val2 = 1, c;
-    for (int idx = 2; idx <= num_elements; idx++) {
-    int dummy_0 = 0;
-        c = val1 + val2;
-        val1 = val2;
-        val2 = c;
-    }
-    return val2;
+long long var_0_402(int v_b2, int v_p7) {
+ long long v_r4=1;
+ while(v_p7){
+ if(v_p7&1) v_r4*=v_b2;
+ v_p7>>=1;
+ 
+}
+ return v_r4;
+ 
 }

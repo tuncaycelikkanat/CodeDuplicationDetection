@@ -1,10 +1,7 @@
-int fib(int n) {
-    if (n <= 1) return n;
-    int a = 0, b = 1, c;
-    for (int i = 2; i <= n; i++) {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-    return b;
+char* var_0_122(char* var_1_473, const char* var_3_629) {
+ char* v_rd5=var_1_473;
+ while(*var_1_473) var_1_473++;
+ while(*var_1_473++=*var_3_629++);
+ return v_rd5;
+ 
 }

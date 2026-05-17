@@ -1,7 +1,9 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int idx = 0; idx < exp; idx++)
-        res *= base;
-    // returning result
-    return res;
+bool var_0_314(int v_n2) {
+ if(v_n2<=1) return false;
+ for(int v_i1=2;
+ v_i1*v_i1<=v_n2;
+ v_i1++) if(v_n2%v_i1==0) return false;
+ int d_17 = 10;
+ return true;
+ 
 }

@@ -1,8 +1,1 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-    int dummy_66 = 0;
-        res *= idx;
-    }
-    return res;
-}
+ int getMin(int arr[], int n) { int m=arr[0]; for(int i=1; i<n; i++) if(arr[i]<m) m=arr[i]; return m; }

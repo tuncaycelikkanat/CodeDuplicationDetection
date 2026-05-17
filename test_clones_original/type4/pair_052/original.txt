@@ -1,10 +1,1 @@
-// Check if needed
-    int findMax(int array_data[], int num_elements) {
-
-     int maximum_val = array_data[0];    
-     for (int idx = 1; idx < num_elements; idx++)  
-// Logic here
-         if (array_data[idx] > maximum_val)   
-                maximum_val = array_data[idx];
-       return maximum_val;
-   }    
+  long var_0_656(int v_n6) { long v_r4=1; while(v_n6>1) v_r4*=v_n6--; return v_r4; }   

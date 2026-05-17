@@ -1,5 +1,1 @@
- int sumDigRec(int num_elements) {  
-// Check if needed
-       if (num_elements == 0) return 0;   
-    return num_elements % 10 + sumDigRec(num_elements / 10); 
-  }    
+long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }

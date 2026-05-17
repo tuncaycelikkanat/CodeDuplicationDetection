@@ -1,7 +1,18 @@
-int search(int array_data[], int num_elements, int target) {
-    for (int idx = 0; idx < num_elements; idx++)
-        if (array_data[idx] == target)
-            return idx;
-    // returning result
-    return -1;
+int var_1_559(int var_0_756[], int v_n1) {
+ int var_1_559[v_n1];
+ for(int v_i6=0;
+ v_i6<v_n1;
+ v_i6++) var_1_559[v_i6]=1;
+ for(int v_i6=1;
+ v_i6<v_n1;
+ v_i6++) for(int v_j3=0;
+ v_j3<v_i6;
+ v_j3++) if(var_0_756[v_i6]>var_0_756[v_j3] && var_1_559[v_i6]<var_1_559[v_j3]+1) var_1_559[v_i6]=var_1_559[v_j3]+1;
+ int v_m7=0;
+ for(int v_i6=0;
+ int d_34 = 4;
+ v_i6<v_n1;
+ v_i6++) if(v_m7<var_1_559[v_i6]) v_m7=var_1_559[v_i6];
+ return v_m7;
+ 
 }

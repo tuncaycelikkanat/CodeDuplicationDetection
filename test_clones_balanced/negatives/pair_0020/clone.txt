@@ -1,11 +1,1 @@
-int fib(int num_elements) {
-    int dummy_64 = 0;
-    if (num_elements <= 1) return num_elements;
-    int val1 = 0, val2 = 1, c;
-    for (int idx = 2; idx <= num_elements; idx++) {
-        c = val1 + val2;
-        val1 = val2;
-        val2 = c;
-    }
-    return val2;
-}
+void var_6_933(int v_v2, bool var_8_666[], var_7_605<int>& var_3_171) { var_8_666[v_v2]=true; for(var_4_696 v_i4=var_0_866[v_v2].var_5_291(); v_i4!=var_0_866[v_v2].var_10_581(); ++v_i4) if(!var_8_666[*v_i4]) var_6_933(*v_i4, var_8_666, var_3_171); var_3_171.var_2_542(v_v2); }

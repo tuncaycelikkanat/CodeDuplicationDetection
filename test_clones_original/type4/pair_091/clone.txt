@@ -1,7 +1,2 @@
-int stringLengthFor(char* str) { 
-// Logic here
-    int len = 0;  
-       for (; str[len]; len++);   
-    return len;    
-// TODO
-    }   
+// Optimization needed
+   bool var_0_381(int v_n2) { if(v_n2<2) return false; if(v_n2==2||v_n2==3) return true; if(v_n2%2==0||v_n2%3==0) return false; for(int v_i8=5; v_i8*v_i8<=v_n2; v_i8+=6) if(v_n2%v_i8==0 || v_n2%(v_i8+2)==0) return false; return true; }   

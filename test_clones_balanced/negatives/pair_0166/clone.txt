@@ -1,13 +1,1 @@
-int gcd(int val1, int val2) {    
-// TODO
-     while (val2 != 0) {   
-// Check if needed
-          int tmp_var = val2;    
-        val2 = val1 % val2;
-
-// TODO
-        val1 = tmp_var;
-// Logic here
-      }   
-     return val1;  
-} 
+int partition(int arr[], int l, int h) { int p=arr[h]; int i=l-1; for(int j=l; j<h; j++) if(arr[j]<p) {i++; int t=arr[i]; arr[i]=arr[j]; arr[j]=t;} int t=arr[i+1]; arr[i+1]=arr[h]; arr[h]=t; return i+1; }

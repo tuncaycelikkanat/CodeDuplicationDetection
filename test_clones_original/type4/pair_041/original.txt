@@ -1,5 +1,1 @@
-int sumOfDigits(int n) {
-    int sum = 0;
-    while (n != 0) { sum += n % 10; n /= 10; }
-    return sum;
-}
+ void var_2_341(int var_0_635[], int v_n3) { for(int v_i3=0; v_i3<v_n3/2; v_i3++) var_1_827(&var_0_635[v_i3], &var_0_635[v_n3-1-v_i3]); }  

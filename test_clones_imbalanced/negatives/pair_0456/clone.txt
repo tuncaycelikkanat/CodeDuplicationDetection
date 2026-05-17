@@ -1,8 +1,8 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;  
-    for (int i = 2; i * i <= n; i++)  
-          if (n % i == 0)   
-// Fix this
-                return false;   
-        return true;    
-} 
+bool var_0_906(int v_n9) {
+ if(v_n9<=1) return false;
+ for(int v_i7=2;
+ v_i7*v_i7<=v_n9;
+ v_i7++) if(v_n9%v_i7==0) return false;
+ return true;
+ 
+}

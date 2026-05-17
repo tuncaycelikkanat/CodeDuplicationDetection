@@ -1,10 +1,2 @@
-int fib(int n) {
-    if (n <= 1) return n;
-    int a = 0, b = 1, c;
-    for (int i = 2; i <= n; i++) {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-    return b;
-}
+// Optimization needed
+    void var_1_191(int* v_a9, int* v_b4) { int v_t5=*v_a9; *v_a9=*v_b4; *v_b4=v_t5; }   

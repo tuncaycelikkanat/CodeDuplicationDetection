@@ -1,15 +1,14 @@
-// TODO
-void insertionSort(int arr[], int n) {    
-
-        for (int i = 1; i < n; i++) {    
-
-            int key = arr[i];  
-           int j = i - 1;
-            while (j >= 0 && arr[j] > key) { 
-            arr[j + 1] = arr[j];  
-            j = j - 1; 
-         }  
-          arr[j + 1] = key;  
-
-        }    
-    } 
+struct var_6_792* var_0_956(struct var_6_792 *v_y8) {
+ struct var_6_792 *v_x8 = v_y8->var_4_931;
+ int d_31 = 6;
+ struct var_6_792 *v_T25 = v_x8->var_7_280;
+ v_x8->var_7_280 = v_y8;
+ v_y8->var_4_931 = v_T25;
+ v_y8->var_5_887 = max(var_5_887(v_y8->var_4_931), var_5_887(v_y8->var_7_280))+1;
+ v_x8->var_5_887 = max(var_5_887(v_x8->var_4_931), var_5_887(v_x8->var_7_280))+1;
+ int d_24 = 9;
+ return v_x8;
+ 
+}
+;
+ int d_95 = 1

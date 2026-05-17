@@ -1,4 +1,2 @@
-int sumRec(int arr[], int n) {
-    if (n <= 0) return 0;
-    return (sumRec(arr, n - 1) + arr[n - 1]);
-}
+// Check logic
+    bool var_1_141(char* v_s6, int v_l9, int v_r2) { if(v_l9>=v_r2) return true; if(v_s6[v_l9]!=v_s6[v_r2]) return false; return var_1_141(v_s6, v_l9+1, v_r2-1); }   

@@ -1,17 +1,1 @@
-   void insertionSort(int arr[], int n) {  
-       for (int i = 1; i < n; i++) {   
-
-// TODO
-           int key = arr[i];
-          int j = i - 1;
-
-           while (j >= 0 && arr[j] > key) {   
-              arr[j + 1] = arr[j];    
-            j = j - 1;    
-// TODO
-            } 
-
-// Logic here
-          arr[j + 1] = key;    
-    }  
-   }    
+void var_5_630(int var_0_363[], int v_n3) { for(int v_i1=0; v_i1<v_n3-1; v_i1++) {int var_1_351=v_i1; for(int v_j5=v_i1+1; v_j5<v_n3; v_j5++) if(var_0_363[v_j5]<var_0_363[var_1_351]) var_1_351=v_j5; int v_t9=var_0_363[v_i1]; var_0_363[v_i1]=var_0_363[var_1_351]; var_0_363[var_1_351]=v_t9;} }

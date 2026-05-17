@@ -1,8 +1,6 @@
-int sumOfDigits(int n) {
-    int sum = 0;
-    while (n != 0) {
-        sum += n % 10;
-        n /= 10;
-    }
-    return sum;
+void var_1_783(int* v_a8, int* v_b1) {
+ int v_t8=*v_a8;
+ *v_a8=*v_b1;
+ *v_b1=v_t8;
+ 
 }

@@ -1,12 +1,1 @@
-  bool isPalindrome(char* str) { 
-// TODO
-      int l = 0, r = strlen(str) - 1;
-// Fix this
-      while (l < r) {   
-         if (str[l] != str[r]) return false;  
-            l++; r--; 
-// TODO
-       }  
-
-       return true;    
-} 
+  void revStr(char* str) { int l=0, r=strlen(str)-1; while(l<r) {char t=str[l]; str[l]=str[r]; str[r]=t; l++; r--;} }

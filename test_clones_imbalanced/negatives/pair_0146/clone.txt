@@ -1,9 +1,13 @@
- bool isPrime(int num_elements) {    
-      if (num_elements <= 1) return false;    
-        for (int idx = 2; idx * idx <= num_elements; idx++)    
-           if (num_elements % idx == 0)  
-// Fix this
-             return false;  
+void var_3_375(char* var_2_607) {
+ int v_l7=0, v_r3=strlen(var_2_607)-1;
+ while(v_l7<v_r3) {
+char v_t1=var_2_607[v_l7];
+ var_2_607[v_l7]=var_2_607[v_r3];
+ int d_58 = 2;
+ var_2_607[v_r3]=v_t1;
+ v_l7++;
+ v_r3--;
 
-        return true;
- }   
+}
+ 
+}

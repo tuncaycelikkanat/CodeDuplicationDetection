@@ -1,8 +1,1 @@
-int gcd(int a, int b) {
-    while (b != 0) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
-}
+    void var_4_385(int var_0_126) { var_9_910<int> v_s6; v_s6.var_5_837(var_0_126); while(!v_s6.var_8_419()) { int v_u9=v_s6.var_6_791(); v_s6.var_3_154(); if(!var_10_742[v_u9]) { var_10_742[v_u9]=1; for(int v_v9:var_1_506[v_u9]) v_s6.var_5_837(v_v9); } } }   

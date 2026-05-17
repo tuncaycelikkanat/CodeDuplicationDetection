@@ -1,9 +1,1 @@
-// Check if needed
-  void swap(int *xp, int *yp) {   
-// Logic here
-     int tmp_var = *xp;    
-// TODO
-        *xp = *yp;
-       *yp = tmp_var;  
-// Check if needed
-}
+int var_2_701(char* var_0_783) { int v_l7=0; while(var_0_783[v_l7]) v_l7++; return v_l7; }

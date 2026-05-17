@@ -1,13 +1,1 @@
-// Fix this
- bool isPalindrome(char* str) { 
-     int left = 0, right = strlen(str) - 1;  
-        while (left < right) {   
-            if (str[left] != str[right]) return false;   
-// Check if needed
-        left++; right--;    
-
-// Logic here
-     }  
-// Logic here
-        return true;
-   }
+int lis(int arr[], int n) { int lis[n]; for(int i=0; i<n; i++) lis[i]=1; for(int i=1; i<n; i++) for(int j=0; j<i; j++) if(arr[i]>arr[j] && lis[i]<lis[j]+1) lis[i]=lis[j]+1; int m=0; for(int i=0; i<n; i++) if(m<lis[i]) m=lis[i]; return m; }   

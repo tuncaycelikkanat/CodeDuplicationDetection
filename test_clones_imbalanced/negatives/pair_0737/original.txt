@@ -1,5 +1,10 @@
- int sumDigRec(int num_elements) {  
-// Check if needed
-       if (num_elements == 0) return 0;   
-    return num_elements % 10 + sumDigRec(num_elements / 10); 
-  }    
+int var_0_551(int v_a8, int v_b5) {
+ while(v_b5) {
+int v_t8=v_b5;
+ v_b5=v_a8%v_b5;
+ v_a8=v_t8;
+
+}
+ return v_a8;
+ 
+}

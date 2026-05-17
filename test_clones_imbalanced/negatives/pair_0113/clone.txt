@@ -1,6 +1,1 @@
-int search(int array_data[], int num_elements, int target) {
-    for (int idx = 0; idx < num_elements; idx++)
-        if (array_data[idx] == target)
-            return idx;
-    return -1;
-}
+bool var_0_447(int v_n7) { if(v_n7<=1) return false; for(int v_i2=2; v_i2*v_i2<=v_n7; v_i2++) if(v_n7%v_i2==0) return false; return true; }

@@ -1,8 +1,2 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    return val1;
-}
+// Optimization needed
+   void var_3_538(int var_0_684[], int v_l7, int v_r6) { if(v_l7>=v_r6) return; var_1_587(&var_0_684[v_l7], &var_0_684[v_r6]); var_3_538(var_0_684, v_l7+1, v_r6-1); }   

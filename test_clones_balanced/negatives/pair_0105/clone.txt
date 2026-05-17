@@ -1,8 +1,1 @@
-int gcd(int a, int b) {
-    while (b != 0) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
-}
+void var_0_777(int v_n9) { bool v_p3[v_n9+1]; memset(v_p3,true,sizeof(v_p3)); for(int v_p3=2; v_p3*v_p3<=v_n9; v_p3++) if(v_p3[v_p3]) for(int v_i4=v_p3*v_p3; v_i4<=v_n9; v_i4+=v_p3) v_p3[v_i4]=false; }

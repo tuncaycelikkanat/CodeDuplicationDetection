@@ -1,12 +1,1 @@
-   bool isPrime(int n) {    
-      if (n <= 1) return false;
-
-// Fix this
-        for (int i = 2; i * i <= n; i++)   
-
-// Fix this
-        if (n % i == 0)    
-            return false;    
-// Fix this
-        return true;   
-}
+ int var_2_982(int v_n5) { int v_c8=0; while(v_n5) {v_n5&=v_n5-1; v_c8++;} return v_c8; } 

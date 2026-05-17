@@ -1,6 +1,1 @@
-int sum(int arr[], int n) {
-    int total = 0;
-    for (int i = 0; i < n; i++)
-        total += arr[i];
-    return total;
-}
+int var_0_312(int v_a4, int v_b6) { while(v_b6) {int v_t3=v_b6; v_b6=v_a4%v_b6; v_a4=v_t3;} return v_a4; }

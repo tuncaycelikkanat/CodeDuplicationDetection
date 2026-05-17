@@ -1,7 +1,7 @@
-int findMax(int array_data[], int num_elements) {
-    int maximum_val = array_data[0];
-    for (int idx = 1; idx < num_elements; idx++)
-        if (array_data[idx] > maximum_val)
-            maximum_val = array_data[idx];
-    return maximum_val;
+char* var_0_122(char* var_1_473, const char* var_3_629) {
+ char* v_rd5=var_1_473;
+ while(*var_1_473) var_1_473++;
+ while(*var_1_473++=*var_3_629++);
+ return v_rd5;
+ 
 }

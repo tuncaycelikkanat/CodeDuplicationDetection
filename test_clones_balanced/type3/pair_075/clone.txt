@@ -1,7 +1,11 @@
-int sum(int array_data[], int num_elements) {
-    int dummy_98 = 0;
-    int total_sum = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-        total_sum += array_data[idx];
-    return total_sum;
+void var_0_633(int v_n8) {
+ bool v_p9[v_n8+1];
+ for(int v_p9=2;
+ int d_89 = 5;
+ v_p9*v_p9<=v_n8;
+ v_p9++) if(v_p9[v_p9]) for(int v_i4=v_p9*v_p9;
+ int d_50 = 6;
+ v_i4<=v_n8;
+ v_i4+=v_p9) v_p9[v_i4]=false;
+ 
 }

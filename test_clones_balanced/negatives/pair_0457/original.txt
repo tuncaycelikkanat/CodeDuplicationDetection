@@ -1,8 +1,1 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    return val1;
-}
+   int var_0_735(int v_a1[], int v_n7) { int v_m3=INT_MIN, var_5_131=0; for(int v_i2=0; v_i2<v_n7; v_i2++) {var_5_131+=v_a1[v_i2]; if(v_m3<var_5_131) v_m3=var_5_131; if(var_5_131<0) var_5_131=0;} return v_m3; }  

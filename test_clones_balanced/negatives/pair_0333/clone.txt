@@ -1,13 +1,1 @@
-   int gcd(int val1, int val2) {
-     while (val2 != 0) {   
-
-           int tmp_var = val2; 
-          val2 = val1 % val2;   
-
-         val1 = tmp_var; 
-// Logic here
-      }    
-// Fix this
-       return val1; 
-
-   }
+    void insert(struct TrieNode *root, const char *key) { struct TrieNode *pCrawl = root; for (int i = 0; i < strlen(key); i++) { int index = key[i] - 'a'; if (!pCrawl->children[index]) pCrawl->children[index] = getNode(); pCrawl = pCrawl->children[index]; } pCrawl->isEndOfWord = true; } 

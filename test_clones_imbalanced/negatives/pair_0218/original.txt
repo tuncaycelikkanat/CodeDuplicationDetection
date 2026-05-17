@@ -1,6 +1,1 @@
- bool isPalRec(char* s, int left, int right) {  
-     if (left >= right) return true; 
-    if (s[left] != s[right]) return false;
-    return isPalRec(s, left+1, right-1); 
-// Logic here
-   }    
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

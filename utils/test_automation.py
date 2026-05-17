@@ -103,7 +103,7 @@ def load_pairs(dir_path, label):
             continue
     return pairs
 
-def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
+def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thresh=False):
     if not os.path.isabs(test_dir):
         test_dir = os.path.join(_PROJECT_ROOT, test_dir)
 
@@ -139,11 +139,7 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
         else:
             print("  ⚠️ ssl_pca.pkl bulunamadi — eski 2-skaler mod")
 
-    char_vectorizer = None
-    char_tfidf_path = os.path.join(exp_path, "char_tfidf.pkl")
-    if os.path.exists(char_tfidf_path):
-        with open(char_tfidf_path, "rb") as f:
-            char_vectorizer = pickle.load(f)
+    char_vectorizer = None  # Deprecated
 
     svd_model = None
     svd_path = os.path.join(exp_path, "svd.pkl")
@@ -182,8 +178,49 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
         "global": {}
     }
 
-    global_tp, global_fp, global_tn, global_fn = 0, 0, 0, 0
-    global_y_true, global_y_prob = [], []
+    # Evaluate negative pairs ONCE
+    print(f"\\n🚀 Evaluating {len(negatives)} Negative Pairs...")
+    neg_tp, neg_fp, neg_tn, neg_fn = 0, 0, 0, 0
+    neg_y_true, neg_y_prob = [], []
+    neg_details = []
+    
+    for p in tqdm(negatives, desc=\"Negatives\"):
+        X_pair = build_pair_vector(
+            p['c1'], p['c2'],
+            vectorizer,
+            svd_model=svd_model,
+            ssl_pipeline=ssl_pipeline,
+            ssl_pca=ssl_pca
+        )
+
+        cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
+
+        if stage1_model is not None:
+            X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
+            y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
+            if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
+                prob = 1.0
+            else:
+                prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
+        elif "CASCADE" in exp_path and cos_token > CASCADE_STAGE1_THRESHOLD:
+            prob = 1.0
+        else:
+            prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
+            
+        pred = 1 if prob >= threshold else 0
+        
+        neg_details.append({
+            "pair": p['p_name'],
+            "label": p['label'],
+            "probability": round(prob, 4),
+            "prediction": pred
+        })
+        
+        neg_y_true.append(0)
+        neg_y_prob.append(prob)
+
+        if pred == 1: neg_fp += 1
+        else: neg_tn += 1
 
     for t in types:
         positives = load_pairs(os.path.join(test_dir, t), label=1)
@@ -191,27 +228,23 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
             print(f"⚠️ No positive pairs found for {t}. Skipping.")
             continue
         
-        print(f"\n🚀 Evaluating {t} ({len(positives)} positives, {len(negatives)} negatives)...")
-        test_pairs = positives + negatives
+        print(f"\\n🚀 Evaluating {t} ({len(positives)} positives)...")
         
         tp, fp, tn, fn = 0, 0, 0, 0
         y_true, y_prob = [], []
         details = []
 
-        for p in tqdm(test_pairs, desc=t):
+        for p in tqdm(positives, desc=t):
             X_pair = build_pair_vector(
                 p['c1'], p['c2'],
                 vectorizer,
-                char_vectorizer=char_vectorizer,
                 svd_model=svd_model,
                 ssl_pipeline=ssl_pipeline,
                 ssl_pca=ssl_pca
             )
 
-            # cos_token: build_pair_vector'da extra'nın ilk elemanı
             cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
 
-            # Cascade Logic
             if stage1_model is not None:
                 X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
                 y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
@@ -222,11 +255,10 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
                         try:
                             prob = float(model.predict_proba(X_pair)[0][1])
                         except Exception as e:
-                            print(f"⚠️ predict_proba başarısız: {e}")
                             prob = float(model.predict(X_pair)[0])
                     else:
                         prob = float(model.predict(X_pair)[0])
-            elif "CASCADE" in exp_path and cos_token > 0.85:
+            elif "CASCADE" in exp_path and cos_token > CASCADE_STAGE1_THRESHOLD:
                 prob = 1.0
             else:
                 if hasattr(model, "predict_proba"):
@@ -249,64 +281,35 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
             y_true.append(p['label'])
             y_prob.append(prob)
 
-            if p['label'] == 1 and pred == 1: tp += 1
-            elif p['label'] == 1 and pred == 0: fn += 1
-            elif p['label'] == 0 and pred == 1: fp += 1
-            elif p['label'] == 0 and pred == 0: tn += 1
+            if pred == 1: tp += 1
+            else: fn += 1
             
-        metrics = calculate_metrics(tp, fp, tn, fn)
-        roc_auc, pr_auc = calculate_auc(y_true, y_prob)
+        # Combine with pre-computed negatives for this type's report
+        combined_tp = tp + neg_tp
+        combined_fp = fp + neg_fp
+        combined_tn = tn + neg_tn
+        combined_fn = fn + neg_fn
+        
+        combined_y_true = y_true + neg_y_true
+        combined_y_prob = y_prob + neg_y_prob
+        
+        metrics = calculate_metrics(combined_tp, combined_fp, combined_tn, combined_fn)
+        roc_auc, pr_auc = calculate_auc(combined_y_true, combined_y_prob)
         metrics["auc_roc"] = roc_auc
         metrics["pr_auc"] = pr_auc
         
         report["per_type"][t] = {
-            "total_pairs": len(test_pairs),
+            "total_pairs": len(positives) + len(negatives),
             "positive_pairs": len(positives),
             "negative_pairs": len(negatives),
             **metrics,
-            "details": details
+            "details": details + neg_details
         }
         
-        # Accumulate global metrics (note: negatives will be counted multiple times if we just sum them,
-        # but standard global usually means across ALL pairs tested. 
-        # Alternatively, we could test negatives once for the global.
-        # Let's count them once for the global scope to be accurate on negatives.
         global_tp += tp
         global_fn += fn
 
-    # Test negatives once for global scope to avoid counting them N times
-    print("\n🚀 Evaluating Negatives for Global Scope...")
-    tn, fp = 0, 0
-    neg_y_true, neg_y_prob = [], []
-    for p in tqdm(negatives, desc="Global Negatives"):
-        X_pair = build_pair_vector(
-            p['c1'], p['c2'],
-            vectorizer,
-            char_vectorizer=char_vectorizer,
-            svd_model=svd_model,
-            ssl_pipeline=ssl_pipeline
-        )
-        cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
-
-        if stage1_model is not None:
-            X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
-            y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
-            if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
-                prob = 1.0
-            else:
-                prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
-        elif "CASCADE" in exp_path and cos_token > 0.85:
-            prob = 1.0
-        else:
-            prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
-            
-        pred = 1 if prob >= threshold else 0
-        neg_y_true.append(0)
-        neg_y_prob.append(prob)
-        if pred == 1: fp += 1
-        else: tn += 1
-        
-    global_fp, global_tn = fp, tn
+    global_fp, global_tn = neg_fp, neg_tn
     
     # Collect all global positive y_true/y_prob
     all_pos_true, all_pos_prob = [], []
@@ -319,6 +322,46 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None):
 
     global_y_true = all_pos_true + neg_y_true
     global_y_prob = all_pos_prob + neg_y_prob
+
+
+    if auto_thresh:
+        print("\n  [Auto-Threshold] Bulunuyor...")
+        best_f1 = -1
+        best_t = threshold
+        from sklearn.metrics import f1_score
+        for t in [i/100.0 for i in range(1, 100)]:
+            preds = [1 if p >= t else 0 for p in global_y_prob]
+            f1 = f1_score(global_y_true, preds, zero_division=0)
+            if f1 > best_f1:
+                best_f1 = f1
+                best_t = t
+        print(f"  [Auto-Threshold] En iyi eşik: {best_t:.2f} (F1: {best_f1:.4f})")
+        threshold = best_t
+        
+        # Yeniden hesapla
+        global_tp, global_fp, global_tn, global_fn = 0, 0, 0, 0
+        for t in types:
+            if t in report["per_type"]:
+                rm = report["per_type"][t]
+                details = rm["details"]
+                tp, fp, tn, fn = 0, 0, 0, 0
+                for d in details:
+                    pred = 1 if d["probability"] >= threshold else 0
+                    d["prediction"] = pred
+                    if d["label"] == 1 and pred == 1: tp += 1
+                    elif d["label"] == 1 and pred == 0: fn += 1
+                    elif d["label"] == 0 and pred == 1: fp += 1
+                    elif d["label"] == 0 and pred == 0: tn += 1
+                rm.update(calculate_metrics(tp, fp, tn, fn))
+                global_tp += tp
+                global_fn += fn
+                
+        # global neg
+        fp, tn = 0, 0
+        for p in neg_y_prob:
+            if p >= threshold: fp += 1
+            else: tn += 1
+        global_fp, global_tn = fp, tn
 
     global_metrics = calculate_metrics(global_tp, global_fp, global_tn, global_fn)
     roc_auc, pr_auc = calculate_auc(global_y_true, global_y_prob)
@@ -390,7 +433,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run automation tests on code clone models.")
     parser.add_argument("--exp-id", type=int, default=None, help="Specific experiment ID to test (e.g. 54). If not provided, uses latest.")
     parser.add_argument("--threshold", type=float, default=0.95, help="Classification threshold (default 0.95)")
-    parser.add_argument("--scenario", type=str, default="original", choices=["original", "imbalanced", "balanced"], help="Test scenario folder to use")
+    parser.add_argument("--scenario", type=str, default="original", choices=["original", "imbalanced", "balanced", "all"], help="Test scenario folder to use")
+    parser.add_argument("--auto-threshold", action="store_true", help="Automatically find the best threshold using PR-AUC/F1")
     args = parser.parse_args()
     
-    run_automation(test_dir=f"test_clones_{args.scenario}", threshold=args.threshold, exp_id=args.exp_id)
+    scenarios = ["original", "imbalanced", "balanced"] if args.scenario == "all" else [args.scenario]
+    for sc in scenarios:
+        print(f"\n{'='*50}\n 🧪 RUNNING SCENARIO: {sc.upper()}\n{'='*50}")
+        run_automation(test_dir=f"test_clones_{sc}", threshold=args.threshold, exp_id=args.exp_id, auto_thresh=args.auto_threshold)

@@ -36,7 +36,7 @@ from tqdm import tqdm
 from models.xgboost import build_xgboost
 from preprocessing.tokenizer import tokenize, normalize_tokens
 from preprocessing.code_features import extract_all_features
-from vectorization.tfidf import build_tfidf_vectorizer, build_char_tfidf_vectorizer
+from vectorization.tfidf import build_tfidf_vectorizer
 from pairing.pair_generator import generate_pairs
 
 from utils.experiment_logger import (
@@ -72,8 +72,21 @@ def _apply_cascade_filter(
     X_stage1 = X[:, :feature_count]
     y_prob_stage1 = stage1_model.predict_proba(X_stage1)[:, 1]
     easy_pos_mask = (y == 1) & (y_prob_stage1 >= threshold)
-    keep_mask = ~easy_pos_mask
-    return X[keep_mask], y[keep_mask], easy_pos_mask.sum()
+    easy_neg_mask = (y == 0) & (y_prob_stage1 <= (1.0 - threshold))
+    
+    keep_mask = ~(easy_pos_mask | easy_neg_mask)
+    
+    pos_before = (y == 1).sum()
+    neg_before = (y == 0).sum()
+    y_filtered = y[keep_mask]
+    pos_after = (y_filtered == 1).sum()
+    neg_after = (y_filtered == 0).sum()
+    
+    print(f"    - Cascade Filter Before: {pos_before} Pos, {neg_before} Neg")
+    print(f"    - Cascade Filter After:  {pos_after} Pos, {neg_after} Neg")
+    print(f"    - Filtered Easy Pos: {easy_pos_mask.sum()}, Easy Neg: {easy_neg_mask.sum()}")
+    
+    return X[keep_mask], y_filtered, (easy_pos_mask.sum() + easy_neg_mask.sum())
 
 
 # <----------> ARGUMENT PARSING <---------->
@@ -167,12 +180,19 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         svd = TruncatedSVD(n_components=SVD_N_COMPONENTS, random_state=args.seed)
         X_train_svd = svd.fit_transform(X_train_token)
         X_test_svd = svd.transform(X_test_token)
-        # TOKEN_FEAT_COUNT removed — pair_generator now returns dense arrays
+        print(f"    - Explained Variance Ratio (SVD): {svd.explained_variance_ratio_.sum():.4f}")
 
         # Generate pairs
         test_ratio = len(test_idx) / (len(train_idx) + len(test_idx))
         num_train_pairs = int(cv_pairs * (1 - test_ratio))
         num_test_pairs = int(cv_pairs * test_ratio)
+
+        if train_ssl is not None:
+            print(f"  → Fitting SSL PCA ({SSL_PCA_COMPONENTS} dims) for fold...")
+            from sklearn.decomposition import PCA
+            ssl_pca = PCA(n_components=SSL_PCA_COMPONENTS, random_state=args.seed)
+            train_ssl = ssl_pca.fit_transform(train_ssl).astype(np.float32)
+            test_ssl = ssl_pca.transform(test_ssl).astype(np.float32)
 
         print(f"  → Generating {num_train_pairs} train pairs...")
         X_train, y_train = generate_pairs(
@@ -206,20 +226,16 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         gc.collect()
 
         # Build & train model
-        if args.model == "ensemble":
-            from models.ensemble import build_ensemble
-            model = build_ensemble(args.seed, device=args.device)
-        else:
-            model = build_xgboost(args.seed, device=args.device)
 
-        print(f"  → Training {model_name}...")
 
         # ---- Cascade filter (CV modu) ----
         # Eğitim setindeki "kolay" klonları (cos_token > CASCADE_THRESHOLD) çıkar.
         # Bu sayede model sadece zor / Type-4 klonlar üzerinde eğitilir.
         print(f"  → Training Stage-1 Lexical/Structural Model (CV)...")
         from sklearn.ensemble import HistGradientBoostingClassifier
-        stage1_model = HistGradientBoostingClassifier(max_iter=50, max_depth=3, random_state=args.seed)
+        from sklearn.calibration import CalibratedClassifierCV
+        base_stage1 = HistGradientBoostingClassifier(max_iter=50, max_depth=3, random_state=args.seed)
+        stage1_model = CalibratedClassifierCV(base_stage1, cv=3, method='isotonic')
         
         cos_tok_train = X_train[:, 0]
         easy_train_mask = (y_train == 0) | ((y_train == 1) & (cos_tok_train > CASCADE_THRESHOLD))
@@ -232,6 +248,15 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         X_train, y_train, n_removed = _apply_cascade_filter(X_train, y_train, stage1_model)
         print(f"  → Filtered CV Train: {X_train.shape} (removed {n_removed} easy clones)")
 
+        if args.model == "ensemble":
+            from models.ensemble import build_ensemble
+            model = build_ensemble(args.seed, device=args.device)
+        else:
+            pos_count = max(1, (y_train == 1).sum())
+            spw = (len(y_train) - pos_count) / pos_count
+            model = build_xgboost(args.seed, device=args.device, scale_pos_weight=spw)
+
+        print(f"  → Training {model_name}...")
         model.fit(X_train, y_train, verbose=False)
 
         # Evaluate
@@ -359,14 +384,9 @@ def main():
         )
         print(f"  → SSL Embeddings shape: {raw_ssl.shape}  ({time.time() - t_phase_ssl:.1f}s)")
 
-        # PCA ile 768-D -> SSL_PCA_COMPONENTS-D indirgeme
-        print(f"  → Fitting PCA: 768 → {SSL_PCA_COMPONENTS} dims...")
-        t_pca = time.time()
-        ssl_pca = PCA(n_components=SSL_PCA_COMPONENTS, random_state=DEFAULT_SEED)
-        ssl_embeddings_all = ssl_pca.fit_transform(raw_ssl).astype(np.float32)
-        explained = ssl_pca.explained_variance_ratio_.sum()
-        print(f"  → PCA done in {time.time() - t_pca:.1f}s | Explained variance: {explained:.2%}")
-        del raw_ssl
+        print(f"  → Keeping SSL embeddings raw (768 dims). PCA will be fitted per split to prevent leakage.")
+        ssl_embeddings_all = raw_ssl
+        ssl_pca = None
         t_features += (time.time() - t_phase_ssl)
 
     # Keep raw codes split for new features (edit distance, line/char ratios)
@@ -459,6 +479,7 @@ def main():
     X_train_svd = svd.fit_transform(X_train_token)
     X_val_svd = svd.transform(X_val_token)
     X_test_svd = svd.transform(X_test_token)
+    print(f"    - Explained Variance Ratio (SVD): {svd.explained_variance_ratio_.sum():.4f}")
 
     print(f"SVD components: {SVD_N_COMPONENTS}, Dense feature vector size: 89")
     t_split_tfidf = time.time() - t_phase
@@ -468,6 +489,14 @@ def main():
     num_train_pairs = int(NUM_PAIRS * 0.70)
     num_val_pairs = int(NUM_PAIRS * 0.15)
     num_test_pairs = NUM_PAIRS - num_train_pairs - num_val_pairs
+
+    if train_ssl is not None:
+        print(f"---> Fitting SSL PCA: 768 → {SSL_PCA_COMPONENTS} dims...")
+        from sklearn.decomposition import PCA
+        ssl_pca = PCA(n_components=SSL_PCA_COMPONENTS, random_state=RANDOM_STATE)
+        train_ssl = ssl_pca.fit_transform(train_ssl).astype(np.float32)
+        val_ssl = ssl_pca.transform(val_ssl).astype(np.float32)
+        test_ssl = ssl_pca.transform(test_ssl).astype(np.float32)
 
     print(f"---> Generating {num_train_pairs} train pairs (positive_ratio={args.positive_ratio})...")
     t_phase = time.time()
@@ -485,7 +514,9 @@ def main():
 
     print("  → Training Stage-1 Lexical/Structural Model (HistGradientBoosting) on EASY pairs...")
     from sklearn.ensemble import HistGradientBoostingClassifier
-    stage1_model = HistGradientBoostingClassifier(max_iter=50, max_depth=3, random_state=RANDOM_STATE)
+    from sklearn.calibration import CalibratedClassifierCV
+    base_stage1 = HistGradientBoostingClassifier(max_iter=50, max_depth=3, random_state=RANDOM_STATE)
+    stage1_model = CalibratedClassifierCV(base_stage1, cv=3, method='isotonic')
     
     cos_tokens_train = X_train[:, 0]
     easy_train_mask = (y_train == 0) | ((y_train == 1) & (cos_tokens_train > CASCADE_THRESHOLD))
@@ -509,7 +540,8 @@ def main():
         semantic_features=val_semantic,
         X_svd=X_val_svd,
         ssl_embeddings=val_ssl,
-        random_state=RANDOM_STATE + 1
+        random_state=RANDOM_STATE + 1,
+        positive_ratio=args.positive_ratio
     )
     X_val = X_val.astype(np.float32)
 
@@ -566,7 +598,12 @@ def main():
         t_tune = time.time() - t_phase
     else:
         t_tune = 0.0
-        model = build_fn(RANDOM_STATE, device=args.device)
+        if args.model == "xgboost":
+            pos_count = max(1, (y_train == 1).sum())
+            spw = (len(y_train) - pos_count) / pos_count
+            model = build_fn(RANDOM_STATE, device=args.device, scale_pos_weight=spw)
+        else:
+            model = build_fn(RANDOM_STATE, device=args.device)
 
     # <----------> TRAIN <---------->
     print(f"---> Training {model_name}...")
@@ -584,6 +621,7 @@ def main():
     
     # Train evaluation is on the filtered data (Hard examples only)
     y_train_pred = model.predict(X_train)
+    y_val_pred = model.predict(X_val)
     
     # Test evaluation uses the Two-Stage logic
     print("---> Running Two-Stage Inference on Test...")
@@ -643,6 +681,9 @@ def main():
         X_test=X_test,
         y_test=y_test,
         y_test_pred=y_test_pred,
+        X_val=X_val,
+        y_val=y_val,
+        y_val_pred=y_val_pred,
         timing_info=timing_info,
         extra_vectorizers={"svd": svd},
         stage1_model=stage1_model,

@@ -1,9 +1,2 @@
-    int findMax(int arr[], int n) {
-     int max = arr[0];
-       for (int i = 1; i < n; i++)   
-        if (arr[i] > max)    
-
-               max = arr[i];
-// Logic here
-     return max;   
-   } 
+// Optimization needed
+ int var_1_748(int var_0_959[], int v_n1) { int v_s2=0; for(int v_i7=0; v_i7<v_n1; v_i7++) v_s2+=var_0_959[v_i7]; return v_s2; }

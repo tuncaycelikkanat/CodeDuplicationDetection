@@ -1,5 +1,2 @@
-void swap(int *xp, int *yp) {
-    int tmp_var = *xp;
-    *xp = *yp;
-    *yp = tmp_var;
-}
+// Fix this
+    int var_0_275(int v_a5[], int v_n1) { int v_m5=INT_MIN, var_5_965=0; for(int v_i3=0; v_i3<v_n1; v_i3++) {var_5_965+=v_a5[v_i3]; if(v_m5<var_5_965) v_m5=var_5_965; if(var_5_965<0) var_5_965=0;} return v_m5; }    

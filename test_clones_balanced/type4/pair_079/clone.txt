@@ -1,8 +1,1 @@
-// TODO
-int powerFast(int base, int exp) {  
-      if (exp == 0) return 1;    
-     int half = powerFast(base, exp / 2); 
-      if (exp % 2 == 0) return half * half;    
-      else return base * half * half; 
-// Check if needed
-   } 
+    void var_1_658(int* v_a4, int* v_b1) { if(v_a4!=v_b1) { *v_a4=*v_a4^*v_b1; *v_b1=*v_a4^*v_b1; *v_a4=*v_a4^*v_b1; } }

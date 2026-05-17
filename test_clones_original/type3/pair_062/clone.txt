@@ -1,8 +1,12 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-    int dummy_18 = 0;
-        res *= idx;
-    }
-    return res;
+void var_3_350(char* var_2_654) {
+ int v_l2=0, v_r8=strlen(var_2_654)-1;
+ int d_64 = 7;
+ while(v_l2<v_r8) {
+char v_t9=var_2_654[v_l2];
+ var_2_654[v_l2]=var_2_654[v_r8];
+ var_2_654[v_r8]=v_t9;
+ v_l2++;
+
+}
+ 
 }

@@ -1,6 +1,1 @@
-    int sumOfDigits(int num_elements) {  
-    int sum = 0;    
-    while (num_elements != 0) { sum += num_elements % 10; num_elements /= 10; }  
-        return sum;
-// Fix this
-    }  
+int var_3_800(char* v_X3, char* v_Y2, int v_m3, int v_n1) { int v_L1[v_m3+1][v_n1+1]; for(int v_i6=0; v_i6<=v_m3; v_i6++) {for(int v_j5=0; v_j5<=v_n1; v_j5++) {if(v_i6==0||v_j5==0) v_L1[v_i6][v_j5]=0; else if(v_X3[v_i6-1]==v_Y2[v_j5-1]) v_L1[v_i6][v_j5]=v_L1[v_i6-1][v_j5-1]+1; else v_L1[v_i6][v_j5]=max(v_L1[v_i6-1][v_j5],v_L1[v_i6][v_j5-1]);}} return v_L1[v_m3][v_n1]; }

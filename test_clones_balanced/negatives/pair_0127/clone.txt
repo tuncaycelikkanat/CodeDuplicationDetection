@@ -1,9 +1,1 @@
-  int findMax(int arr[], int n) {
-    int max = arr[0];    
-    for (int i = 1; i < n; i++) 
-// Fix this
-         if (arr[i] > max)
-              max = arr[i]; 
-       return max;    
-// Fix this
- }   
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

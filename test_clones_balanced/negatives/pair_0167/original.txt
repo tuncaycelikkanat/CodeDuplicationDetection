@@ -1,5 +1,9 @@
-  int sumOfDigits(int num_elements) {
-      int sum = 0;
-     while (num_elements != 0) { sum += num_elements % 10; num_elements /= 10; } 
-       return sum;  
- }   
+void var_0_218(int v_n1) {
+ bool v_p4[v_n1+1];
+ memset(v_p4,true,sizeof(v_p4));
+ for(int v_p4=2;
+ v_p4*v_p4<=v_n1;
+ v_p4++) if(v_p4[v_p4]) for(int v_i3=v_p4*v_p4;
+ v_i3+=v_p4) v_p4[v_i3]=false;
+ 
+}

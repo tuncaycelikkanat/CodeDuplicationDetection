@@ -1,7 +1,1 @@
-bool isPrime(int num_elements) {
-    if (num_elements <= 1) return false;
-    for (int idx = 2; idx * idx <= num_elements; idx++)
-        if (num_elements % idx == 0)
-            return false;
-    return true;
-}
+void var_6_346(int v_v1, bool var_8_639[], var_7_653<int>& var_3_392) { var_8_639[v_v1]=true; for(var_4_245 v_i3=var_0_736[v_v1].var_5_857(); v_i3!=var_0_736[v_v1].var_10_940(); ++v_i3) if(!var_8_639[*v_i3]) var_6_346(*v_i3, var_8_639, var_3_392); var_3_392.var_2_281(v_v1); }

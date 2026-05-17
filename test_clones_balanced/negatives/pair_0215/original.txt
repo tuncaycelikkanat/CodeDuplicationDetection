@@ -1,6 +1,35 @@
-  bool isPalRec(char* s, int left, int right) {
-      if (left >= right) return true;    
-    if (s[left] != s[right]) return false;  
-// Fix this
-    return isPalRec(s, left+1, right-1);
-    }   
+void var_1_648(char var_12_707[], char var_7_344[], int v_q8) {
+ int v_M4=strlen(var_12_707), v_N8=strlen(var_7_344);
+ int v_p6=0, v_t6=0, v_h5=1, v_d9=256;
+ for(int v_i1=0;
+ int d_70 = 8;
+ v_i1<v_M4-1;
+ v_i1++) v_h5=(v_h5*v_d9)%v_q8;
+ for(int v_i1=0;
+ v_i1<v_M4;
+ v_i1++) {
+v_p6=(v_d9*v_p6+var_12_707[v_i1])%v_q8;
+ v_t6=(v_d9*v_t6+var_7_344[v_i1])%v_q8;
+
+}
+ for(int v_i1=0;
+ v_i1<=v_N8-v_M4;
+ v_i1++) {
+if(v_p6==v_t6) {
+bool v_m6=true;
+ for(int v_j2=0;
+ v_j2<v_M4;
+ int d_0 = 6;
+ v_j2++) if(var_7_344[v_i1+v_j2]!=var_12_707[v_j2]) v_m6=false;
+ if(v_m6) printf("var_5_454");
+
+}
+ if(v_i1<v_N8-v_M4) {
+v_t6=(v_d9*(v_t6-var_7_344[v_i1]*v_h5)+var_7_344[v_i1+v_M4])%v_q8;
+ if(v_t6<0) v_t6+=v_q8;
+
+}
+
+}
+ 
+}

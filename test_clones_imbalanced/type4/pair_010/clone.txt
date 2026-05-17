@@ -1,8 +1,2 @@
- int findMaxRec(int array_data[], int num_elements) {   
-    if (num_elements == 1) return array_data[0];   
-       int mid = findMaxRec(array_data, num_elements - 1);
-
-// TODO
-    return (array_data[num_elements-1] > mid) ? array_data[num_elements-1] : mid; 
-// TODO
- }
+// Optimization needed
+   long var_0_861(int v_n3) { return v_n3<=1 ? 1 : v_n3*var_0_861(v_n3-1); }  

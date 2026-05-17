@@ -1,6 +1,1 @@
-   int sumOfDigits(int num_elements) { 
-       int sum = 0;
-// Fix this
-     while (num_elements != 0) { sum += num_elements % 10; num_elements /= 10; }  
-     return sum; 
-} 
+ int var_2_253(int v_n2) { int v_c3=0; while(v_n2) {v_n2&=v_n2-1; v_c3++;} return v_c3; }

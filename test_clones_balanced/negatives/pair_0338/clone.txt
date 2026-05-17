@@ -1,7 +1,1 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+void dfsUtil(int u, int adj[][100], int v, bool vis[]) { vis[u]=true; for(int i=0; i<v; i++) if(adj[u][i] && !vis[i]) dfsUtil(i,adj,v,vis); }

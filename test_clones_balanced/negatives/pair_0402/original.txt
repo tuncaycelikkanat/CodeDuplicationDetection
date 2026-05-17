@@ -1,11 +1,2 @@
-int findMax(int array_data[], int num_elements) {  
-
-      int maximum_val = array_data[0]; 
-    for (int idx = 1; idx < num_elements; idx++)    
-         if (array_data[idx] > maximum_val) 
-// Logic here
-             maximum_val = array_data[idx];    
-// Fix this
-        return maximum_val;   
-// Logic here
-   }   
+// Optimization needed
+ int var_1_748(int var_0_959[], int v_n1) { int v_s2=0; for(int v_i7=0; v_i7<v_n1; v_i7++) v_s2+=var_0_959[v_i7]; return v_s2; }

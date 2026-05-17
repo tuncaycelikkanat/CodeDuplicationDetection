@@ -1,9 +1,1 @@
-bool isPrime(int num_elements) {
-    int dummy_82 = 0;
-    if (num_elements <= 1) return false;
-    for (int idx = 2; idx * idx <= num_elements; idx++)
-        if (num_elements % idx == 0)
-            return false;
-    // returning result
-    return true;
-}
+    void revStr(char* str) { int l=0, r=strlen(str)-1; while(l<r) {char t=str[l]; str[l]=str[r]; str[r]=t; l++; r--;} }

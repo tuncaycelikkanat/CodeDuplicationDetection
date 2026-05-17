@@ -1,9 +1,1 @@
-int countVowels(char* str) {    
-      int counter = 0; 
-// Fix this
-     for (int idx = 0; str[idx] != '\0'; idx++) {    
-          char c = tolower(str[idx]); 
-         if (c=='val1'||c=='e'||c=='idx'||c=='o'||c=='u') counter++;
-    }   
-        return counter;    
-}   
+void insSort(int arr[], int n) { for(int i=1; i<n; i++) {int key=arr[i]; int j=i-1; while(j>=0 && arr[j]>key) {arr[j+1]=arr[j]; j--;} arr[j+1]=key;} }

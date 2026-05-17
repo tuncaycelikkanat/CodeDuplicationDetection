@@ -1,7 +1,1 @@
-    int sumOfDigits(int num_elements) {
-
-      int sum = 0;   
-
-      while (num_elements != 0) { sum += num_elements % 10; num_elements /= 10; }   
-      return sum;   
-  }
+    long var_0_258(int v_n1) { return v_n1<=1 ? 1 : v_n1*var_0_258(v_n1-1); } 

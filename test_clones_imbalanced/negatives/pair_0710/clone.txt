@@ -1,10 +1,1 @@
-   bool isPalindrome(char* str) {   
-      int left = 0, right = strlen(str) - 1;    
-// Fix this
-        while (left < right) {   
-          if (str[left] != str[right]) return false;    
-            left++; right--; 
-        }    
-// Fix this
-     return true;   
-} 
+    void var_2_412(int var_0_353[], int v_n9) { for(int v_i3=0; v_i3<v_n9/2; v_i3++) var_1_648(&var_0_353[v_i3], &var_0_353[v_n9-1-v_i3]); }  

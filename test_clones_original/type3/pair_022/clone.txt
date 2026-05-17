@@ -1,8 +1,13 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    // returning result
-    return res;
+void var_5_240(int var_0_912[], int v_n3, int v_i6) {
+ int v_lg1=v_i6, v_l6=2*v_i6+1, v_r5=2*v_i6+2;
+ if(v_l6<v_n3 && var_0_912[v_l6]>var_0_912[v_lg1]) v_lg1=v_l6;
+ if(v_r5<v_n3 && var_0_912[v_r5]>var_0_912[v_lg1]) v_lg1=v_r5;
+ if(v_lg1!=v_i6) {
+int v_t3=var_0_912[v_i6];
+ var_0_912[v_i6]=var_0_912[v_lg1];
+ var_0_912[v_lg1]=v_t3;
+ var_5_240(var_0_912,v_n3,v_lg1);
+
+}
+ 
 }

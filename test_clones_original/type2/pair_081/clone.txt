@@ -1,10 +1,1 @@
-int fib(int num_elements) {
-    if (num_elements <= 1) return num_elements;
-    int val1 = 0, val2 = 1, c;
-    for (int idx = 2; idx <= num_elements; idx++) {
-        c = val1 + val2;
-        val1 = val2;
-        val2 = c;
-    }
-    return val2;
-}
+void var_2_243(int var_5_293[100][100], int var_4_723, int v_V6) { int var_8_772[v_V6]; bool var_3_395[v_V6]; for(int v_i1=0; v_i1<v_V6; v_i1++) var_8_772[v_i1]=INT_MAX, var_3_395[v_i1]=false; var_8_772[var_4_723]=0; for(int v_c6=0; v_c6<v_V6-1; v_c6++) {int v_u2=-1; for(int v_i1=0; v_i1<v_V6; v_i1++) if(!var_3_395[v_i1] && (v_u2==-1 || var_8_772[v_i1]<var_8_772[v_u2])) v_u2=v_i1; var_3_395[v_u2]=true; for(int v_v3=0; v_v3<v_V6; v_v3++) if(!var_3_395[v_v3] && var_5_293[v_u2][v_v3] && var_8_772[v_u2]!=INT_MAX && var_8_772[v_u2]+var_5_293[v_u2][v_v3]<var_8_772[v_v3]) var_8_772[v_v3]=var_8_772[v_u2]+var_5_293[v_u2][v_v3];} }

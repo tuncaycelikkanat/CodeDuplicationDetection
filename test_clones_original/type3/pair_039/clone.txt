@@ -1,5 +1,13 @@
-void swap(int *xp, int *yp) {
-    int tmp_var = *xp;
-    *xp = *yp;
-    *yp = tmp_var;
+int var_0_546(int v_S6[], int v_m8, int v_n9) {
+ int var_5_512[v_n9+1];
+ memset(var_5_512, 0, sizeof(var_5_512));
+ var_5_512[0]=1;
+ for(int v_i9=0;
+ v_i9<v_m8;
+ v_i9++) for(int v_j6=v_S6[v_i9];
+ int d_21 = 3;
+ v_j6<=v_n9;
+ v_j6++) var_5_512[v_j6]+=var_5_512[v_j6-v_S6[v_i9]];
+ return var_5_512[v_n9];
+ 
 }

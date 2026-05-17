@@ -1,6 +1,1 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int i = 0; i < exp; i++)
-        res *= base;
-    return res;
-}
+   int var_0_727(int v_a7, int v_b3) { while(v_b3) {int v_t3=v_b3; v_b3=v_a7%v_b3; v_a7=v_t3;} return v_a7; } 

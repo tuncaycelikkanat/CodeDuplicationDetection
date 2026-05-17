@@ -1,10 +1,1 @@
-int countVowelsW(char* s) {  
-       int cnt = 0, idx = 0;
-      while (s[idx]) {  
-         char c = tolower(s[idx++]); 
-// Logic here
-            if (c=='val1'||c=='e'||c=='idx'||c=='o'||c=='u') cnt++; 
-       }
-        return cnt;   
-
-    }  
+    void selSort(int arr[], int n) { for(int i=0; i<n-1; i++) {int min_i=i; for(int j=i+1; j<n; j++) if(arr[j]<arr[min_i]) min_i=j; int t=arr[i]; arr[i]=arr[min_i]; arr[min_i]=t;} }   

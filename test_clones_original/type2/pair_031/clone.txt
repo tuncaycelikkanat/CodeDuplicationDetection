@@ -1,9 +1,1 @@
-void reverseString(char* str) {
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+void var_2_184(int var_5_164[100][100], int var_4_259, int v_V4) { int var_8_201[v_V4]; bool var_3_752[v_V4]; for(int v_i4=0; v_i4<v_V4; v_i4++) var_8_201[v_i4]=INT_MAX, var_3_752[v_i4]=false; var_8_201[var_4_259]=0; for(int v_c1=0; v_c1<v_V4-1; v_c1++) {int v_u8=-1; for(int v_i4=0; v_i4<v_V4; v_i4++) if(!var_3_752[v_i4] && (v_u8==-1 || var_8_201[v_i4]<var_8_201[v_u8])) v_u8=v_i4; var_3_752[v_u8]=true; for(int v_v3=0; v_v3<v_V4; v_v3++) if(!var_3_752[v_v3] && var_5_164[v_u8][v_v3] && var_8_201[v_u8]!=INT_MAX && var_8_201[v_u8]+var_5_164[v_u8][v_v3]<var_8_201[v_v3]) var_8_201[v_v3]=var_8_201[v_u8]+var_5_164[v_u8][v_v3];} }

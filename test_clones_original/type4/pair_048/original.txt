@@ -1,6 +1,1 @@
-int sum(int arr[], int n) {
-    int total = 0;
-    for (int i = 0; i < n; i++)
-        total += arr[i];
-    return total;
-}
+bool isPal(char* s) { int len=strlen(s); for(int i=0; i<len/2; i++) if(s[i]!=s[len-1-i]) return false; return true; }

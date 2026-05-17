@@ -1,9 +1,1 @@
-void reverseString(char* str) {
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+int linSearch(int arr[], int n, int x) { for(int i=0; i<n; i++) if(arr[i]==x) return i; return -1; } 

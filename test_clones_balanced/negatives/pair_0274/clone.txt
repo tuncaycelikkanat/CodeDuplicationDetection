@@ -1,11 +1,11 @@
-    bool isPrime(int n) {   
-      if (n <= 1) return false;  
-// TODO
-     for (int i = 2; i * i <= n; i++)   
-         if (n % i == 0)  
-
-            return false; 
-// Logic here
-       return true;    
-// TODO
-    }
+void var_6_997(int v_v9, bool var_8_264[], var_7_964<int>& var_3_998) {
+ var_8_264[v_v9]=true;
+ for(var_4_585 v_i3=var_0_718[v_v9].var_5_105();
+ int d_61 = 1;
+ v_i3!=var_0_718[v_v9].var_10_372();
+ ++v_i3) if(!var_8_264[*v_i3]) var_6_997(*v_i3, var_8_264, var_3_998);
+ var_3_998.var_2_993(v_v9);
+ 
+}
+;
+ int d_14 = 5

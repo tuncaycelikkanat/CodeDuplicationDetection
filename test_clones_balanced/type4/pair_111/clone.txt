@@ -1,4 +1,1 @@
-int sumDigRec(int n) {
-    if (n == 0) return 0;
-    return n % 10 + sumDigRec(n / 10);
-}
+    void var_3_879(int var_0_130[], int v_l5, int v_r4) { if(v_l5>=v_r4) return; var_1_648(&var_0_130[v_l5], &var_0_130[v_r4]); var_3_879(var_0_130, v_l5+1, v_r4-1); }  

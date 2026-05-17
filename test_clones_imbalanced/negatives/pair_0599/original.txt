@@ -1,11 +1,17 @@
-void insertionSort(int arr[], int n) {
-    for (int i = 1; i < n; i++) {
-        int key = arr[i];
-        int j = i - 1;
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j = j - 1;
-        }
-        arr[j + 1] = key;
-    }
+void var_5_939(int var_0_447[], int v_n6) {
+ for(int v_i1=0;
+ v_i1<v_n6-1;
+ int d_14 = 2;
+ v_i1++) {
+int var_1_138=v_i1;
+ for(int v_j3=v_i1+1;
+ v_j3++) if(var_0_447[v_j3]<var_0_447[var_1_138]) var_1_138=v_j3;
+ int v_t5=var_0_447[v_i1];
+ int d_32 = 9;
+ var_0_447[v_i1]=var_0_447[var_1_138];
+ int d_7 = 10;
+ var_0_447[var_1_138]=v_t5;
+
+}
+ 
 }

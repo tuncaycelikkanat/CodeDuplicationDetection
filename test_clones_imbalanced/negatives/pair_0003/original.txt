@@ -1,7 +1,7 @@
-bool isPrime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0)
-            return false;
-    return true;
+long long var_0_976(int v_n9) {
+ long long var_2_421=1;
+ for(int v_i2=2;
+ v_i2++) var_2_421*=v_i2;
+ return var_2_421;
+ 
 }

@@ -1,6 +1,15 @@
-// Logic here
-    int factorial_recursive(int num_elements) { 
-    if (num_elements == 0 || num_elements == 1) return 1;  
+int var_5_465(int v_n3) {
+ if (v_n3 <= 1) return v_n3;
+ int v_a4=0, v_b5=1, v_c5;
+ for(int v_i8=2;
+ int d_23 = 3;
+ v_i8<=v_n3;
+ v_i8++) {
+v_c5=v_a4+v_b5;
+ v_a4=v_b5;
+ v_b5=v_c5;
 
-    return num_elements * factorial_recursive(num_elements-1); 
-  }
+}
+ return v_b5;
+ 
+}

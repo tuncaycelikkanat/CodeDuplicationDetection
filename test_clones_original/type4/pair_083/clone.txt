@@ -1,4 +1,2 @@
-int sumDigRec(int num_elements) {   
-        if (num_elements == 0) return 0;   
-      return num_elements % 10 + sumDigRec(num_elements / 10);
-  }
+// Check logic
+  void var_3_117(int var_0_902[], int v_l9, int v_r6) { if(v_l9>=v_r6) return; var_1_223(&var_0_902[v_l9], &var_0_902[v_r6]); var_3_117(var_0_902, v_l9+1, v_r6-1); }    

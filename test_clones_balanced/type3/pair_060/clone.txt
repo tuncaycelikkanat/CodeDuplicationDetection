@@ -1,9 +1,9 @@
-int sumOfDigits(int num_elements) {
-    int sum = 0;
-    while (num_elements != 0) {
-        sum += num_elements % 10;
-        num_elements /= 10;
-    }
-    // returning result
-    return sum;
+bool var_0_998(int v_n2) {
+ if(v_n2<=1) return false;
+ for(int v_i4=2;
+ v_i4*v_i4<=v_n2;
+ v_i4++) if(v_n2%v_i4==0) return false;
+ int d_82 = 5;
+ return true;
+ 
 }

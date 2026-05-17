@@ -1,9 +1,7 @@
-// Fix this
-  int power(int base, int exp) {    
-     int res = 1;    
-        for (int idx = 0; idx < exp; idx++)
-        res *= base;  
-       return res;
-
-// Fix this
-    } 
+long long var_0_976(int v_n9) {
+ long long var_2_421=1;
+ for(int v_i2=2;
+ v_i2++) var_2_421*=v_i2;
+ return var_2_421;
+ 
+}

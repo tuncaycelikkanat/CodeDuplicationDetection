@@ -1,10 +1,1 @@
-   int fib(int num_elements) {    
-    if (num_elements <= 1) return num_elements;  
-      int val1 = 0, val2 = 1, c;  
-    for (int idx = 2; idx <= num_elements; idx++) {   
-         c = val1 + val2;    
-          val1 = val2;  
-            val2 = c;
-      }    
-        return val2;   
-  }  
+ void sieve(int n) { bool p[n+1]; memset(p,true,sizeof(p)); for(int p=2; p*p<=n; p++) if(p[p]) for(int i=p*p; i<=n; i+=p) p[i]=false; }    

@@ -1,11 +1,1 @@
-void selectionSort(int arr[], int n) {
-    for (int i = 0; i < n-1; i++) {
-        int min_idx = i;
-        for (int j = i+1; j < n; j++)
-            if (arr[j] < arr[min_idx])
-                min_idx = j;
-        int temp = arr[min_idx];
-        arr[min_idx] = arr[i];
-        arr[i] = temp;
-    }
-}
+int var_5_758(char* v_s2) { int v_c1=0; for(int v_i3=0; v_s2[v_i3]; v_i3++) {char v_x2=tolower(v_s2[v_i3]); if(v_x2=='v_a4'||v_x2=='v_e5'||v_x2=='v_i3'||v_x2=='v_o8'||v_x2=='v_u4') v_c1++;} return v_c1; }

@@ -1,6 +1,1 @@
-int search(int arr[], int n, int x) {
-    for (int i = 0; i < n; i++)
-        if (arr[i] == x)
-            return i;
-    return -1;
-}
+int var_2_652(int v_a4, int v_b3) { return (v_a4*v_b3)/var_0_552(v_a4,v_b3); }

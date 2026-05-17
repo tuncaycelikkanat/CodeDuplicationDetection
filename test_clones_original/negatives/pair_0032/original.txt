@@ -1,10 +1,1 @@
- bool isPrimeOpt(int num_elements) {    
-        if (num_elements <= 1) return false;   
-       if (num_elements <= 3) return true;   
-        if (num_elements % 2 == 0 || num_elements % 3 == 0) return false; 
-      for (int idx = 5; idx * idx <= num_elements; idx = idx + 6)  
-        if (num_elements % idx == 0 || num_elements % (idx + 2) == 0)   
-              return false;   
-// TODO
-       return true; 
-}
+void floyd(int graph[][100], int V) { int dist[V][V]; for(int i=0; i<V; i++) for(int j=0; j<V; j++) dist[i][j]=graph[i][j]; for(int k=0; k<V; k++) for(int i=0; i<V; i++) for(int j=0; j<V; j++) if(dist[i][k]+dist[k][j]<dist[i][j]) dist[i][j]=dist[i][k]+dist[k][j]; }

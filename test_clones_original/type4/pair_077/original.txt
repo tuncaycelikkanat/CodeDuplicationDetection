@@ -1,6 +1,1 @@
-   int stringLength(char* str) { 
-    int len = 0;   
-    while (str[len] != '\0')  
-        len++;   
-       return len;   
-  }
+  bool var_0_829(int v_n4) { if(v_n4<2) return false; for(int v_i5=2; v_i5*v_i5<=v_n4; v_i5++) if(v_n4%v_i5==0) return false; return true; }    

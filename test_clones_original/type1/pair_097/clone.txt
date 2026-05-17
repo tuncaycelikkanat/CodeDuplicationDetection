@@ -1,11 +1,2 @@
- int lcm(int a, int b) { 
-// Logic here
-    int max = (a > b) ? a : b;  
-// TODO
-        while (1) { 
-
-        if (max % a == 0 && max % b == 0)  
-              return max;  
-         max++;  
-     }  
-    }    
+// Check logic
+   void build(int node, int start, int end) { if(start==end) {tree[node]=A[start]; return;} int mid=(start+end)/2; build(2*node,start,mid); build(2*node+1,mid+1,end); tree[node]=tree[2*node]+tree[2*node+1]; } 

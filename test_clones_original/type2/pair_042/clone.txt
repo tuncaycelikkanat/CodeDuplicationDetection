@@ -1,7 +1,1 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
-}
+void var_1_437(char var_12_386[], char var_7_369[], int v_q2) { int v_M8=strlen(var_12_386), v_N6=strlen(var_7_369); int v_p1=0, v_t3=0, v_h7=1, v_d1=256; for(int v_i6=0; v_i6<v_M8-1; v_i6++) v_h7=(v_h7*v_d1)%v_q2; for(int v_i6=0; v_i6<v_M8; v_i6++) {v_p1=(v_d1*v_p1+var_12_386[v_i6])%v_q2; v_t3=(v_d1*v_t3+var_7_369[v_i6])%v_q2;} for(int v_i6=0; v_i6<=v_N6-v_M8; v_i6++) {if(v_p1==v_t3) {bool v_m2=true; for(int v_j5=0; v_j5<v_M8; v_j5++) if(var_7_369[v_i6+v_j5]!=var_12_386[v_j5]) v_m2=false; if(v_m2) printf("var_5_903");} if(v_i6<v_N6-v_M8) {v_t3=(v_d1*(v_t3-var_7_369[v_i6]*v_h7)+var_7_369[v_i6+v_M8])%v_q2; if(v_t3<0) v_t3+=v_q2;}} }

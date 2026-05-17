@@ -1,6 +1,2 @@
- int gcd_recursive(int val1, int val2) {   
-
-     if (val2 == 0) return val1;
-// Logic here
-        return gcd_recursive(val2, val1 % val2);  
-}    
+// Optimization needed
+    void var_1_191(int* v_a9, int* v_b4) { int v_t5=*v_a9; *v_a9=*v_b4; *v_b4=v_t5; }   

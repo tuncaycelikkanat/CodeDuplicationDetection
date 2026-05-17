@@ -1,8 +1,1 @@
-int findMin(int array_data[], int num_elements) {
-    int minimum_val = array_data[0];
-    for (int idx = 1; idx < num_elements; idx++)
-        if (array_data[idx] < minimum_val)
-            minimum_val = array_data[idx];
-    // returning result
-    return minimum_val;
-}
+int getMax(int arr[], int n) { int m=arr[0]; for(int i=1; i<n; i++) if(arr[i]>m) m=arr[i]; return m; }

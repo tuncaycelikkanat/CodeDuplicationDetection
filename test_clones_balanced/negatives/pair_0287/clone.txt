@@ -1,8 +1,1 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    return val1;
-}
+struct var_6_590* var_0_853(struct var_6_590 *v_y3) { struct var_6_590 *v_x6 = v_y3->var_4_463; struct var_6_590 *v_T26 = v_x6->var_7_165; v_x6->var_7_165 = v_y3; v_y3->var_4_463 = v_T26; v_y3->var_5_812 = max(var_5_812(v_y3->var_4_463), var_5_812(v_y3->var_7_165))+1; v_x6->var_5_812 = max(var_5_812(v_x6->var_4_463), var_5_812(v_x6->var_7_165))+1; return v_x6; }

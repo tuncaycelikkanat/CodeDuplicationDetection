@@ -1,7 +1,12 @@
- int powerFast(int base, int exp) { 
-      if (exp == 0) return 1;  
-// Check if needed
-        int half = powerFast(base, exp / 2);   
-       if (exp % 2 == 0) return half * half; 
-      else return base * half * half;   
-}  
+int var_4_641(int var_0_374[], int v_l2, int v_r7, int v_x4) {
+ while(v_l2<=v_r7) {
+int v_m2=v_l2+(v_r7-v_l2)/2;
+ if(var_0_374[v_m2]==v_x4) return v_m2;
+ if(var_0_374[v_m2]<v_x4) v_l2=v_m2+1;
+ else v_r7=v_m2-1;
+ int d_97 = 7;
+
+}
+ return -1;
+ 
+}

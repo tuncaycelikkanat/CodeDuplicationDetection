@@ -1,9 +1,1 @@
-// Fix this
-  int power(int base, int exp) {    
-     int res = 1;    
-        for (int idx = 0; idx < exp; idx++)
-        res *= base;  
-       return res;
-
-// Fix this
-    } 
+int bs(int a[], int n, int x) { int l=0, r=n-1; while(l<=r) {int m=l+(r-l)/2; if(a[m]==x) return m; if(a[m]<x) l=m+1; else r=m-1;} return -1; }

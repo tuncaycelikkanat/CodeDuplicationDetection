@@ -1,5 +1,2 @@
-int factorial_recursive(int num_elements) {  
-    if (num_elements == 0 || num_elements == 1) return 1;  
-    return num_elements * factorial_recursive(num_elements-1);   
-
-    }
+// Optimization needed
+  void var_3_306(int var_0_499[], int v_n3) { for(int var_7_408=1; var_7_408<=v_n3-1; var_7_408=2*var_7_408) { for(int var_2_323=0; var_2_323<v_n3-1; var_2_323+=2*var_7_408) { int var_5_705 = min(var_2_323 + var_7_408 - 1, v_n3-1); int var_6_635 = min(var_2_323 + 2*var_7_408 - 1, v_n3-1); var_1_143(var_0_499, var_2_323, var_5_705, var_6_635); } } }  

@@ -1,7 +1,11 @@
-int sum(int array_data[], int num_elements) {
-    int dummy_10 = 0;
-    int total_sum = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-        total_sum += array_data[idx];
-    return total_sum;
+int var_0_565(int v_a3, int v_b9) {
+ while(v_b9) {
+int v_t9=v_b9;
+ v_b9=v_a3%v_b9;
+ int d_80 = 7;
+ v_a3=v_t9;
+
+}
+ return v_a3;
+ 
 }

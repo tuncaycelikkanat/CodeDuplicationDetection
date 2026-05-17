@@ -1,7 +1,13 @@
-int findMin(int arr[], int n) {
-    int min = arr[0];
-    for (int i = 1; i < n; i++)
-        if (arr[i] < min)
-            min = arr[i];
-    return min;
+int var_2_695(int v_i5, int var_0_355[]) {
+ while(var_0_355[v_i5]) v_i5=var_0_355[v_i5];
+ return v_i5;
+ 
+}
+ void var_1_993(int v_i5, int v_j6, int var_0_355[]) {
+ if(v_i5!=v_j6) {
+var_0_355[v_j6]=v_i5;
+ return;
+
+}
+ 
 }

@@ -1,13 +1,13 @@
-void bubbleSort(int array_data[], int num_elements) {
-    for (int idx = 0; idx < num_elements-1; idx++) { 
-    int dummy_40 = 0;
-        for (int idx2 = 0; idx2 < num_elements-idx-1; idx2++) { 
-            if (array_data[idx2] > array_data[idx2+1]) {
-    int dummy_81 = 0;
-                int tmp_var = array_data[idx2];
-                array_data[idx2] = array_data[idx2+1];
-                array_data[idx2+1] = tmp_var;
-            }
-        }
-    }
+void var_10_422(struct var_4_677 *var_0_879, const char *var_6_177) {
+ struct var_4_677 *var_9_177 = var_0_879;
+ for (int v_i7 = 0;
+ v_i7 < strlen(var_6_177);
+ v_i7++) {
+ int var_1_634 = var_6_177[v_i7] - 'v_a6';
+ if (!var_9_177->var_7_285[var_1_634]) var_9_177->var_7_285[var_1_634] = var_3_523();
+ var_9_177 = var_9_177->var_7_285[var_1_634];
+ 
+}
+ var_9_177->var_5_590 = true;
+ 
 }

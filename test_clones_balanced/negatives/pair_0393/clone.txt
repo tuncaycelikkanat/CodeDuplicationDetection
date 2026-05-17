@@ -1,14 +1,1 @@
-    void bubbleSort(int arr[], int n) { 
-    for (int i = 0; i < n-1; i++) {   
-          for (int j = 0; j < n-i-1; j++) {    
-            if (arr[j] > arr[j+1]) {
-// Logic here
-                    int temp = arr[j];   
-// Check if needed
-                    arr[j] = arr[j+1]; 
-                 arr[j+1] = temp;  
-              }    
-            }    
-      }
-// TODO
-    }  
+struct node* search(struct node* root, int key) { if(root==NULL || root->key==key) return root; if(root->key < key) return search(root->right, key); return search(root->left, key); }

@@ -1,16 +1,2 @@
-// Fix this
-void selectionSort(int arr[], int n) {
-     for (int i = 0; i < n-1; i++) {
-            int min_idx = i;    
-           for (int j = i+1; j < n; j++)   
-// Fix this
-             if (arr[j] < arr[min_idx])    
-// Logic here
-                min_idx = j;
-        int temp = arr[min_idx];   
-         arr[min_idx] = arr[i];   
-           arr[i] = temp;
-
-     }    
-
-}
+// TODO
+void build(int node, int start, int end) { if(start==end) {tree[node]=A[start]; return;} int mid=(start+end)/2; build(2*node,start,mid); build(2*node+1,mid+1,end); tree[node]=tree[2*node]+tree[2*node+1]; }

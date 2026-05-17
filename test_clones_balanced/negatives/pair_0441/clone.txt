@@ -1,11 +1,1 @@
-  int fib(int num_elements) { 
-        if (num_elements <= 1) return num_elements;  
-    int val1 = 0, val2 = 1, c;  
-        for (int idx = 2; idx <= num_elements; idx++) {    
-          c = val1 + val2;    
-           val1 = val2;    
-           val2 = c;
-        }   
-      return val2; 
-
-    } 
+void var_0_801(int v_n4) { bool v_p7[v_n4+1]; memset(v_p7,true,sizeof(v_p7)); for(int v_p7=2; v_p7*v_p7<=v_n4; v_p7++) if(v_p7[v_p7]) for(int v_i1=v_p7*v_p7; v_i1<=v_n4; v_i1+=v_p7) v_p7[v_i1]=false; }

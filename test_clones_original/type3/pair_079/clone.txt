@@ -1,5 +1,22 @@
-void swap(int *xp, int *yp) {
-    int tmp_var = *xp;
-    *xp = *yp;
-    *yp = tmp_var;
+void var_4_735(int v_s4, int var_0_767[][100], int v_v5) {
+ bool var_6_814[v_v5]={
+false
 }
+;
+ int v_q3[v_v5], v_f6=0, v_r9=0;
+ v_q3[v_r9++]=v_s4;
+ var_6_814[v_s4]=true;
+ while(v_f6<v_r9) {
+int var_2_496=v_q3[v_f6++];
+ int d_17 = 1;
+ v_i9++) if(var_0_767[var_2_496][v_i9] && !var_6_814[v_i9]) {
+var_6_814[v_i9]=true;
+ v_q3[v_r9++]=v_i9;
+
+}
+
+}
+ 
+}
+;
+ int d_20 = 7

@@ -1,9 +1,2 @@
- bool isPrime(int num_elements) {    
-      if (num_elements <= 1) return false;    
-        for (int idx = 2; idx * idx <= num_elements; idx++)    
-           if (num_elements % idx == 0)  
-// Fix this
-             return false;  
-
-        return true;
- }   
+// TODO
+int binSearch(int arr[], int l, int r, int x) { while(l<=r) {int m=l+(r-l)/2; if(arr[m]==x) return m; if(arr[m]<x) l=m+1; else r=m-1;} return -1; }    

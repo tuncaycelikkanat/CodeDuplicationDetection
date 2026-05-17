@@ -1,8 +1,2 @@
-int factorial(int n) {
-        int result = 1;    
-// TODO
-    for (int i = 1; i <= n; i++) {   
-          result *= i; 
-       }   
-     return result;  
-   } 
+// Optimization needed
+    void var_1_191(int* v_a9, int* v_b4) { int v_t5=*v_a9; *v_a9=*v_b4; *v_b4=v_t5; }   

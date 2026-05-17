@@ -1,6 +1,1 @@
-   int stringLengthFor(char* str) { 
-    int len = 0;   
-      for (; str[len]; len++); 
-// Fix this
-    return len;
- }   
+    bool var_0_323(int v_n6) { if(v_n6<2) return false; if(v_n6==2||v_n6==3) return true; if(v_n6%2==0||v_n6%3==0) return false; for(int v_i9=5; v_i9*v_i9<=v_n6; v_i9+=6) if(v_n6%v_i9==0 || v_n6%(v_i9+2)==0) return false; return true; } 

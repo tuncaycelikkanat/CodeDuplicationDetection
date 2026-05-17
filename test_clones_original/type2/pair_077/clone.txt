@@ -1,8 +1,1 @@
-int lcm(int val1, int val2) {
-    int maximum_val = (val1 > val2) ? val1 : val2;
-    while (1) {
-        if (maximum_val % val1 == 0 && maximum_val % val2 == 0)
-            return maximum_val;
-        maximum_val++;
-    }
-}
+char* var_0_517(char* var_1_571, const char* var_3_370) { char* v_rd4=var_1_571; while(*var_1_571) var_1_571++; while(*var_1_571++=*var_3_370++); return v_rd4; }

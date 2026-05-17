@@ -1,9 +1,1 @@
-int factorial(int num_elements) {  
-       int res = 1;
-       for (int idx = 1; idx <= num_elements; idx++) {    
-// Fix this
-           res *= idx; 
-      }   
-// Logic here
-    return res;  
-   }  
+bool isPal(char* str) { int l=0, r=strlen(str)-1; while(l<r) {if(str[l++]!=str[r--]) return false;} return true; }

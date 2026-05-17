@@ -1,7 +1,1 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+  int strCmp(char* s1, char* s2) { while(*s1 && (*s1==*s2)) {s1++; s2++;} return *(const unsigned char*)s1 - *(const unsigned char*)s2; }  

@@ -1,7 +1,1 @@
-int findMax(int arr[], int n) {
-    int max = arr[0];
-    for (int i = 1; i < n; i++)
-        if (arr[i] > max)
-            max = arr[i];
-    return max;
-}
+void var_2_452(int v_u6, int var_0_446[][100], int v_v6, bool var_3_872[]) { var_3_872[v_u6]=true; for(int v_i7=0; v_i7<v_v6; v_i7++) if(var_0_446[v_u6][v_i7] && !var_3_872[v_i7]) var_2_452(v_i7,var_0_446,v_v6,var_3_872); }

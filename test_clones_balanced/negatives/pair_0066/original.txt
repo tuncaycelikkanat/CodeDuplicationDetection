@@ -1,4 +1,1 @@
-int sumRec(int arr[], int n) {
-    if (n <= 0) return 0;
-    return (sumRec(arr, n - 1) + arr[n - 1]);
-}
+ int var_1_519(int v_n4) { if(v_n4<=1) return v_n4; return var_1_519(v_n4-1)+var_1_519(v_n4-2); }   

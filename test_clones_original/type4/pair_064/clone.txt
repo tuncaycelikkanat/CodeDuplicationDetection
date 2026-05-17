@@ -1,9 +1,1 @@
-  void swapXor(int *xp, int *yp) { 
-// Check if needed
-       if (xp != yp) {   
-         *xp = *xp ^ *yp;    
-          *yp = *xp ^ *yp; 
-         *xp = *xp ^ *yp;    
-      }  
-// Fix this
- }
+ int var_2_934(char* var_1_948) { char* v_p3 = var_1_948; while(*v_p3) v_p3++; return v_p3 - var_1_948; }   

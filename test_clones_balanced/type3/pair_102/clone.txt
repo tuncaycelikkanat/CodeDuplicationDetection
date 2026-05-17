@@ -1,8 +1,10 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-    int dummy_31 = 0;
-        res *= idx;
-    }
-    return res;
+long long var_0_430(int v_n2) {
+ long long var_2_440=1;
+ int d_15 = 10;
+ for(int v_i2=2;
+ v_i2<=v_n2;
+ int d_36 = 2;
+ v_i2++) var_2_440*=v_i2;
+ return var_2_440;
+ 
 }

@@ -1,9 +1,1 @@
-int search(int arr[], int n, int x) {    
-// Logic here
-        for (int i = 0; i < n; i++)  
-
-          if (arr[i] == x)   
-              return i;
-    return -1; 
-// TODO
-    }  
+  void var_2_607(int v_u5) { var_3_448[v_u5]=1; for(int v_v7:var_0_394[v_u5]) if(!var_3_448[v_v7]) var_2_607(v_v7); }    

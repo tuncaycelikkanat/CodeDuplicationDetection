@@ -1,12 +1,1 @@
-// Logic here
-  int gcd(int val1, int val2) {   
-        while (val2 != 0) { 
-
-          int tmp_var = val2;    
-        val2 = val1 % val2;   
-           val1 = tmp_var;
-    }  
-
-       return val1;    
-
- }
+  int lis(int arr[], int n) { int lis[n]; for(int i=0; i<n; i++) lis[i]=1; for(int i=1; i<n; i++) for(int j=0; j<i; j++) if(arr[i]>arr[j] && lis[i]<lis[j]+1) lis[i]=lis[j]+1; int m=0; for(int i=0; i<n; i++) if(m<lis[i]) m=lis[i]; return m; }  

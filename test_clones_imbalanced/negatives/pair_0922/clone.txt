@@ -1,11 +1,2 @@
-  bool isPrimeOpt(int num_elements) { 
-        if (num_elements <= 1) return false; 
-       if (num_elements <= 3) return true;
-// TODO
-       if (num_elements % 2 == 0 || num_elements % 3 == 0) return false; 
-       for (int idx = 5; idx * idx <= num_elements; idx = idx + 6)
-            if (num_elements % idx == 0 || num_elements % (idx + 2) == 0)
-                return false;  
-// TODO
-       return true;  
-}    
+// Check logic
+    long long fact(int n) { long long res=1; for(int i=2; i<=n; i++) res*=i; return res; }  

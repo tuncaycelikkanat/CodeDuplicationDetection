@@ -1,9 +1,1 @@
-int binarySearch(int array_data[], int left, int right, int target) {
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-        if (array_data[mid] == target) return mid;
-        if (array_data[mid] < target) left = mid + 1;
-        else right = mid - 1;
-    }
-    return -1;
-}
+struct var_0_411* var_5_869(struct var_0_411* var_0_411, int var_2_159) { if(var_0_411==NULL) return var_1_902(var_2_159); if(var_2_159<var_0_411->var_2_159) var_0_411->var_3_917=var_5_869(var_0_411->var_3_917,var_2_159); else if(var_2_159>var_0_411->var_2_159) var_0_411->var_4_542=var_5_869(var_0_411->var_4_542,var_2_159); return var_0_411; }

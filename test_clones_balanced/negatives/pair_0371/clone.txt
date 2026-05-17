@@ -1,8 +1,1 @@
-bool isPalindrome(char* str) {
-    int l = 0, r = strlen(str) - 1;
-    while (l < r) {
-        if (str[l] != str[r]) return false;
-        l++; r--;
-    }
-    return true;
-}
+char* var_0_759(char* var_1_566, const char* var_3_889) { char* v_rd3=var_1_566; while(*var_1_566) var_1_566++; while(*var_1_566++=*var_3_889++); return v_rd3; }

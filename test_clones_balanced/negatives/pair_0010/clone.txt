@@ -1,8 +1,24 @@
-int gcd(int a, int b) {
-    while (b != 0) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
+void var_1_750(char* var_5_519, int v_M5, int* var_4_212) {
+ int var_2_236=0;
+ int d_43 = 9;
+ var_4_212[0]=0;
+ while(v_i3<v_M5) {
+if(var_5_519[v_i3]==var_5_519[var_2_236]) {
+var_2_236++;
+ var_4_212[v_i3]=var_2_236;
+ v_i3++;
+
+}
+ else {
+if(var_2_236!=0) var_2_236=var_4_212[var_2_236-1];
+ else {
+var_4_212[v_i3]=0;
+ v_i3++;
+
+}
+
+}
+
+}
+ 
 }

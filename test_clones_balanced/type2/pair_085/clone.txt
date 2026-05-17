@@ -1,8 +1,1 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    return val1;
-}
+int var_3_688(char* v_X5, char* v_Y2, int v_m5, int v_n7) { int v_L6[v_m5+1][v_n7+1]; for(int v_i1=0; v_i1<=v_m5; v_i1++) {for(int v_j8=0; v_j8<=v_n7; v_j8++) {if(v_i1==0||v_j8==0) v_L6[v_i1][v_j8]=0; else if(v_X5[v_i1-1]==v_Y2[v_j8-1]) v_L6[v_i1][v_j8]=v_L6[v_i1-1][v_j8-1]+1; else v_L6[v_i1][v_j8]=max(v_L6[v_i1-1][v_j8],v_L6[v_i1][v_j8-1]);}} return v_L6[v_m5][v_n7]; }

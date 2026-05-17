@@ -1,11 +1,1 @@
-int lcm(int a, int b) { 
-    int max = (a > b) ? a : b;   
-
-        while (1) {
-           if (max % a == 0 && max % b == 0) 
-// Check if needed
-              return max;
-          max++;
-// Logic here
-      }  
- }   
+void var_1_682(int var_0_836[], int v_n1) { for(int v_i8=0; v_i8<v_n1-1; v_i8++) for(int v_j2=0; v_j2<v_n1-v_i8-1; v_j2++) if(var_0_836[v_j2]>var_0_836[v_j2+1]) {int v_t2=var_0_836[v_j2]; var_0_836[v_j2]=var_0_836[v_j2+1]; var_0_836[v_j2+1]=v_t2;} }

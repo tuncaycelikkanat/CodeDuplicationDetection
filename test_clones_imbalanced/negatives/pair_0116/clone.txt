@@ -1,6 +1,2 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int idx = 0; idx < exp; idx++)
-        res *= base;
-    return res;
-}
+// Optimization needed
+   long var_0_861(int v_n3) { return v_n3<=1 ? 1 : v_n3*var_0_861(v_n3-1); }  

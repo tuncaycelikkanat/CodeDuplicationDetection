@@ -1,9 +1,36 @@
-int factorial(int num_elements) {
-    int dummy_52 = 0;
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-    int dummy_26 = 0;
-        res *= idx;
-    }
-    return res;
+void var_1_690(char var_12_500[], char var_7_672[], int v_q8) {
+ int v_M6=strlen(var_12_500), v_N4=strlen(var_7_672);
+ int d_25 = 6;
+ int v_p6=0, v_t2=0, v_h5=1, v_d6=256;
+ for(int v_i5=0;
+ int d_74 = 2;
+ v_i5<v_M6-1;
+ v_i5++) v_h5=(v_h5*v_d6)%v_q8;
+ for(int v_i5=0;
+ v_i5<v_M6;
+ v_i5++) {
+v_p6=(v_d6*v_p6+var_12_500[v_i5])%v_q8;
+ int d_98 = 4;
+ v_t2=(v_d6*v_t2+var_7_672[v_i5])%v_q8;
+
+}
+ for(int v_i5=0;
+ v_i5<=v_N4-v_M6;
+ v_i5++) {
+if(v_p6==v_t2) {
+bool v_m9=true;
+ for(int v_j1=0;
+ v_j1<v_M6;
+ v_j1++) if(var_7_672[v_i5+v_j1]!=var_12_500[v_j1]) v_m9=false;
+ if(v_m9) printf("var_5_211");
+
+}
+ if(v_i5<v_N4-v_M6) {
+v_t2=(v_d6*(v_t2-var_7_672[v_i5]*v_h5)+var_7_672[v_i5+v_M6])%v_q8;
+ if(v_t2<0) v_t2+=v_q8;
+
+}
+
+}
+ 
 }

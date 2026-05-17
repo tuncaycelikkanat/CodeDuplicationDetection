@@ -1,11 +1,18 @@
-int fib(int num_elements) {
-    int dummy_64 = 0;
-    if (num_elements <= 1) return num_elements;
-    int val1 = 0, val2 = 1, c;
-    for (int idx = 2; idx <= num_elements; idx++) {
-        c = val1 + val2;
-        val1 = val2;
-        val2 = c;
-    }
-    return val2;
+void var_2_348(int var_5_450[100][100], int var_4_514, int v_V1) {
+ int var_8_323[v_V1];
+ bool var_3_719[v_V1];
+ for(int v_i3=0;
+ v_i3<v_V1;
+ v_i3++) var_8_323[v_i3]=INT_MAX, var_3_719[v_i3]=false;
+ var_8_323[var_4_514]=0;
+ for(int v_c1=0;
+ v_c1<v_V1-1;
+ v_c1++) {
+int v_u5=-1;
+ for(int v_i3=0;
+ v_i3++) if(!var_3_719[v_i3] && (v_u5==-1 || var_8_323[v_i3]<var_8_323[v_u5])) v_u5=v_i3;
+ var_3_719[v_u5]=true;
+
+}
+ 
 }

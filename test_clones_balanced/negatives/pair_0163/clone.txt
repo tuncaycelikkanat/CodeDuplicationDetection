@@ -1,12 +1,1 @@
-// Fix this
-  void swapXor(int *xp, int *yp) {   
-
-     if (xp != yp) { 
-// Fix this
-            *xp = *xp ^ *yp;  
-         *yp = *xp ^ *yp;    
-// Check if needed
-            *xp = *xp ^ *yp;   
-     }    
-// Logic here
-    }   
+int lcm(int a, int b) { return (a*b)/gcd(a,b); }

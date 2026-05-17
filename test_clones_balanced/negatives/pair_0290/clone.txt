@@ -1,10 +1,2 @@
-int fib(int n) {
-    if (n <= 1) return n;
-    int a = 0, b = 1, c;
-    for (int i = 2; i <= n; i++) {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-    return b;
-}
+// Fix this
+    void var_5_483(int var_0_516[], int v_l1, int v_r1) { if(v_l1<v_r1) {int v_m4=v_l1+(v_r1-v_l1)/2; var_5_483(var_0_516,v_l1,v_m4); var_5_483(var_0_516,v_m4+1,v_r1); var_1_336(var_0_516,v_l1,v_m4,v_r1);} }    

@@ -1,6 +1,1 @@
-int sum(int array_data[], int num_elements) {
-    int total_sum = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-        total_sum += array_data[idx];
-    return total_sum;
-}
+int var_3_631(char* v_X3, char* v_Y9, int v_m7, int v_n3) { int v_L8[v_m7+1][v_n3+1]; for(int v_i6=0; v_i6<=v_m7; v_i6++) {for(int v_j5=0; v_j5<=v_n3; v_j5++) {if(v_i6==0||v_j5==0) v_L8[v_i6][v_j5]=0; else if(v_X3[v_i6-1]==v_Y9[v_j5-1]) v_L8[v_i6][v_j5]=v_L8[v_i6-1][v_j5-1]+1; else v_L8[v_i6][v_j5]=max(v_L8[v_i6-1][v_j5],v_L8[v_i6][v_j5-1]);}} return v_L8[v_m7][v_n3]; }

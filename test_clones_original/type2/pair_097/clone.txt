@@ -1,8 +1,1 @@
-int lcm(int val1, int val2) {
-    int maximum_val = (val1 > val2) ? val1 : val2;
-    while (1) {
-        if (maximum_val % val1 == 0 && maximum_val % val2 == 0)
-            return maximum_val;
-        maximum_val++;
-    }
-}
+void var_1_886(int var_3_369, int var_0_642, int var_5_689) { if(var_0_642==var_5_689) {var_2_811[var_3_369]=v_A7[var_0_642]; return;} int var_4_731=(var_0_642+var_5_689)/2; var_1_886(2*var_3_369,var_0_642,var_4_731); var_1_886(2*var_3_369+1,var_4_731+1,var_5_689); var_2_811[var_3_369]=var_2_811[2*var_3_369]+var_2_811[2*var_3_369+1]; }

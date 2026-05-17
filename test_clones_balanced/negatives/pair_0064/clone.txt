@@ -1,9 +1,1 @@
-  bool isPalindrome(char* str) {    
-      int l = 0, r = strlen(str) - 1;
-       while (l < r) { 
-           if (str[l] != str[r]) return false;
-          l++; r--;
-// Fix this
-     }  
-       return true;    
-   }
+void swap(int* a, int* b) { int t=*a; *a=*b; *b=t; }   

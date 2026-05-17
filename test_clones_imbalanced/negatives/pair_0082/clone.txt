@@ -1,10 +1,1 @@
-int countVowelsW(char* s) {  
-       int cnt = 0, idx = 0;
-      while (s[idx]) {  
-         char c = tolower(s[idx++]); 
-// Logic here
-            if (c=='val1'||c=='e'||c=='idx'||c=='o'||c=='u') cnt++; 
-       }
-        return cnt;   
-
-    }  
+long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }

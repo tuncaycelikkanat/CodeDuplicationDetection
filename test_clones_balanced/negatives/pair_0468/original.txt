@@ -1,9 +1,1 @@
- int gcd(int a, int b) {  
-
-       while (b != 0) {
-           int temp = b;   
-         b = a % b;  
-            a = temp; 
-      }   
-        return a;    
-}   
+void sieve(int n) { bool p[n+1]; memset(p,true,sizeof(p)); for(int p=2; p*p<=n; p++) if(p[p]) for(int i=p*p; i<=n; i+=p) p[i]=false; }

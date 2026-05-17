@@ -1,8 +1,1 @@
-int lcm(int a, int b) {
-    int max = (a > b) ? a : b;
-    while (1) {
-        if (max % a == 0 && max % b == 0)
-            return max;
-        max++;
-    }
-}
+   int var_1_130(int var_0_896[], int v_n9) { int v_s3=0; for(int v_i8=0; v_i8<v_n9; v_i8++) v_s3+=var_0_896[v_i8]; return v_s3; }  

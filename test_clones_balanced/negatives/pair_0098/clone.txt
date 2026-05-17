@@ -1,7 +1,1 @@
-// Check if needed
-    int power(int base, int exp) {  
-       int res = 1;  
-      for (int idx = 0; idx < exp; idx++)  
-            res *= base;  
-       return res;
-    }  
+long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }

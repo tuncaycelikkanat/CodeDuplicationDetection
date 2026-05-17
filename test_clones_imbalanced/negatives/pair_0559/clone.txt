@@ -1,11 +1,1 @@
-int fib(int num_elements) {
-    if (num_elements <= 1) return num_elements;
-    int val1 = 0, val2 = 1, c;
-    for (int idx = 2; idx <= num_elements; idx++) {
-        c = val1 + val2;
-        val1 = val2;
-        val2 = c;
-    }
-    // returning result
-    return val2;
-}
+int var_2_652(int v_a4, int v_b3) { return (v_a4*v_b3)/var_0_552(v_a4,v_b3); }

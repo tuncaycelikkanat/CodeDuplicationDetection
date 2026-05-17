@@ -1,7 +1,1 @@
- int sumOfDigits(int num_elements) { 
-     int sum = 0;  
-// Logic here
-     while (num_elements != 0) { sum += num_elements % 10; num_elements /= 10; }   
-// Logic here
-        return sum;  
-  }
+char* strCpy(char* d, const char* s) { char* saved=d; while(*s) *d++=*s++; *d=0; return saved; }

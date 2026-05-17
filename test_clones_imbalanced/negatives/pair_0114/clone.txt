@@ -1,10 +1,1 @@
-// Logic here
-int factorial(int num_elements) {
-// Check if needed
-     int res = 1; 
-       for (int idx = 1; idx <= num_elements; idx++) { 
-         res *= idx;    
-
-      }   
-       return res;
-  } 
+int var_2_652(int v_a4, int v_b3) { return (v_a4*v_b3)/var_0_552(v_a4,v_b3); }

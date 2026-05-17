@@ -1,12 +1,1 @@
-// Fix this
-int lcm(int a, int b) {    
-        int max = (a > b) ? a : b;    
-// TODO
-    while (1) { 
-          if (max % a == 0 && max % b == 0) 
-// Fix this
-                return max; 
-        max++;
-// Logic here
-       }
- }   
+  int editDist(char* s1, char* s2, int m, int n) { int dp[m+1][n+1]; for(int i=0; i<=m; i++) {for(int j=0; j<=n; j++) {if(i==0) dp[i][j]=j; else if(j==0) dp[i][j]=i; else if(s1[i-1]==s2[j-1]) dp[i][j]=dp[i-1][j-1]; else dp[i][j]=1+min(min(dp[i][j-1],dp[i-1][j]),dp[i-1][j-1]);}} return dp[m][n]; } 

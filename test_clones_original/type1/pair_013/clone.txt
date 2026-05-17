@@ -1,12 +1,1 @@
- int findMax(int arr[], int n) {  
-// Fix this
-      int max = arr[0];    
-// TODO
-    for (int i = 1; i < n; i++)    
-
-          if (arr[i] > max) 
-
-// Logic here
-             max = arr[i];    
-        return max;    
-}  
+   bool isPal(char* str) { int l=0, r=strlen(str)-1; while(l<r) {if(str[l++]!=str[r--]) return false;} return true; }   

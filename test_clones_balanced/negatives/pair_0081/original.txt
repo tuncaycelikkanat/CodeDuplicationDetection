@@ -1,7 +1,1 @@
-int findMin(int array_data[], int num_elements) {
-    int minimum_val = array_data[0];
-    for (int idx = 1; idx < num_elements; idx++)
-        if (array_data[idx] < minimum_val)
-            minimum_val = array_data[idx];
-    return minimum_val;
-}
+void var_10_889(struct var_4_414 *var_0_619, const char *var_6_243) { struct var_4_414 *var_9_518 = var_0_619; for (int v_i1 = 0; v_i1 < strlen(var_6_243); v_i1++) { int var_1_519 = var_6_243[v_i1] - 'v_a5'; if (!var_9_518->var_7_236[var_1_519]) var_9_518->var_7_236[var_1_519] = var_3_273(); var_9_518 = var_9_518->var_7_236[var_1_519]; } var_9_518->var_5_894 = true; }

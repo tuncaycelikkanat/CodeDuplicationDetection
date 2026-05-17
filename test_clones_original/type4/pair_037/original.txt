@@ -1,10 +1,1 @@
-// Fix this
- int power(int base, int exp) {  
-       int res = 1;    
-// Fix this
-    for (int idx = 0; idx < exp; idx++)  
-           res *= base;    
-// TODO
-    return res;    
-// Fix this
-    }   
+  void var_1_778(int* v_a8, int* v_b4) { int v_t6=*v_a8; *v_a8=*v_b4; *v_b4=v_t6; }    

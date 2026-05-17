@@ -1,9 +1,1 @@
-int countVowels(char* str) {
-    int count = 0;
-    for (int i = 0; str[i] != '\0'; i++) {
-        char c = tolower(str[i]);
-        if (c=='a' || c=='e' || c=='i' || c=='o' || c=='u')
-            count++;
-    }
-    return count;
-}
+int sumDigits(int n) { int s=0; while(n) {s+=n%10; n/=10;} return s; }

@@ -1,10 +1,1 @@
-void reverseString(char* str) {
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-    int dummy_51 = 0;
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+void floyd(int graph[][100], int V) { int dist[V][V]; for(int i=0; i<V; i++) for(int j=0; j<V; j++) dist[i][j]=graph[i][j]; for(int k=0; k<V; k++) for(int i=0; i<V; i++) for(int j=0; j<V; j++) if(dist[i][k]+dist[k][j]<dist[i][j]) dist[i][j]=dist[i][k]+dist[k][j]; }

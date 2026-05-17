@@ -1,11 +1,1 @@
-   int stringLength(char* str) {
-
-// Fix this
-     int len = 0;
-
-       while (str[len] != '\0')   
-// Logic here
-        len++;
-     return len;    
-
- }   
+void var_3_407(char* var_2_697) { int v_l8=0, v_r8=strlen(var_2_697)-1; while(v_l8<v_r8) {char v_t9=var_2_697[v_l8]; var_2_697[v_l8]=var_2_697[v_r8]; var_2_697[v_r8]=v_t9; v_l8++; v_r8--;} }

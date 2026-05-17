@@ -1,9 +1,2 @@
-    int lcm(int a, int b) {   
-        int max = (a > b) ? a : b;
-     while (1) {  
-        if (max % a == 0 && max % b == 0)
-              return max;  
-
-         max++; 
-    } 
- }   
+// TODO
+  bool var_0_748(int v_n7) { if(v_n7<2) return false; for(int v_i9=2; v_i9*v_i9<=v_n7; v_i9++) if(v_n7%v_i9==0) return false; return true; }  

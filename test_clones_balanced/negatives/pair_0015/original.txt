@@ -1,8 +1,1 @@
-   int sumOfDigits(int n) { 
-      int sum = 0;    
-     while (n != 0) {    
-           sum += n % 10; 
-          n /= 10;  
-      }
-    return sum;   
- }    
+int getMax(int arr[], int n) { int m=arr[0]; for(int i=1; i<n; i++) if(arr[i]>m) m=arr[i]; return m; }

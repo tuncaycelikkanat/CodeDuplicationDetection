@@ -1,8 +1,7 @@
-int findMin(int array_data[], int num_elements) {
-    int minimum_val = array_data[0];
-    for (int idx = 1; idx < num_elements; idx++)
-        if (array_data[idx] < minimum_val)
-            minimum_val = array_data[idx];
-    // returning result
-    return minimum_val;
+struct var_0_105* var_5_838(struct var_0_105* var_0_105, int var_2_213) {
+ if(var_0_105==NULL) return var_1_190(var_2_213);
+ else if(var_2_213>var_0_105->var_2_213) var_0_105->var_4_289=var_5_838(var_0_105->var_4_289,var_2_213);
+ int d_36 = 2;
+ return var_0_105;
+ 
 }

@@ -1,12 +1,13 @@
-   int fib(int n) {
+void var_5_659(int var_0_926[], int v_n1, int v_i4) {
+ int v_lg1=v_i4, v_l1=2*v_i4+1, v_r5=2*v_i4+2;
+ if(v_l1<v_n1 && var_0_926[v_l1]>var_0_926[v_lg1]) v_lg1=v_l1;
+ if(v_r5<v_n1 && var_0_926[v_r5]>var_0_926[v_lg1]) v_lg1=v_r5;
+ if(v_lg1!=v_i4) {
+int v_t7=var_0_926[v_i4];
+ var_0_926[v_i4]=var_0_926[v_lg1];
+ var_0_926[v_lg1]=v_t7;
+ var_5_659(var_0_926,v_n1,v_lg1);
 
-     if (n <= 1) return n;  
-      int a = 0, b = 1, c;
-      for (int i = 2; i <= n; i++) {
-         c = a + b;    
-// Logic here
-          a = b;   
-        b = c;    
-    } 
-    return b; 
- } 
+}
+ 
+}

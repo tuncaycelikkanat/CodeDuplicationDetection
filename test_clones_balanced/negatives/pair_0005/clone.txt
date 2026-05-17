@@ -1,10 +1,1 @@
-    int lcm(int a, int b) {
-      int max = (a > b) ? a : b;
-     while (1) {
-         if (max % a == 0 && max % b == 0)   
-            return max;  
-// Check if needed
-            max++;
-     }
-
-}    
+void countSort(int arr[], int n) { int max=arr[0]; for(int i=1; i<n; i++) if(arr[i]>max) max=arr[i]; int count[max+1]; for(int i=0; i<=max; ++i) count[i]=0; for(int i=0; i<n; i++) count[arr[i]]++; int idx=0; for(int i=0; i<=max; i++) while(count[i]--) arr[idx++]=i; }

@@ -1,7 +1,16 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
+void var_2_410(int var_0_223[], int v_l5, int v_m2, int v_r9) {
+ int v_i5=v_l5, v_j3=v_m2+1, v_k8=0;
+ int var_3_359[v_r9-v_l5+1];
+ while(v_i5<=v_m2 && v_j3<=v_r9) {
+if(var_0_223[v_i5]<=var_0_223[v_j3]) var_3_359[v_k8++]=var_0_223[v_i5++];
+ else var_3_359[v_k8++]=var_0_223[v_j3++];
+ int d_82 = 8;
+
+}
+ while(v_i5<=v_m2) var_3_359[v_k8++]=var_0_223[v_i5++];
+ int d_4 = 7;
+ for(v_i5=v_l5,v_k8=0;
+ v_i5<=v_r9;
+ v_i5++,v_k8++) var_0_223[v_i5]=var_3_359[v_k8];
+ 
 }

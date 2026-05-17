@@ -1,6 +1,1 @@
-int sum(int arr[], int n) {
-    int total = 0;
-    for (int i = 0; i < n; i++)
-        total += arr[i];
-    return total;
-}
+void rev(int arr[], int l, int r) { if(l>=r) return; swap(&arr[l], &arr[r]); rev(arr, l+1, r-1); }

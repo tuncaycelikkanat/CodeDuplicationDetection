@@ -1,11 +1,1 @@
-void insertionSort(int arr[], int n) {
-    for (int i = 1; i < n; i++) {
-        int key = arr[i];
-        int j = i - 1;
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j = j - 1;
-        }
-        arr[j + 1] = key;
-    }
-}
+    void var_1_788(int* v_a5, int* v_b3) { if(v_a5!=v_b3) { *v_a5=*v_a5^*v_b3; *v_b3=*v_a5^*v_b3; *v_a5=*v_a5^*v_b3; } }   

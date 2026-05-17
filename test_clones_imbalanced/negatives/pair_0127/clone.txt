@@ -1,6 +1,1 @@
-// Logic here
-    int factorial_recursive(int num_elements) { 
-    if (num_elements == 0 || num_elements == 1) return 1;  
-
-    return num_elements * factorial_recursive(num_elements-1); 
-  }
+long long var_0_899(int v_n9) { long long var_2_698=1; for(int v_i1=2; v_i1<=v_n9; v_i1++) var_2_698*=v_i1; return var_2_698; }

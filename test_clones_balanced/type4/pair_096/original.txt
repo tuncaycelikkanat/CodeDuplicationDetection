@@ -1,12 +1,1 @@
-// TODO
-  bool isPalindrome(char* str) {
-       int left = 0, right = strlen(str) - 1;    
-// TODO
-     while (left < right) { 
-         if (str[left] != str[right]) return false;   
-           left++; right--;
-       } 
-// Check if needed
-     return true;   
-// Check if needed
- } 
+int countBits(int n) { int c=0; while(n) {c+=n&1; n>>=1;} return c; }

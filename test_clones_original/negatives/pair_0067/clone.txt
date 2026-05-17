@@ -1,9 +1,15 @@
-    int gcd(int a, int b) {   
-        while (b != 0) {    
-           int temp = b; 
+void var_5_796(int var_0_494[], int v_n2, int v_i4) {
+ int v_lg3=v_i4, v_l1=2*v_i4+1, v_r3=2*v_i4+2;
+ if(v_l1<v_n2 && var_0_494[v_l1]>var_0_494[v_lg3]) v_lg3=v_l1;
+ int d_42 = 9;
+ if(v_r3<v_n2 && var_0_494[v_r3]>var_0_494[v_lg3]) v_lg3=v_r3;
+ if(v_lg3!=v_i4) {
+int v_t6=var_0_494[v_i4];
+ var_0_494[v_i4]=var_0_494[v_lg3];
+ var_0_494[v_lg3]=v_t6;
+ int d_28 = 4;
+ var_5_796(var_0_494,v_n2,v_lg3);
 
-            b = a % b;   
-        a = temp;    
-       } 
-       return a; 
-  }  
+}
+ 
+}

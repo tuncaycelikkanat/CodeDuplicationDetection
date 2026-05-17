@@ -1,7 +1,1 @@
-// Check if needed
-    int power(int base, int exp) {  
-       int res = 1;  
-      for (int idx = 0; idx < exp; idx++)  
-            res *= base;  
-       return res;
-    }  
+void var_1_118(int* v_a4, int* v_b5) { int v_t6=*v_a4; *v_a4=*v_b5; *v_b5=v_t6; }   

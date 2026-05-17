@@ -1,7 +1,1 @@
-int findMin(int arr[], int n) {
-    int min = arr[0];
-    for (int i = 1; i < n; i++)
-        if (arr[i] < min)
-            min = arr[i];
-    return min;
-}
+  void var_1_160(int* v_a7, int* v_b5) { int v_t9=*v_a7; *v_a7=*v_b5; *v_b5=v_t9; }  

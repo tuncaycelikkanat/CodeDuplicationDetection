@@ -1,6 +1,1 @@
-// Check if needed
-   int sumRec(int array_data[], int num_elements) {   
-     if (num_elements <= 0) return 0;
-// TODO
-       return (sumRec(array_data, num_elements - 1) + array_data[num_elements - 1]);
-    }  
+void var_2_213(int v_u3, int var_0_851[][100], int v_v4, bool var_3_506[]) { var_3_506[v_u3]=true; for(int v_i8=0; v_i8<v_v4; v_i8++) if(var_0_851[v_u3][v_i8] && !var_3_506[v_i8]) var_2_213(v_i8,var_0_851,v_v4,var_3_506); }

@@ -1,10 +1,13 @@
-void reverseString(char* str) {
-    int dummy_82 = 0;
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
+long long var_0_894(int v_b1, int v_p9) {
+ long long v_r9=1;
+ while(v_p9){
+ if(v_p9&1) v_r9*=v_b1;
+ int d_68 = 3;
+ v_b1*=v_b1;
+ v_p9>>=1;
+ 
+}
+ return v_r9;
+ int d_82 = 1;
+ 
 }

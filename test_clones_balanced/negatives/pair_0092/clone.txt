@@ -1,6 +1,1 @@
-int sum(int arr[], int n) {
-    int total = 0;
-    for (int i = 0; i < n; i++)
-        total += arr[i];
-    return total;
-}
+bool var_0_343(int v_n8) { if(v_n8<2) return false; for(int v_i7=2; v_i7*v_i7<=v_n8; v_i7++) if(v_n8%v_i7==0) return false; return true; }   

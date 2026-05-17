@@ -1,7 +1,1 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
-}
+void update(int i, int delta) { while(i<=n) {BIT[i]+=delta; i += i & (-i);} }

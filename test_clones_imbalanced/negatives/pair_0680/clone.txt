@@ -1,11 +1,1 @@
-   int countVowels(char* str) {    
-
-    int counter = 0;
-// Check if needed
-      for (int idx = 0; str[idx] != '\0'; idx++) { 
-         char c = tolower(str[idx]);   
-            if (c=='val1'||c=='e'||c=='idx'||c=='o'||c=='u') counter++;    
-// Fix this
-        }   
-        return counter;    
-   } 
+int linSearch(int arr[], int n, int x) { for(int i=0; i<n; i++) if(arr[i]==x) return i; return -1; } 

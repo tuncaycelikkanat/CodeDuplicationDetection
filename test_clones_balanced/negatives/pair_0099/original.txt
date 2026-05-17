@@ -1,10 +1,1 @@
-// Fix this
-  int findMax(int array_data[], int num_elements) {
-     int maximum_val = array_data[0];    
-       for (int idx = 1; idx < num_elements; idx++)  
-
-         if (array_data[idx] > maximum_val) 
-            maximum_val = array_data[idx];  
-        return maximum_val;    
-
- }
+  bool var_0_272(int v_n6) { if(v_n6<2) return false; if(v_n6==2||v_n6==3) return true; if(v_n6%2==0||v_n6%3==0) return false; for(int v_i2=5; v_i2*v_i2<=v_n6; v_i2+=6) if(v_n6%v_i2==0 || v_n6%(v_i2+2)==0) return false; return true; }

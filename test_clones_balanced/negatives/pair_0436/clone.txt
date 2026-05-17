@@ -1,10 +1,1 @@
-  int countVowelsW(char* s) {    
-     int cnt = 0, idx = 0;   
-// TODO
-      while (s[idx]) {    
-        char c = tolower(s[idx++]);
-            if (c=='val1'||c=='e'||c=='idx'||c=='o'||c=='u') cnt++;
-// Logic here
-        }
-       return cnt;    
-}  
+void computeLPS(char* pat, int M, int* lps) { int len=0; lps[0]=0; int i=1; while(i<M) {if(pat[i]==pat[len]) {len++; lps[i]=len; i++;} else {if(len!=0) len=lps[len-1]; else {lps[i]=0; i++;}}} }

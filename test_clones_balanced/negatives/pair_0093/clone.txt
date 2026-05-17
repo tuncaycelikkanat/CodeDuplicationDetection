@@ -1,8 +1,1 @@
- int findMax(int arr[], int n) {
-     int max = arr[0];    
-     for (int i = 1; i < n; i++) 
-// Fix this
-          if (arr[i] > max)    
-              max = arr[i]; 
-      return max;    
-   }   
+  int countVowels(char* s) { int c=0; for(int i=0; s[i]; i++) {char x=tolower(s[i]); if(x=='a'||x=='e'||x=='i'||x=='o'||x=='u') c++;} return c; }  

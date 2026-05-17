@@ -1,7 +1,1 @@
-int power(int base, int exp) {
-    int res = 1;
-    for (int idx = 0; idx < exp; idx++)
-        res *= base;
-    // returning result
-    return res;
-}
+int fib(int n) { int a=0, b=1; while(n--) {int t=a+b; a=b; b=t;} return a; }

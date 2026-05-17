@@ -1,8 +1,1 @@
-// Fix this
- int power(int base, int exp) { 
-    int res = 1;
-       for (int idx = 0; idx < exp; idx++) 
-// TODO
-        res *= base;  
-       return res;   
-  }    
+void var_3_158(char* var_2_319) { int v_l7=0, v_r4=strlen(var_2_319)-1; while(v_l7<v_r4) {char v_t7=var_2_319[v_l7]; var_2_319[v_l7]=var_2_319[v_r4]; var_2_319[v_r4]=v_t7; v_l7++; v_r4--;} }

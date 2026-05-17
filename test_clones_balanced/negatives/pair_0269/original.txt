@@ -1,8 +1,1 @@
-int sumOfDigits(int num_elements) {
-    int sum = 0;
-    while (num_elements != 0) {
-        sum += num_elements % 10;
-        num_elements /= 10;
-    }
-    return sum;
-}
+void swap(int* a, int* b) { int t=*a; *a=*b; *b=t; }

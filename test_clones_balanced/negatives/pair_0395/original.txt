@@ -1,6 +1,1 @@
- int stringLengthFor(char* str) {  
-    int len = 0;
-     for (; str[len]; len++);
-      return len; 
-// Fix this
- }
+int var_4_652(int v_n4) { int v_a1=0, v_b4=1; while(v_n4--) {int v_t1=v_a1+v_b4; v_a1=v_b4; v_b4=v_t1;} return v_a1; }

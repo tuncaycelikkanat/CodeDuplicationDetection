@@ -1,8 +1,13 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-    int dummy_31 = 0;
-        res *= idx;
-    }
-    return res;
+int var_2_695(int v_i5, int var_0_355[]) {
+ while(var_0_355[v_i5]) v_i5=var_0_355[v_i5];
+ return v_i5;
+ 
+}
+ void var_1_993(int v_i5, int v_j6, int var_0_355[]) {
+ if(v_i5!=v_j6) {
+var_0_355[v_j6]=v_i5;
+ return;
+
+}
+ 
 }

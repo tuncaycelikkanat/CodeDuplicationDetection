@@ -1,11 +1,1 @@
-// Fix this
-  bool isPrime(int n) { 
-     if (n <= 1) return false;    
-
-    for (int i = 2; i * i <= n; i++)   
-            if (n % i == 0)    
-
-               return false;    
-       return true;    
-// Check if needed
-  }    
+void topSortUtil(int v, bool vis[], stack<int>& Stack) { vis[v]=true; for(auto i=adj[v].begin(); i!=adj[v].end(); ++i) if(!vis[*i]) topSortUtil(*i, vis, Stack); Stack.push(v); } 

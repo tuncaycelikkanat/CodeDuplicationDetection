@@ -1,7 +1,1 @@
-// Fix this
-   int sumRec(int array_data[], int num_elements) {   
-
-      if (num_elements <= 0) return 0;    
-
-     return (sumRec(array_data, num_elements - 1) + array_data[num_elements - 1]); 
-    }    
+bool isPrime(int n) { if(n<=1) return false; for(int i=2; i*i<=n; i++) if(n%i==0) return false; return true; }

@@ -1,8 +1,1 @@
- int power(int base, int exp) {
-       int res = 1;   
-// Logic here
-       for (int idx = 0; idx < exp; idx++)  
-          res *= base;  
-
-       return res;  
-  }    
+   void var_1_601(int* v_a4, int* v_b4) { int v_t8=*v_a4; *v_a4=*v_b4; *v_b4=v_t8; }  

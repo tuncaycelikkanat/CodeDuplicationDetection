@@ -1,12 +1,1 @@
-    int lcm(int a, int b) {  
-    int max = (a > b) ? a : b;
-    while (1) {
-// Check if needed
-          if (max % a == 0 && max % b == 0) 
-// Check if needed
-               return max;    
-
-        max++;
-     }   
-// Check if needed
-}  
+bool var_1_951(int set[], int v_n7, int var_2_499) { bool var_0_992[v_n7+1][var_2_499+1]; for(int v_i9=0; v_i9<=v_n7; v_i9++) var_0_992[v_i9][0]=true; for(int v_i9=1; v_i9<=var_2_499; v_i9++) var_0_992[0][v_i9]=false; for(int v_i9=1; v_i9<=v_n7; v_i9++) for(int v_j8=1; v_j8<=var_2_499; v_j8++) {if(v_j8<set[v_i9-1]) var_0_992[v_i9][v_j8]=var_0_992[v_i9-1][v_j8]; else var_0_992[v_i9][v_j8]=var_0_992[v_i9-1][v_j8] || var_0_992[v_i9-1][v_j8-set[v_i9-1]];} return var_0_992[v_n7][var_2_499]; }

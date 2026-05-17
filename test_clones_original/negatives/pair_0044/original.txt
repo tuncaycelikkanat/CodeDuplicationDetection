@@ -1,5 +1,1 @@
-int sumOfDigits(int n) {
-    int sum = 0;
-    while (n != 0) { sum += n % 10; n /= 10; }
-    return sum;
-}
+char* strCat(char* dest, const char* src) { char* rd=dest; while(*dest) dest++; while(*dest++=*src++); return rd; }

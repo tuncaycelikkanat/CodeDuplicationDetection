@@ -1,7 +1,1 @@
-    int sumOfDigits(int num_elements) {
-    int sum = 0;
-// Fix this
-        while (num_elements != 0) { sum += num_elements % 10; num_elements /= 10; }
-// Check if needed
-        return sum;   
-  } 
+void rev(int arr[], int n) { for(int i=0; i<n/2; i++) swap(&arr[i], &arr[n-1-i]); }

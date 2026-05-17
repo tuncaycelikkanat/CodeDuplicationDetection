@@ -1,7 +1,1 @@
-bool isPrime(int num_elements) {
-    if (num_elements <= 1) return false;
-    for (int idx = 2; idx * idx <= num_elements; idx++)
-        if (num_elements % idx == 0)
-            return false;
-    return true;
-}
+int var_2_689(int var_0_464[], int v_n1, int v_x8) { for(int v_i1=0; v_i1<v_n1; v_i1++) if(var_0_464[v_i1]==v_x8) return v_i1; return -1; }

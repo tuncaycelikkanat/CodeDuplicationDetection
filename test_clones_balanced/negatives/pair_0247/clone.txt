@@ -1,10 +1,2 @@
-// Fix this
-   int sumOfDigits(int n) {  
-       int sum = 0;    
-    while (n != 0) {  
-            sum += n % 10; 
-           n /= 10; 
-     }
-       return sum;    
-// Logic here
-    }   
+// TODO
+   int var_2_612(int v_n4) { int v_c1=0; while(v_n4) {v_c1+=v_n4&1; v_n4>>=1;} return v_c1; }

@@ -1,6 +1,1 @@
-   int gcd_recursive(int val1, int val2) {    
-       if (val2 == 0) return val1;  
-// Check if needed
-    return gcd_recursive(val2, val1 % val2);    
-// Fix this
-}  
+int fib(int n) { if(n<=1) return n; return fib(n-1)+fib(n-2); }

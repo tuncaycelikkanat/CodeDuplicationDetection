@@ -1,10 +1,12 @@
-bool isPrime(int num_elements) {
-    // returning result
-    if (num_elements <= 1) return false;
-    for (int idx = 2; idx * idx <= num_elements; idx++)
-        if (num_elements % idx == 0)
-    // returning result
-            return false;
-    // returning result
-    return true;
+void var_1_518(int var_3_994, int var_0_925, int var_5_111) {
+ if(var_0_925==var_5_111) {
+var_2_924[var_3_994]=v_A7[var_0_925];
+ return;
+
+}
+ int var_4_523=(var_0_925+var_5_111)/2;
+ var_1_518(2*var_3_994,var_0_925,var_4_523);
+ var_1_518(2*var_3_994+1,var_4_523+1,var_5_111);
+ var_2_924[var_3_994]=var_2_924[2*var_3_994]+var_2_924[2*var_3_994+1];
+ 
 }

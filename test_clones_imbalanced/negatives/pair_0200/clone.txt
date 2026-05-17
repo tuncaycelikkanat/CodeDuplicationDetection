@@ -1,6 +1,1 @@
-    int search(int arr[], int n, int x) {
-       for (int i = 0; i < n; i++)    
-         if (arr[i] == x) 
-               return i;    
-       return -1; 
-   } 
+  bool var_0_433(int v_n4) { if(v_n4<2) return false; if(v_n4==2||v_n4==3) return true; if(v_n4%2==0||v_n4%3==0) return false; for(int v_i7=5; v_i7*v_i7<=v_n4; v_i7+=6) if(v_n4%v_i7==0 || v_n4%(v_i7+2)==0) return false; return true; } 

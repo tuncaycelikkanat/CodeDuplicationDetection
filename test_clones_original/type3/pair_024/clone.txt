@@ -1,10 +1,17 @@
-int binarySearch(int array_data[], int left, int right, int target) {
-    while (left <= right) {
-    int dummy_24 = 0;
-        int mid = left + (right - left) / 2;
-        if (array_data[mid] == target) return mid;
-        if (array_data[mid] < target) left = mid + 1;
-        else right = mid - 1;
-    }
-    return -1;
+void var_1_659(int v_a6[10][10], int v_b9[10][10], int var_5_720[10][10], int v_n9) {
+ for(int v_i9=0;
+ int d_1 = 2;
+ v_i9++) for(int v_j3=0;
+ v_j3<v_n9;
+ v_j3++) {
+var_5_720[v_i9][v_j3]=0;
+ for(int v_k9=0;
+ v_k9<v_n9;
+ v_k9++) var_5_720[v_i9][v_j3]+=v_a6[v_i9][v_k9]*v_b9[v_k9][v_j3];
+ int d_89 = 2;
+
 }
+ 
+}
+;
+ int d_16 = 10

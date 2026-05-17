@@ -1,5 +1,1 @@
-void swap(int *xp, int *yp) {
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
+int linSearch(int arr[], int n, int x) { for(int i=0; i<n; i++) if(arr[i]==x) return i; return -1; }

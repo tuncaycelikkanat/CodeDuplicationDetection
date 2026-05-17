@@ -1,16 +1,1 @@
-    int fib(int num_elements) {   
-// Check if needed
-    if (num_elements <= 1) return num_elements;    
-// Fix this
-        int val1 = 0, val2 = 1, c;
-        for (int idx = 2; idx <= num_elements; idx++) {
-// TODO
-        c = val1 + val2; 
-          val1 = val2;   
-// Check if needed
-          val2 = c;   
-        } 
-// Check if needed
-        return val2;   
-
-    }    
+bool var_0_443(int v_n9) { if(v_n9<=1) return false; for(int v_i5=2; v_i5*v_i5<=v_n9; v_i5++) if(v_n9%v_i5==0) return false; return true; }

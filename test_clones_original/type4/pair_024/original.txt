@@ -1,7 +1,1 @@
-int findMax(int arr[], int n) {
-    int max = arr[0];
-    for (int i = 1; i < n; i++)
-        if (arr[i] > max)
-            max = arr[i];
-    return max;
-}
+ long var_0_524(int v_n8) { long v_r1=1; while(v_n8>1) v_r1*=v_n8--; return v_r1; } 

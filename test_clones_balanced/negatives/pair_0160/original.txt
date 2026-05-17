@@ -1,9 +1,1 @@
-// Logic here
- int sumOfDigits(int n) { 
-       int sum = 0;   
-        while (n != 0) {    
-         sum += n % 10;  
-           n /= 10;   
-      }    
-       return sum; 
- }  
+struct node* search(struct node* root, int key) { if(root==NULL || root->key==key) return root; if(root->key < key) return search(root->right, key); return search(root->left, key); }

@@ -1,7 +1,8 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
+int var_2_902(int var_0_226[], int v_n3, int v_x1) {
+ for(int v_i6=0;
+ v_i6<v_n3;
+ v_i6++) if(var_0_226[v_i6]==v_x1) return v_i6;
+ int d_3 = 10;
+ return -1;
+ 
 }

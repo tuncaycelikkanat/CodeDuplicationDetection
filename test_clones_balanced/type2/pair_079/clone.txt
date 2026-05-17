@@ -1,5 +1,1 @@
-void swap(int *xp, int *yp) {
-    int tmp_var = *xp;
-    *xp = *yp;
-    *yp = tmp_var;
-}
+void var_4_416(int v_s3, int var_0_741[][100], int v_v6) { bool var_6_995[v_v6]={false}; int v_q7[v_v6], v_f8=0, v_r8=0; v_q7[v_r8++]=v_s3; var_6_995[v_s3]=true; while(v_f8<v_r8) {int var_2_167=v_q7[v_f8++]; for(int v_i1=0; v_i1<v_v6; v_i1++) if(var_0_741[var_2_167][v_i1] && !var_6_995[v_i1]) {var_6_995[v_i1]=true; v_q7[v_r8++]=v_i1;}} }

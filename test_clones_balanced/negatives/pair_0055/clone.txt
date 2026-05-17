@@ -1,7 +1,1 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+void heapify(int arr[], int n, int i) { int lg=i, l=2*i+1, r=2*i+2; if(l<n && arr[l]>arr[lg]) lg=l; if(r<n && arr[r]>arr[lg]) lg=r; if(lg!=i) {int t=arr[i]; arr[i]=arr[lg]; arr[lg]=t; heapify(arr,n,lg);} }

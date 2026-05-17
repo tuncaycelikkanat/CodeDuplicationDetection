@@ -1,8 +1,1 @@
-int gcd(int a, int b) {
-    while (b != 0) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
-}
+  bool var_0_272(int v_n6) { if(v_n6<2) return false; if(v_n6==2||v_n6==3) return true; if(v_n6%2==0||v_n6%3==0) return false; for(int v_i2=5; v_i2*v_i2<=v_n6; v_i2+=6) if(v_n6%v_i2==0 || v_n6%(v_i2+2)==0) return false; return true; }

@@ -1,5 +1,1 @@
-  int lcm(int val1, int val2) {  
-// TODO
-        int maximum_val = (val1 > val2) ? val1 : val2;   
-       while (1) { if (maximum_val % val1 == 0 && maximum_val % val2 == 0) return maximum_val; maximum_val++; }  
-   }  
+int gcd(int a, int b) { while(b) {int t=b; b=a%b; a=t;} return a; }

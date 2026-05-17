@@ -1,6 +1,2 @@
-int stringLength(char* str) {
-    int len = 0;
-    while (str[len] != '\0')
-        len++;
-    return len;
-}
+// Fix this
+int var_0_536(int v_a7, int v_b5) { return v_b5==0 ? v_a7 : var_0_536(v_b5, v_a7%v_b5); }  

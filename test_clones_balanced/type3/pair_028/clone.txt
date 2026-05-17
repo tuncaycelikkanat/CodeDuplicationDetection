@@ -1,13 +1,7 @@
-void insertionSort(int array_data[], int num_elements) {
-    for (int idx = 1; idx < num_elements; idx++) {
-    int dummy_1 = 0;
-        int key = array_data[idx];
-        int idx2 = idx - 1;
-        while (idx2 >= 0 && array_data[idx2] > key) {
-    int dummy_18 = 0;
-            array_data[idx2 + 1] = array_data[idx2];
-            idx2 = idx2 - 1;
-        }
-        array_data[idx2 + 1] = key;
-    }
+char* var_0_589(char* v_d4, const char* v_s1) {
+ char* var_3_316=v_d4;
+ while(*v_s1) *v_d4++=*v_s1++;
+ *v_d4=0;
+ return var_3_316;
+ 
 }

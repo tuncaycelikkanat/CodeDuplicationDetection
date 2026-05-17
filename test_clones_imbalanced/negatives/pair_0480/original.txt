@@ -1,7 +1,2 @@
-// Check if needed
- int stringLengthFor(char* str) {   
-       int len = 0;
-        for (; str[len]; len++);   
-    return len;   
-// Check if needed
-  }    
+// Optimization needed
+   long var_0_861(int v_n3) { return v_n3<=1 ? 1 : v_n3*var_0_861(v_n3-1); }  

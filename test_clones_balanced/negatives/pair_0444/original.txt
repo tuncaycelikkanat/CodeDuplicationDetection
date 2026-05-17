@@ -1,3 +1,7 @@
-// TODO
-    int gcdH(int val1, int val2) { return val2 == 0 ? val1 : gcdH(val2, val1 % val2); }
- int lcmFast(int val1, int val2) { return (val1 / gcdH(val1, val2)) * val2; } 
+char* var_0_122(char* var_1_473, const char* var_3_629) {
+ char* v_rd5=var_1_473;
+ while(*var_1_473) var_1_473++;
+ while(*var_1_473++=*var_3_629++);
+ return v_rd5;
+ 
+}

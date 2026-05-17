@@ -1,7 +1,1 @@
-int findMin(int arr[], int n) {
-    int min = arr[0];
-    for (int i = 1; i < n; i++)
-        if (arr[i] < min)
-            min = arr[i];
-    return min;
-}
+int var_2_264(int v_n5) { int v_s1=0; while(v_n5) {v_s1+=v_n5%10; v_n5/=10;} return v_s1; }

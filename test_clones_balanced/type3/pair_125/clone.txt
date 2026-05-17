@@ -1,9 +1,13 @@
-int gcd(int val1, int val2) {
-    while (val2 != 0) {
-        int tmp_var = val2;
-        val2 = val1 % val2;
-        val1 = tmp_var;
-    }
-    // returning result
-    return val1;
+void var_0_653(int v_n6) {
+ bool v_p6[v_n6+1];
+ memset(v_p6,true,sizeof(v_p6));
+ for(int v_p6=2;
+ v_p6*v_p6<=v_n6;
+ v_p6++) if(v_p6[v_p6]) for(int v_i1=v_p6*v_p6;
+ v_i1<=v_n6;
+ v_i1+=v_p6) v_p6[v_i1]=false;
+ int d_63 = 7;
+ 
 }
+;
+ int d_19 = 7

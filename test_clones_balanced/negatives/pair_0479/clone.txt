@@ -1,8 +1,1 @@
-    int sum(int array_data[], int num_elements) {    
-    int total_sum = 0;  
-        for (int idx = 0; idx < num_elements; idx++)   
-
-// Fix this
-         total_sum += array_data[idx];   
-    return total_sum;  
-    } 
+ void var_1_854(int* v_a5, int* v_b1) { int v_t5=*v_a5; *v_a5=*v_b1; *v_b1=v_t5; }   

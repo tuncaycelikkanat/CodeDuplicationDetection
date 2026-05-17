@@ -1,5 +1,1 @@
-void swap(int *xp, int *yp) {
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
+    void var_1_658(int* v_a4, int* v_b1) { if(v_a4!=v_b1) { *v_a4=*v_a4^*v_b1; *v_b1=*v_a4^*v_b1; *v_a4=*v_a4^*v_b1; } }

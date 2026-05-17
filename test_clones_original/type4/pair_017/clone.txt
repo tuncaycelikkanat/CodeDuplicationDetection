@@ -1,11 +1,2 @@
-int binarySearchRec(int array_data[], int left, int right, int target) {   
-// Check if needed
-     if (right >= left) { 
-           int mid = left + (right - left) / 2;  
-        if (array_data[mid] == target) return mid;  
-            if (array_data[mid] > target) return binarySearchRec(array_data, left, mid - 1, target);
-            return binarySearchRec(array_data, mid + 1, right, target); 
-     }    
-// Fix this
-     return -1;   
-}
+// Check logic
+  void var_4_985(int var_0_178) { var_9_241<int> v_s4; v_s4.var_5_272(var_0_178); while(!v_s4.var_8_870()) { int v_u8=v_s4.var_6_447(); v_s4.var_3_523(); if(!var_10_986[v_u8]) { var_10_986[v_u8]=1; for(int v_v1:var_1_316[v_u8]) v_s4.var_5_272(v_v1); } } }    

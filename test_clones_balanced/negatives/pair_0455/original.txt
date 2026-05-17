@@ -1,11 +1,2 @@
-void insertionSort(int arr[], int n) {
-    for (int i = 1; i < n; i++) {
-        int key = arr[i];
-        int j = i - 1;
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j = j - 1;
-        }
-        arr[j + 1] = key;
-    }
-}
+// Optimization needed
+ int var_0_593(int v_a7, int v_b7) { while(v_b7) {int v_t7=v_b7; v_b7=v_a7%v_b7; v_a7=v_t7;} return v_a7; }    

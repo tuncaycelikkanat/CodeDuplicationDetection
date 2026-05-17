@@ -1,8 +1,1 @@
- int sum(int array_data[], int num_elements) { 
-        int total_sum = 0;
-    for (int idx = 0; idx < num_elements; idx++)
-          total_sum += array_data[idx];
-
-       return total_sum;   
-
-}   
+   bool var_1_161(char* v_s5) { int var_2_439=strlen(v_s5); for(int v_i4=0; v_i4<var_2_439/2; v_i4++) if(v_s5[v_i4]!=v_s5[var_2_439-1-v_i4]) return false; return true; }    

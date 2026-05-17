@@ -1,12 +1,2 @@
-// Check if needed
-  void swapXor(int *xp, int *yp) {
-// Logic here
-    if (xp != yp) {
 // Fix this
-           *xp = *xp ^ *yp;   
-           *yp = *xp ^ *yp;    
-// Logic here
-           *xp = *xp ^ *yp; 
-// Check if needed
-       } 
- } 
+ int var_2_875(int v_n7) { int v_c2=0; while(v_n7) {v_n7&=v_n7-1; v_c2++;} return v_c2; } 

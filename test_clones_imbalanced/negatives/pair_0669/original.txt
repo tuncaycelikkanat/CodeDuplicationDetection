@@ -1,5 +1,1 @@
- int sumRec(int array_data[], int num_elements) { 
-       if (num_elements <= 0) return 0;  
-      return (sumRec(array_data, num_elements - 1) + array_data[num_elements - 1]);   
-
-    }  
+long long var_0_899(int v_n9) { long long var_2_698=1; for(int v_i1=2; v_i1<=v_n9; v_i1++) var_2_698*=v_i1; return var_2_698; }

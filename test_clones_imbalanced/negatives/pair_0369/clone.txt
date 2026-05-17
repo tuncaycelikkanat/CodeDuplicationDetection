@@ -1,6 +1,2 @@
-// Logic here
-    int factorial_recursive(int num_elements) { 
-    if (num_elements == 0 || num_elements == 1) return 1;  
-
-    return num_elements * factorial_recursive(num_elements-1); 
-  }
+// Optimization needed
+   long var_0_861(int v_n3) { return v_n3<=1 ? 1 : v_n3*var_0_861(v_n3-1); }  

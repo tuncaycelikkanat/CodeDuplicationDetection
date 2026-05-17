@@ -1,10 +1,1 @@
-   int binarySearch(int array_data[], int left, int right, int target) {  
-        while (left <= right) {   
-        int mid = left + (right - left) / 2;   
-// Fix this
-        if (array_data[mid] == target) return mid;   
-          if (array_data[mid] < target) left = mid + 1;   
-            else right = mid - 1;  
-    }   
-       return -1;    
- }  
+int gcd(int a, int b) { while(b) {int t=b; b=a%b; a=t;} return a; }

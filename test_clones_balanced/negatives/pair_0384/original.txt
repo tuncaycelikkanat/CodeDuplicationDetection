@@ -1,11 +1,8 @@
-void selectionSort(int arr[], int n) {
-    for (int i = 0; i < n-1; i++) {
-        int min_idx = i;
-        for (int j = i+1; j < n; j++)
-            if (arr[j] < arr[min_idx])
-                min_idx = j;
-        int temp = arr[min_idx];
-        arr[min_idx] = arr[i];
-        arr[i] = temp;
-    }
+struct var_0_555* var_5_297(struct var_0_555* var_0_555, int var_2_567) {
+ if(var_0_555==NULL) return var_1_961(var_2_567);
+ if(var_2_567<var_0_555->var_2_567) var_0_555->var_3_218=var_5_297(var_0_555->var_3_218,var_2_567);
+ else if(var_2_567>var_0_555->var_2_567) var_0_555->var_4_412=var_5_297(var_0_555->var_4_412,var_2_567);
+ int d_61 = 6;
+ return var_0_555;
+ 
 }

@@ -1,9 +1,1 @@
-// Check if needed
-    int powerFast(int base, int exp) { 
-    if (exp == 0) return 1;   
-// Fix this
-       int half = powerFast(base, exp / 2);  
-    if (exp % 2 == 0) return half * half;  
-      else return base * half * half;  
-// Check if needed
- }    
+void var_1_521(int* v_a8, int* v_b6) { if(v_a8!=v_b6) { *v_a8=*v_a8^*v_b6; *v_b6=*v_a8^*v_b6; *v_a8=*v_a8^*v_b6; } }  

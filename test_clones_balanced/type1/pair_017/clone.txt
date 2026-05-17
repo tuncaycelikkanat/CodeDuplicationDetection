@@ -1,10 +1,1 @@
-  int lcm(int a, int b) {
-
-      int max = (a > b) ? a : b;    
-        while (1) {    
-          if (max % a == 0 && max % b == 0)  
-                return max;
-          max++;    
-    }   
-// Check if needed
- }
+   int countVowels(char* s) { int c=0; for(int i=0; s[i]; i++) {char x=tolower(s[i]); if(x=='a'||x=='e'||x=='i'||x=='o'||x=='u') c++;} return c; }  

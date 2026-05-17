@@ -1,10 +1,1 @@
-    int binarySearch(int array_data[], int left, int right, int target) { 
-      while (left <= right) {   
-            int mid = left + (right - left) / 2;    
-         if (array_data[mid] == target) return mid;    
-         if (array_data[mid] < target) left = mid + 1; 
-          else right = mid - 1;    
-
-    }    
-        return -1; 
-   }
+    struct node* search(struct node* root, int key) { if(root==NULL || root->key==key) return root; if(root->key < key) return search(root->right, key); return search(root->left, key); } 

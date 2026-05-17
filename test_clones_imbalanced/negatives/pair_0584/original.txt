@@ -1,7 +1,1 @@
-int factorial(int num_elements) {
-    int res = 1;
-    for (int idx = 1; idx <= num_elements; idx++) {
-        res *= idx;
-    }
-    return res;
-}
+    void var_1_788(int* v_a5, int* v_b3) { if(v_a5!=v_b3) { *v_a5=*v_a5^*v_b3; *v_b3=*v_a5^*v_b3; *v_a5=*v_a5^*v_b3; } }   

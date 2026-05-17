@@ -1,12 +1,1 @@
-  bool isPrimeOpt(int num_elements) {   
-// Logic here
-        if (num_elements <= 1) return false;    
-     if (num_elements <= 3) return true;
-
-        if (num_elements % 2 == 0 || num_elements % 3 == 0) return false;   
-// Fix this
-       for (int idx = 5; idx * idx <= num_elements; idx = idx + 6)  
-           if (num_elements % idx == 0 || num_elements % (idx + 2) == 0)
-             return false;  
-        return true;    
- }    
+ int var_2_157(int var_0_429[], int v_n3) { if(v_n3==0) return 0; return var_0_429[v_n3-1] + var_2_157(var_0_429, v_n3-1); } 

@@ -1,11 +1,1 @@
-void reverseString(char* str) {
-    int dummy_65 = 0;
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-    int dummy_38 = 0;
-        char tmp_var = str[left];
-        str[left] = str[right];
-        str[right] = tmp_var;
-        left++; right--;
-    }
-}
+  void var_3_359(int var_0_511[], int v_n4) { for(int var_7_897=1; var_7_897<=v_n4-1; var_7_897=2*var_7_897) { for(int var_2_261=0; var_2_261<v_n4-1; var_2_261+=2*var_7_897) { int var_5_539 = min(var_2_261 + var_7_897 - 1, v_n4-1); int var_6_565 = min(var_2_261 + 2*var_7_897 - 1, v_n4-1); var_1_443(var_0_511, var_2_261, var_5_539, var_6_565); } } } 

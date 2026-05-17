@@ -1,6 +1,1 @@
-// Fix this
-   int fib_recursive(int num_elements) {   
-      if (num_elements <= 1) return num_elements;  
-// Logic here
-     return fib_recursive(num_elements-1) + fib_recursive(num_elements-2);  
-  }   
+   int var_1_963(int v_n7) { if(v_n7<=1) return v_n7; return var_1_963(v_n7-1)+var_1_963(v_n7-2); }   

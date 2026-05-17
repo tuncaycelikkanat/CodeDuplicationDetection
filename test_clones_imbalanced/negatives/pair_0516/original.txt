@@ -1,9 +1,1 @@
-// Fix this
-  int power(int base, int exp) {    
-     int res = 1;    
-        for (int idx = 0; idx < exp; idx++)
-        res *= base;  
-       return res;
-
-// Fix this
-    } 
+ int var_2_645(int v_n6) { int v_c7=0; while(v_n6) {v_c7+=v_n6&1; v_n6>>=1;} return v_c7; }    

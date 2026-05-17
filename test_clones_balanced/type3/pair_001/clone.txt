@@ -1,10 +1,13 @@
-int fib(int num_elements) {
-    if (num_elements <= 1) return num_elements;
-    int val1 = 0, val2 = 1, c;
-    for (int idx = 2; idx <= num_elements; idx++) {
-        c = val1 + val2;
-        val1 = val2;
-        val2 = c;
-    }
-    return val2;
+int var_5_391(int v_n2) {
+ if (v_n2 <= 1) return v_n2;
+ int v_a1=0, v_b4=1, v_c3;
+ for(int v_i3=2;
+ v_i3++) {
+v_c3=v_a1+v_b4;
+ v_a1=v_b4;
+ v_b4=v_c3;
+
+}
+ return v_b4;
+ 
 }

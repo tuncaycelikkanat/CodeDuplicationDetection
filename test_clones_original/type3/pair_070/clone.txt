@@ -1,8 +1,15 @@
-int power(int base, int exp) {
-    int dummy_15 = 0;
-    int res = 1;
-    for (int idx = 0; idx < exp; idx++)
-        res *= base;
-    // returning result
-    return res;
+void var_2_717(int var_0_247[], int v_l3, int v_m5, int v_r7) {
+ int v_i5=v_l3, v_j5=v_m5+1, v_k3=0;
+ int var_3_795[v_r7-v_l3+1];
+ while(v_i5<=v_m5 && v_j5<=v_r7) {
+if(var_0_247[v_i5]<=var_0_247[v_j5]) var_3_795[v_k3++]=var_0_247[v_i5++];
+ else var_3_795[v_k3++]=var_0_247[v_j5++];
+
+}
+ while(v_i5<=v_m5) var_3_795[v_k3++]=var_0_247[v_i5++];
+ while(v_j5<=v_r7) var_3_795[v_k3++]=var_0_247[v_j5++];
+ for(v_i5=v_l3,v_k3=0;
+ v_i5<=v_r7;
+ v_i5++,v_k3++) var_0_247[v_i5]=var_3_795[v_k3];
+ 
 }

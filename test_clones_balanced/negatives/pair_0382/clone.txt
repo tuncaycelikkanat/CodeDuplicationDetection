@@ -1,4 +1,1 @@
-// Check if needed
-    int gcdH(int val1, int val2) { return val2 == 0 ? val1 : gcdH(val2, val1 % val2); } 
-// TODO
- int lcmFast(int val1, int val2) { return (val1 / gcdH(val1, val2)) * val2; }
+    void insert(struct TrieNode *root, const char *key) { struct TrieNode *pCrawl = root; for (int i = 0; i < strlen(key); i++) { int index = key[i] - 'a'; if (!pCrawl->children[index]) pCrawl->children[index] = getNode(); pCrawl = pCrawl->children[index]; } pCrawl->isEndOfWord = true; } 

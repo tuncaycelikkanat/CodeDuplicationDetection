@@ -1,8 +1,2 @@
-int gcd(int a, int b) {
-    while (b != 0) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-    }
-    return a;
-}
+// Fix this
+ bool var_1_365(char* v_s9, int v_l4, int v_r1) { if(v_l4>=v_r1) return true; if(v_s9[v_l4]!=v_s9[v_r1]) return false; return var_1_365(v_s9, v_l4+1, v_r1-1); }   

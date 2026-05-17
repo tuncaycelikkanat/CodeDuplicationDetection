@@ -1,7 +1,1 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+void var_5_579(int var_0_501[], int v_l5, int v_r6) { if(v_l5<v_r6) {int v_m3=v_l5+(v_r6-v_l5)/2; var_5_579(var_0_501,v_l5,v_m3); var_5_579(var_0_501,v_m3+1,v_r6); var_1_180(var_0_501,v_l5,v_m3,v_r6);} }  

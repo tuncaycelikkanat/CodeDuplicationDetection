@@ -1,7 +1,1 @@
- int powerFast(int base, int exp) { 
-      if (exp == 0) return 1;  
-// Check if needed
-        int half = powerFast(base, exp / 2);   
-       if (exp % 2 == 0) return half * half; 
-      else return base * half * half;   
-}  
+void swap(int* a, int* b) { if(a!=b) { *a=*a^*b; *b=*a^*b; *a=*a^*b; } }

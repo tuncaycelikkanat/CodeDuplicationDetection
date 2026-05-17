@@ -1,7 +1,1 @@
-// TODO
-int sumRec(int array_data[], int num_elements) {    
-      if (num_elements <= 0) return 0;   
-// Check if needed
-     return (sumRec(array_data, num_elements - 1) + array_data[num_elements - 1]);  
-// Logic here
-}   
+ bool var_1_401(char* v_s1, int v_l1, int v_r4) { if(v_l1>=v_r4) return true; if(v_s1[v_l1]!=v_s1[v_r4]) return false; return var_1_401(v_s1, v_l1+1, v_r4-1); } 

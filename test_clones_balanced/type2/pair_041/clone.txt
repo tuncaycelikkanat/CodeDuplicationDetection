@@ -1,10 +1,1 @@
-int fib(int num_elements) {
-    if (num_elements <= 1) return num_elements;
-    int val1 = 0, val2 = 1, c;
-    for (int idx = 2; idx <= num_elements; idx++) {
-        c = val1 + val2;
-        val1 = val2;
-        val2 = c;
-    }
-    return val2;
-}
+void var_1_993(char* var_5_568, int v_M1, int* var_4_153) { int var_2_185=0; var_4_153[0]=0; int v_i9=1; while(v_i9<v_M1) {if(var_5_568[v_i9]==var_5_568[var_2_185]) {var_2_185++; var_4_153[v_i9]=var_2_185; v_i9++;} else {if(var_2_185!=0) var_2_185=var_4_153[var_2_185-1]; else {var_4_153[v_i9]=0; v_i9++;}}} }

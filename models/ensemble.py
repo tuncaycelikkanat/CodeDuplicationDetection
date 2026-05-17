@@ -48,26 +48,26 @@ def build_ensemble(random_state: int = 42, device: str = "cpu", svd_start_idx: O
 
     # 2. Random Forest: Yapısal (AST/CF) uzmanı
     rf = RandomForestClassifier(
-        n_estimators=200,
+        n_estimators=100,
         max_depth=15,
         min_samples_split=5,
         random_state=random_state,
         n_jobs=-1
     )
-    # AST ve CF özellikleri (4'ten 32'ye kadar)
+    # AST ve CF özellikleri (4'ten 44'e kadar)
     pipe_rf = _make_col_pipeline(rf, [
-        ('ast_cf', 'passthrough', slice(4, 33))
+        ('ast_cf', 'passthrough', slice(4, 45))
     ])
 
     # 3. LinearSVC (Calibrated): Semantik uzmanı
     # SVM, 500k veri için RBF kernel ile çok yavaş olur. LinearSVC çok hızlıdır.
     # CalibratedClassifierCV, SVM'in olasılık (predict_proba) üretmesini sağlar.
-    svm = LinearSVC(dual=False, random_state=random_state, max_iter=2000)
+    svm = LinearSVC(dual=False, random_state=random_state, max_iter=5000)
     calibrated_svm = CalibratedClassifierCV(svm, cv=3, method='sigmoid')
     
-    # Semantik özellikler (33'ten 40'a kadar)
+    # Semantik özellikler (45'ten 52'ye kadar)
     pipe_svm = _make_col_pipeline(calibrated_svm, [
-        ('sem', 'passthrough', slice(33, 41))
+        ('sem', 'passthrough', slice(45, 53))
     ])
 
     # 4. Meta-Classifier (Stacking)
@@ -79,7 +79,7 @@ def build_ensemble(random_state: int = 42, device: str = "cpu", svd_start_idx: O
     
     clf = StackingClassifier(
         estimators=estimators,
-        final_estimator=LogisticRegression(max_iter=1000, random_state=random_state),
+        final_estimator=LogisticRegression(C=0.1, max_iter=1000, random_state=random_state),
         cv=5,
         n_jobs=1  # Important: keeping n_jobs=1 because base models already use n_jobs=-1
     )

@@ -1,12 +1,2 @@
-void selectionSort(int array_data[], int num_elements) {
-    int dummy_83 = 0;
-    for (int idx = 0; idx < num_elements-1; idx++) {
-        int min_idx = idx;
-        for (int idx2 = idx+1; idx2 < num_elements; idx2++)
-            if (array_data[idx2] < array_data[min_idx])
-                min_idx = idx2;
-        int tmp_var = array_data[min_idx];
-        array_data[min_idx] = array_data[idx];
-        array_data[idx] = tmp_var;
-    }
-}
+// Check logic
+    bool var_1_305(char* v_s8, int v_l7, int v_r5) { if(v_l7>=v_r5) return true; if(v_s8[v_l7]!=v_s8[v_r5]) return false; return var_1_305(v_s8, v_l7+1, v_r5-1); }   

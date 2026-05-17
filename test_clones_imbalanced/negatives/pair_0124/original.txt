@@ -1,3 +1,1 @@
-int gcdH(int val1, int val2) { return val2 == 0 ? val1 : gcdH(val2, val1 % val2); }    
-
-int lcmFast(int val1, int val2) { return (val1 / gcdH(val1, val2)) * val2; } 
+int var_1_275(int v_a1[], int v_l1, int v_h5) { if(v_l1==v_h5) return v_a1[v_l1]; int v_m3=(v_l1+v_h5)/2; return max(max(var_1_275(v_a1,v_l1,v_m3), var_1_275(v_a1,v_m3+1,v_h5)), var_0_279(v_a1,v_l1,v_m3,v_h5)); }  

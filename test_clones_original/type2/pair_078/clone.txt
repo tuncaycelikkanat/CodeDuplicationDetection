@@ -1,6 +1,1 @@
-int stringLength(char* str) {
-    int len = 0;
-    while (str[len] != '\0')
-        len++;
-    return len;
-}
+char* var_0_675(char* v_d1, const char* v_s1) { char* var_3_407=v_d1; while(*v_s1) *v_d1++=*v_s1++; *v_d1=0; return var_3_407; }

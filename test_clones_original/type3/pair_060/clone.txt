@@ -1,9 +1,7 @@
-int sumOfDigits(int num_elements) {
-    int sum = 0;
-    while (num_elements != 0) {
-    int dummy_21 = 0;
-        sum += num_elements % 10;
-        num_elements /= 10;
-    }
-    return sum;
+bool var_0_435(int v_n7) {
+ if(v_n7<=1) return false;
+ for(int v_i1=2;
+ v_i1++) if(v_n7%v_i1==0) return false;
+ return true;
+ 
 }

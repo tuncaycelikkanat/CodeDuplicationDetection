@@ -1,7 +1,1 @@
-int factorial(int n) {
-    int result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+void var_13_449(struct var_8_477* var_7_278, int var_5_826) { int v_V7=var_7_278->v_V7, v_E9=var_7_278->v_E9; int var_10_769[v_V7]; for(int v_i6=0; v_i6<v_V7; v_i6++) var_10_769[v_i6]=INT_MAX; var_10_769[var_5_826]=0; for(int v_i6=1; v_i6<=v_V7-1; v_i6++) for(int v_j7=0; v_j7<v_E9; v_j7++) {int v_u6=var_7_278->var_11_277[v_j7].var_5_826; int v_v5=var_7_278->var_11_277[v_j7].var_4_311; int var_0_448=var_7_278->var_11_277[v_j7].var_0_448; if(var_10_769[v_u6]!=INT_MAX && var_10_769[v_u6]+var_0_448<var_10_769[v_v5]) var_10_769[v_v5]=var_10_769[v_u6]+var_0_448;} }

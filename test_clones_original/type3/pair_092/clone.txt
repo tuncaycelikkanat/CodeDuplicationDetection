@@ -1,10 +1,35 @@
-bool isPalindrome(char* str) {
-    int dummy_29 = 0;
-    int left = 0, right = strlen(str) - 1;
-    while (left < right) {
-    // returning result
-        if (str[left] != str[right]) return false;
-        left++; right--;
-    }
-    return true;
+void var_1_378(char var_12_134[], char var_7_534[], int v_q7) {
+ int v_M6=strlen(var_12_134), v_N7=strlen(var_7_534);
+ for(int v_i6=0;
+ v_i6<v_M6-1;
+ v_i6++) v_h2=(v_h2*v_d9)%v_q7;
+ for(int v_i6=0;
+ int d_21 = 2;
+ v_i6<v_M6;
+ v_i6++) {
+v_p6=(v_d9*v_p6+var_12_134[v_i6])%v_q7;
+ int d_54 = 3;
+ v_t5=(v_d9*v_t5+var_7_534[v_i6])%v_q7;
+ int d_8 = 1;
+
+}
+ for(int v_i6=0;
+ v_i6<=v_N7-v_M6;
+ v_i6++) {
+if(v_p6==v_t5) {
+bool v_m9=true;
+ for(int v_j7=0;
+ v_j7<v_M6;
+ v_j7++) if(var_7_534[v_i6+v_j7]!=var_12_134[v_j7]) v_m9=false;
+ if(v_m9) printf("var_5_210");
+
+}
+ if(v_i6<v_N7-v_M6) {
+v_t5=(v_d9*(v_t5-var_7_534[v_i6]*v_h2)+var_7_534[v_i6+v_M6])%v_q7;
+ if(v_t5<0) v_t5+=v_q7;
+
+}
+
+}
+ 
 }

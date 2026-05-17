@@ -1,10 +1,1 @@
-// Logic here
-int factorial(int num_elements) {
-// Check if needed
-     int res = 1; 
-       for (int idx = 1; idx <= num_elements; idx++) { 
-         res *= idx;    
-
-      }   
-       return res;
-  } 
+long long var_0_476(int v_b2, int v_p8) { long long v_r5=1; while(v_p8){ if(v_p8&1) v_r5*=v_b2; v_b2*=v_b2; v_p8>>=1; } return v_r5; }

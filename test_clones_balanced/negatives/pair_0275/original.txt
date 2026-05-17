@@ -1,13 +1,1 @@
-void reverseString(char* str) {
-      int l = 0, r = strlen(str) - 1;   
-        while (l < r) {    
-
-            char temp = str[l];
-           str[l] = str[r];
-          str[r] = temp;
-// TODO
-          l++; r--;  
-// Check if needed
-      }   
-
- }  
+int var_6_763(int var_0_790[], int v_l5, int v_h1) { int v_p3=var_0_790[v_h1]; int v_i9=v_l5-1; for(int v_j8=v_l5; v_j8<v_h1; v_j8++) if(var_0_790[v_j8]<v_p3) {v_i9++; int v_t9=var_0_790[v_i9]; var_0_790[v_i9]=var_0_790[v_j8]; var_0_790[v_j8]=v_t9;} int v_t9=var_0_790[v_i9+1]; var_0_790[v_i9+1]=var_0_790[v_h1]; var_0_790[v_h1]=v_t9; return v_i9+1; }

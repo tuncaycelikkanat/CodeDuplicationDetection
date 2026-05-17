@@ -1,8 +1,1 @@
-int factorial(int n) {
-        int result = 1;    
-// TODO
-    for (int i = 1; i <= n; i++) {   
-          result *= i; 
-       }   
-     return result;  
-   } 
+    int var_2_527(char* var_0_370) { int v_l8=0; while(var_0_370[v_l8]) v_l8++; return v_l8; } 

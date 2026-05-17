@@ -1,10 +1,2 @@
-// Check if needed
- int factorial(int num_elements) {  
-        int res = 1;  
-       for (int idx = 1; idx <= num_elements; idx++) {  
-         res *= idx;  
-    }  
-
-// TODO
-    return res;   
-    }  
+// Fix this
+    void var_5_357(int var_0_804[], int v_l3, int v_r1) { if(v_l3<v_r1) {int v_m3=v_l3+(v_r1-v_l3)/2; var_5_357(var_0_804,v_l3,v_m3); var_5_357(var_0_804,v_m3+1,v_r1); var_1_601(var_0_804,v_l3,v_m3,v_r1);} }

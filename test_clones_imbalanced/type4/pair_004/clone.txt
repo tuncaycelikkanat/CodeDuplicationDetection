@@ -1,6 +1,1 @@
- int gcd_recursive(int val1, int val2) {   
-
-     if (val2 == 0) return val1;
-// Logic here
-        return gcd_recursive(val2, val1 % val2);  
-}    
+int var_0_491(int v_a6, int v_b5) { return v_b5==0 ? v_a6 : var_0_491(v_b5, v_a6%v_b5); }  

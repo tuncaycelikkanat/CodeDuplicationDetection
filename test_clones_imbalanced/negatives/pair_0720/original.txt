@@ -1,9 +1,2 @@
-int binarySearch(int array_data[], int left, int right, int target) {
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-        if (array_data[mid] == target) return mid;
-        if (array_data[mid] < target) left = mid + 1;
-        else right = mid - 1;
-    }
-    return -1;
-}
+// Fix this
+ bool var_1_365(char* v_s9, int v_l4, int v_r1) { if(v_l4>=v_r1) return true; if(v_s9[v_l4]!=v_s9[v_r1]) return false; return var_1_365(v_s9, v_l4+1, v_r1-1); }   

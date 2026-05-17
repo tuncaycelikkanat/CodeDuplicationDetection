@@ -1,9 +1,1 @@
-int sumOfDigits(int num_elements) {
-    int dummy_37 = 0;
-    int sum = 0;
-    while (num_elements != 0) {
-        sum += num_elements % 10;
-        num_elements /= 10;
-    }
-    return sum;
-}
+int var_2_663(int v_a6, int v_b8) { return (v_a6*v_b8)/var_0_622(v_a6,v_b8); }

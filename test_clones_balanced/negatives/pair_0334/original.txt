@@ -1,10 +1,2 @@
-int gcd(int val1, int val2) {    
-     while (val2 != 0) {    
-         int tmp_var = val2;   
-           val2 = val1 % val2; 
-            val1 = tmp_var;   
-      }    
-// Logic here
-        return val1;   
-// Fix this
-  }  
+// Check logic
+    bool var_1_141(char* v_s6, int v_l9, int v_r2) { if(v_l9>=v_r2) return true; if(v_s6[v_l9]!=v_s6[v_r2]) return false; return var_1_141(v_s6, v_l9+1, v_r2-1); }   

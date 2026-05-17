@@ -1,6 +1,1 @@
- bool isPalRec(char* s, int left, int right) {  
-     if (left >= right) return true; 
-    if (s[left] != s[right]) return false;
-    return isPalRec(s, left+1, right-1); 
-// Logic here
-   }    
+    long long power(int b, int p) { long long r=1; while(p){ if(p&1) r*=b; b*=b; p>>=1; } return r; }  

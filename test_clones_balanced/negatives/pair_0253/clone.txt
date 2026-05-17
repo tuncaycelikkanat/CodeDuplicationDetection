@@ -1,7 +1,1 @@
-void swap(int *xp, int *yp) {  
-
-        int temp = *xp;  
-      *xp = *yp;   
-    *yp = temp; 
-
-   }  
+void dfs(int u) { vis[u]=1; for(int v:adj[u]) if(!vis[v]) dfs(v); }

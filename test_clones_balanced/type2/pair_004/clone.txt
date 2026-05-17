@@ -1,9 +1,1 @@
-int binarySearch(int array_data[], int left, int right, int target) {
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-        if (array_data[mid] == target) return mid;
-        if (array_data[mid] < target) left = mid + 1;
-        else right = mid - 1;
-    }
-    return -1;
-}
+int var_4_844(int var_0_864[], int v_l8, int v_r1, int v_x9) { while(v_l8<=v_r1) {int v_m4=v_l8+(v_r1-v_l8)/2; if(var_0_864[v_m4]==v_x9) return v_m4; if(var_0_864[v_m4]<v_x9) v_l8=v_m4+1; else v_r1=v_m4-1;} return -1; }

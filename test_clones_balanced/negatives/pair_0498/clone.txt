@@ -1,8 +1,2 @@
-bool isPrime(int num_elements) {
-    // returning result
-    if (num_elements <= 1) return false;
-    for (int idx = 2; idx * idx <= num_elements; idx++)
-        if (num_elements % idx == 0)
-            return false;
-    return true;
-}
+// TODO
+int sumDigits(int n) { int s=0; while(n) {s+=n%10; n/=10;} return s; }

@@ -1,13 +1,1 @@
- int binarySearch(int array_data[], int left, int right, int target) {   
-     while (left <= right) { 
-        int mid = left + (right - left) / 2;    
-           if (array_data[mid] == target) return mid;    
-// TODO
-            if (array_data[mid] < target) left = mid + 1;    
-// Logic here
-          else right = mid - 1; 
-// Fix this
-      }   
-      return -1;
-
-    } 
+   void var_2_967(int v_u6) { var_3_693[v_u6]=1; for(int v_v6:var_0_932[v_u6]) if(!var_3_693[v_v6]) var_2_967(v_v6); } 

@@ -1,14 +1,1 @@
-// Logic here
-   void selectionSort(int arr[], int n) {   
-     for (int i = 0; i < n-1; i++) {
-           int min_idx = i;   
-           for (int j = i+1; j < n; j++) 
-            if (arr[j] < arr[min_idx])    
-// TODO
-                  min_idx = j;   
-            int temp = arr[min_idx]; 
-        arr[min_idx] = arr[i];    
-        arr[i] = temp;    
-     }    
-// Fix this
- }  
+   void var_3_755(int var_0_221[], int v_n7) { for(int var_7_382=1; var_7_382<=v_n7-1; var_7_382=2*var_7_382) { for(int var_2_897=0; var_2_897<v_n7-1; var_2_897+=2*var_7_382) { int var_5_918 = min(var_2_897 + var_7_382 - 1, v_n7-1); int var_6_926 = min(var_2_897 + 2*var_7_382 - 1, v_n7-1); var_1_606(var_0_221, var_2_897, var_5_918, var_6_926); } } }

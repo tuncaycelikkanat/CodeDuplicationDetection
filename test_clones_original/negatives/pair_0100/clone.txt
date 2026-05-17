@@ -1,7 +1,1 @@
-// TODO
-void swap(int *xp, int *yp) {
-      int tmp_var = *xp; 
-     *xp = *yp;    
-// Check if needed
-     *yp = tmp_var; 
-  } 
+int var_1_437(int var_0_124[], int v_n3) { int v_s6=0; for(int v_i5=0; v_i5<v_n3; v_i5++) v_s6+=var_0_124[v_i5]; return v_s6; }    

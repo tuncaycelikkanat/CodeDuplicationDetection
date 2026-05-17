@@ -1,7 +1,1 @@
-int findMax(int array_data[], int num_elements) {
-    int maximum_val = array_data[0];
-    for (int idx = 1; idx < num_elements; idx++)
-        if (array_data[idx] > maximum_val)
-            maximum_val = array_data[idx];
-    return maximum_val;
-}
+void var_10_413(struct var_4_720 *var_0_144, const char *var_6_759) { struct var_4_720 *var_9_263 = var_0_144; for (int v_i2 = 0; v_i2 < strlen(var_6_759); v_i2++) { int var_1_317 = var_6_759[v_i2] - 'v_a9'; if (!var_9_263->var_7_852[var_1_317]) var_9_263->var_7_852[var_1_317] = var_3_258(); var_9_263 = var_9_263->var_7_852[var_1_317]; } var_9_263->var_5_343 = true; }

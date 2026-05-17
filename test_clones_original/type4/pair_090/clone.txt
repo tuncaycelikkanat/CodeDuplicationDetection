@@ -1,6 +1,1 @@
-// TODO
- int sumRec(int array_data[], int num_elements) { 
-
-        if (num_elements <= 0) return 0;   
-        return (sumRec(array_data, num_elements - 1) + array_data[num_elements - 1]);
-   }
+bool isPal(char* s, int l, int r) { if(l>=r) return true; if(s[l]!=s[r]) return false; return isPal(s, l+1, r-1); }

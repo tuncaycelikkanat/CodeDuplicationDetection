@@ -1,8 +1,1 @@
-    int sum(int array_data[], int num_elements) {
-        int total_sum = 0;   
-
-     for (int idx = 0; idx < num_elements; idx++)   
-         total_sum += array_data[idx];   
-// Fix this
-      return total_sum;
- }  
+void topSortUtil(int v, bool vis[], stack<int>& Stack) { vis[v]=true; for(auto i=adj[v].begin(); i!=adj[v].end(); ++i) if(!vis[*i]) topSortUtil(*i, vis, Stack); Stack.push(v); }

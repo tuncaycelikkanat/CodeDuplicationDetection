@@ -1,6 +1,10 @@
-int search(int array_data[], int num_elements, int target) {
-    for (int idx = 0; idx < num_elements; idx++)
-        if (array_data[idx] == target)
-            return idx;
-    return -1;
+int var_0_820(char* v_s15, char* v_s25) {
+ while(*v_s15 && (*v_s15==*v_s25)) {
+v_s15++;
+ int d_17 = 4;
+ v_s25++;
+
+}
+ return *(const unsigned char*)v_s15 - *(const unsigned char*)v_s25;
+ 
 }
