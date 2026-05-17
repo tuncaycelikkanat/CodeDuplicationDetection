@@ -134,6 +134,29 @@ class ASTParser:
                     ops.add(node.text.decode("utf8"))
         return ops
 
+    def compute_max_depth(self, tree):
+        """
+        Computes the maximum nesting depth of the AST by traversing scope-inducing nodes.
+        This safely replaces the old text-based '{' counting mechanism, 
+        ignoring strings, comments, and properly counting scopes without braces.
+        """
+        if not tree: return 0
+        
+        # Nodes that increase logical depth
+        SCOPE_NODES = {
+            'compound_statement', 'for_statement', 'while_statement', 
+            'do_statement', 'if_statement', 'switch_statement'
+        }
+        
+        def _get_depth(node):
+            if not node.children:
+                return 0
+            
+            max_child_depth = max((_get_depth(c) for c in node.children), default=0)
+            return max_child_depth + 1 if node.type in SCOPE_NODES else max_child_depth
+            
+        return _get_depth(tree.root_node)
+
 # Singleton instance for lazy loading (to support Joblib Multiprocessing)
 _ast_parser_instance = None
 

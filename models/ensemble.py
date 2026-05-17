@@ -38,7 +38,6 @@ def build_ensemble(random_state: int = 42, device: str = "cpu", svd_start_idx: O
         learning_rate=0.05,
         max_depth=10,
         min_samples_leaf=5,
-        class_weight='balanced',
         random_state=random_state
     )
     # Lexical (0-3) ve SVD (_svd_start'tan sona kadar)
@@ -52,7 +51,6 @@ def build_ensemble(random_state: int = 42, device: str = "cpu", svd_start_idx: O
         n_estimators=100,
         max_depth=15,
         min_samples_split=5,
-        class_weight='balanced',
         random_state=random_state,
         n_jobs=-1
     )
@@ -64,7 +62,7 @@ def build_ensemble(random_state: int = 42, device: str = "cpu", svd_start_idx: O
     # 3. LinearSVC (Calibrated): Semantik uzmanı
     # SVM, 500k veri için RBF kernel ile çok yavaş olur. LinearSVC çok hızlıdır.
     # CalibratedClassifierCV, SVM'in olasılık (predict_proba) üretmesini sağlar.
-    svm = LinearSVC(dual=False, class_weight='balanced', random_state=random_state, max_iter=5000)
+    svm = LinearSVC(dual=False, random_state=random_state, max_iter=5000)
     calibrated_svm = CalibratedClassifierCV(svm, cv=3, method='sigmoid')
     
     # Semantik özellikler (45'ten 52'ye kadar)
@@ -81,7 +79,7 @@ def build_ensemble(random_state: int = 42, device: str = "cpu", svd_start_idx: O
     
     clf = StackingClassifier(
         estimators=estimators,
-        final_estimator=LogisticRegression(C=0.1, class_weight='balanced', max_iter=1000, random_state=random_state),
+        final_estimator=LogisticRegression(C=0.1, max_iter=1000, random_state=random_state),
         cv=5,
         n_jobs=1  # Important: keeping n_jobs=1 because base models already use n_jobs=-1
     )

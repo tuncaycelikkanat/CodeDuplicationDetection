@@ -177,6 +177,8 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
         "per_type": {},
         "global": {}
     }
+    global_tp, global_fp, global_tn, global_fn = 0, 0, 0, 0
+    global_y_true, global_y_prob = [], []
 
     # Evaluate negative pairs ONCE
     print(f"\n🚀 Evaluating {len(negatives)} Negative Pairs...")

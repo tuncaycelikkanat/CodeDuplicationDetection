@@ -133,16 +133,6 @@ def _strip_comments(code):
     code = _LINE_COMMENT_RE.sub('', code)
     return code
 
-def _compute_nesting_depth(code):
-    max_depth, depth = 0, 0
-    for ch in code:
-        if ch == '{':
-            depth += 1
-            max_depth = max(max_depth, depth)
-        elif ch == '}':
-            depth = max(0, depth - 1)
-    return max_depth
-
 def _detect_accumulator(code):
     if _ACCUMULATOR_RE.search(code): return 1
     if re.search(r'return\s+\w+\s*[+\-*/]\s*\w+\s*\(', code): return 1
@@ -240,7 +230,7 @@ def _extract_single(code):
     feats = [
         branches,
         loops + func_calls,
-        _compute_nesting_depth(clean_code),
+        parser.compute_max_depth(tree),
         operators,
         returns,
         _detect_accumulator(clean_code),
