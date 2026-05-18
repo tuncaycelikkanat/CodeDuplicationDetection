@@ -176,60 +176,76 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
         },
         "per_type": {},
         "global": {}
-    }
+    # Testte Negatif çiftlerin tüm tiplerde aynı sayıları (FP/TN) üretmesini engellemek için,
+    # negatifleri tiplere bölüyoruz (Örn: 950 negatif varsa, 4 tipe yaklaşık 237'şer tane dağıtılır)
+    np.random.seed(42) # Her testte aynı dağılım olsun
+    negatives_shuffled = negatives.copy()
+    np.random.shuffle(negatives_shuffled)
+    
+    # Calculate chunk size
+    chunk_size = len(negatives_shuffled) // len(types)
+    type_negatives_map = {}
+    
+    for i, t in enumerate(types):
+        start_idx = i * chunk_size
+        # Give remaining pairs to the last type
+        end_idx = (i + 1) * chunk_size if i < len(types) - 1 else len(negatives_shuffled)
+        type_negatives_map[t] = negatives_shuffled[start_idx:end_idx]
+
     global_tp, global_fp, global_tn, global_fn = 0, 0, 0, 0
     global_y_true, global_y_prob = [], []
-
-    # Evaluate negative pairs ONCE
-    print(f"\n🚀 Evaluating {len(negatives)} Negative Pairs...")
-    neg_tp, neg_fp, neg_tn, neg_fn = 0, 0, 0, 0
-    neg_y_true, neg_y_prob = [], []
-    neg_details = []
-    
-    for p in tqdm(negatives, desc="Negatives"):
-        X_pair = build_pair_vector(
-            p['c1'], p['c2'],
-            vectorizer,
-            svd_model=svd_model,
-            ssl_pipeline=ssl_pipeline,
-            ssl_pca=ssl_pca
-        )
-
-        cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
-
-        if stage1_model is not None:
-            X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
-            y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
-            if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
-                prob = 1.0
-            else:
-                prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
-        elif "CASCADE" in exp_path and cos_token > CASCADE_STAGE1_THRESHOLD:
-            prob = 1.0
-        else:
-            prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
-            
-        pred = 1 if prob >= threshold else 0
-        
-        neg_details.append({
-            "pair": p['p_name'],
-            "label": p['label'],
-            "probability": round(prob, 4),
-            "prediction": pred
-        })
-        
-        neg_y_true.append(0)
-        neg_y_prob.append(prob)
-
-        if pred == 1: neg_fp += 1
-        else: neg_tn += 1
-
     for t in types:
         positives = load_pairs(os.path.join(test_dir, t), label=1)
         if not positives:
             print(f"⚠️ No positive pairs found for {t}. Skipping.")
             continue
+            
+        # Generate Negatives for this specific Type
+        t_negatives = type_negatives_map.get(t, [])
+        neg_tp, neg_fp, neg_tn, neg_fn = 0, 0, 0, 0
+        neg_y_true, neg_y_prob = [], []
+        neg_details = []
         
+        if t_negatives:
+            print(f"🚀 Evaluating {len(t_negatives)} Negatives specifically for {t}...")
+            for p in tqdm(t_negatives, desc=f"{t} (Neg)"):
+                X_pair = build_pair_vector(
+                    p['c1'], p['c2'],
+                    vectorizer,
+                    svd_model=svd_model,
+                    ssl_pipeline=ssl_pipeline,
+                    ssl_pca=ssl_pca
+                )
+
+                cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
+
+                if stage1_model is not None:
+                    X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
+                    y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
+                    if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
+                        prob = 1.0
+                    else:
+                        prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
+                elif "CASCADE" in exp_path and cos_token > CASCADE_STAGE1_THRESHOLD:
+                    prob = 1.0
+                else:
+                    prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
+                    
+                pred = 1 if prob >= threshold else 0
+                
+                neg_details.append({
+                    "pair": p['p_name'],
+                    "label": p['label'],
+                    "probability": round(prob, 4),
+                    "prediction": pred
+                })
+                
+                neg_y_true.append(0)
+                neg_y_prob.append(prob)
+
+                if pred == 1: neg_fp += 1
+                else: neg_tn += 1
+
         print(f"\n🚀 Evaluating {t} ({len(positives)} positives)...")
         
         tp, fp, tn, fn = 0, 0, 0, 0
@@ -309,21 +325,13 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
         }
         
         global_tp += tp
+        global_fp += neg_fp
+        global_tn += neg_tn
         global_fn += fn
 
-    global_fp, global_tn = neg_fp, neg_tn
-    
-    # Collect all global positive y_true/y_prob
-    all_pos_true, all_pos_prob = [], []
-    for t in types:
-        if t in report["per_type"]:
-            # Positives are the first N elements
-            n_pos = report["per_type"][t]["positive_pairs"]
-            all_pos_true.extend([1] * n_pos)
-            all_pos_prob.extend([d["probability"] for d in report["per_type"][t]["details"][:n_pos]])
-
-    global_y_true = all_pos_true + neg_y_true
-    global_y_prob = all_pos_prob + neg_y_prob
+        # Collect global prob tracking directly here
+        global_y_true.extend(y_true + neg_y_true)
+        global_y_prob.extend(y_prob + neg_y_prob)
 
 
     if auto_thresh:
@@ -358,12 +366,13 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
                 global_tp += tp
                 global_fn += fn
                 
-        # global neg
+        # global metrics recalc
         fp, tn = 0, 0
-        for p in neg_y_prob:
-            if p >= threshold: fp += 1
-            else: tn += 1
-        global_fp, global_tn = fp, tn
+        for p in global_y_prob[len(global_y_true) - sum([len(v) for v in type_negatives_map.values()]):]: # actually not needed, we can just recalculate from preds
+            pass
+        
+        global_fp = sum(1 for yt, pred in zip(global_y_true, preds) if yt == 0 and pred == 1)
+        global_tn = sum(1 for yt, pred in zip(global_y_true, preds) if yt == 0 and pred == 0)
 
     global_metrics = calculate_metrics(global_tp, global_fp, global_tn, global_fn)
     roc_auc, pr_auc = calculate_auc(global_y_true, global_y_prob)

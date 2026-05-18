@@ -138,19 +138,33 @@ def generate_pairs(
 
     # ---- Hard Negative Mining: replace easy negatives ----
     if num_hard_neg > 0:
-        print(f"  → Hard negative mining (vectorized) - {num_hard_neg} pairs...")
+        print(f"  → Hard negative mining (TF-IDF Cosine distance) - {num_hard_neg} pairs...")
         hard_slots = np_rng.choice(neg_indices_mask, size=min(num_hard_neg, len(neg_indices_mask)), replace=False)
         src_indices = all_i[hard_slots]
         src_labels_arr = np.array([labels[idx] for idx in src_indices])
-        src_lengths = code_lengths[src_indices]
 
         for k, p in enumerate(hard_slots):
             src_lbl = src_labels_arr[k]
-            src_lbl_idx = label_to_idx[src_lbl]  # O(1) — önceden O(n_labels)
+            src_lbl_idx = label_to_idx[src_lbl]  # O(1)
             other_lbl = unique_labels[(src_lbl_idx + np_rng.randint(1, n_labels)) % n_labels]
-            cand_lengths = label_cand_lengths[other_lbl]
-            closest = np.argmin(np.abs(cand_lengths - src_lengths[k]))
-            all_j[p] = label_cand_indices[other_lbl][closest]
+            cand_indices = label_cand_indices[other_lbl]
+            
+            if len(cand_indices) > 0:
+                src_vec = X_token[src_indices[k]]
+                cand_vecs = X_token[cand_indices]
+                
+                # Compute true cosine similarity (since tf-idf vectors aren't strictly L2 normalized here)
+                dot_prods = src_vec.dot(cand_vecs.T).toarray()[0]
+                norm_src = np.sqrt((src_vec.data ** 2).sum())
+                norm_cands = np.sqrt(cand_vecs.power(2).sum(axis=1)).A1
+                denoms = norm_src * norm_cands
+                denoms[denoms == 0] = 1.0
+                sims = dot_prods / denoms
+                
+                # Find the MOST SIMILAR (closest) in TF-IDF space in a DIFFERENT class
+                # This simulates extremely deceptive negatives (e.g. they share the same keywords but solve different problems)
+                closest = np.argmax(sims)
+                all_j[p] = cand_indices[closest]
 
     # ---- Hard Positive Mining: replace easy positives ----
     if num_hard_pos > 0:
