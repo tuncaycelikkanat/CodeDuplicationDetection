@@ -178,6 +178,7 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
         },
         "per_type": {},
         "global": {}
+    }
     # Testte Negatif çiftlerin tüm tiplerde aynı sayıları (FP/TN) üretmesini engellemek için,
     # negatifleri tiplere bölüyoruz (Örn: 950 negatif varsa, 4 tipe yaklaşık 237'şer tane dağıtılır)
     np.random.seed(42) # Her testte aynı dağılım olsun
@@ -481,7 +482,8 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
         
         print(f"{row_name:<19} | {th_str:<15} | {prec:<9} | {rec:<8} | {f1:<8} | {prauc:<8} | {aucroc:<17} | {tp:<14} | {fp:<14} | {tn:<14} | {fn:<14}")
         
-    print(f"{Colors.CYAN}{Colors.BOLD}{'='*115}{Colors.RESET}\n") + "\n")
+    print(f"{Colors.CYAN}{Colors.BOLD}{'='*115}{Colors.RESET}\n")
+    print(f"\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run automation tests on code clone models.")

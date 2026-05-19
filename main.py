@@ -185,7 +185,7 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
             train_ssl = ssl_pca.fit_transform(train_ssl).astype(np.float32)
             test_ssl = ssl_pca.transform(test_ssl).astype(np.float32)
 
-        Log.substep("Generating {num_train_pairs} train pairs...")
+        Log.substep(f"Generating {num_train_pairs} train pairs...")
         X_train, y_train = generate_pairs(
             X_train_token, train_labels, num_train_pairs, train_codes,
             code_features=train_code_features,
@@ -201,7 +201,7 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         del X_train_token, train_code_features, train_cf_patterns, train_codes, train_semantic, X_train_svd, train_ssl
         gc.collect()
 
-        Log.substep("Generating {num_test_pairs} test pairs...")
+        Log.substep(f"Generating {num_test_pairs} test pairs...")
         X_test, y_test = generate_pairs(
             X_test_token, test_labels, num_test_pairs, test_codes,
             code_features=test_code_features,
@@ -314,7 +314,8 @@ def main():
             # torch opsiyonel; kurulu değilse CPU kullan
             args.device = "cpu"
 
-    Log.step("Using device: {args.device}")
+    Log.step(f"Using device: {args.device}")
+    Log.step(f"Using device: {args.device}")
 
     # Only apply Intel optimizations for CPU or XPU
     if args.device in ["cpu", "xpu"]:
@@ -342,7 +343,7 @@ def main():
                     all_codes.append(f.read())
                     labels.append(label)
 
-    Log.step("Total codes: {len(all_codes)}")
+    Log.step(f"Total codes: {len(all_codes)}")
     t_load = time.time() - t_phase
 
     # <----------> PREPROCESS <---------->
@@ -482,14 +483,14 @@ def main():
     num_test_pairs = NUM_PAIRS - num_train_pairs - num_val_pairs
 
     if train_ssl is not None:
-        Log.step("Fitting SSL PCA: 768 → {SSL_PCA_COMPONENTS} dims...")
+        Log.step(f"Fitting SSL PCA: 768 → {SSL_PCA_COMPONENTS} dims...")
         from sklearn.decomposition import PCA
         ssl_pca = PCA(n_components=SSL_PCA_COMPONENTS, random_state=RANDOM_STATE)
         train_ssl = ssl_pca.fit_transform(train_ssl).astype(np.float32)
         val_ssl = ssl_pca.transform(val_ssl).astype(np.float32)
         test_ssl = ssl_pca.transform(test_ssl).astype(np.float32)
 
-    Log.step("Generating {num_train_pairs} train pairs (positive_ratio={args.positive_ratio})...")
+    Log.step(f"Generating {num_train_pairs} train pairs (positive_ratio={args.positive_ratio})...")
     t_phase = time.time()
     X_train, y_train = generate_pairs(
         X_train_token, train_labels, num_train_pairs, train_codes,
@@ -523,7 +524,7 @@ def main():
     del X_train_token, train_code_features, train_cf_patterns, train_codes, train_semantic, X_train_svd, train_ssl
     gc.collect()
 
-    Log.step("Generating {num_val_pairs} val pairs...")
+    Log.step(f"Generating {num_val_pairs} val pairs...")
     X_val, y_val = generate_pairs(
         X_val_token, val_labels, num_val_pairs, val_codes,
         code_features=val_code_features,
@@ -543,7 +544,7 @@ def main():
     del X_val_token, val_code_features, val_cf_patterns, val_codes, val_semantic, X_val_svd, val_ssl
     gc.collect()
 
-    Log.step("Generating {num_test_pairs} test pairs...")
+    Log.step(f"Generating {num_test_pairs} test pairs...")
     X_test, y_test = generate_pairs(
         X_test_token, test_labels, num_test_pairs, test_codes,
         code_features=test_code_features,
