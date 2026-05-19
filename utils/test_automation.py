@@ -336,45 +336,66 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
         global_y_prob.extend(y_prob + neg_y_prob)
 
 
+    # Save true labels and probabilities for visualization
+    report["global_y_true"] = global_y_true
+    report["global_y_prob"] = global_y_prob
+
     if auto_thresh:
-        print("\n  [Auto-Threshold] Bulunuyor...")
-        best_f1 = -1
-        best_t = threshold
+        print(f"\n  {Colors.MAGENTA}[Auto-Threshold] Tip Bazlı Optimizasyon Başlıyor...{Colors.RESET}")
         from sklearn.metrics import f1_score
-        for t in [i/100.0 for i in range(1, 100)]:
-            preds = [1 if p >= t else 0 for p in global_y_prob]
-            f1 = f1_score(global_y_true, preds, zero_division=0)
-            if f1 > best_f1:
-                best_f1 = f1
-                best_t = t
-        print(f"  [Auto-Threshold] En iyi eşik: {best_t:.2f} (F1: {best_f1:.4f})")
-        threshold = best_t
         
-        # Yeniden hesapla
-        global_tp, global_fp, global_tn, global_fn = 0, 0, 0, 0
+        best_thresholds = {}
         for t in types:
             if t in report["per_type"]:
                 rm = report["per_type"][t]
-                details = rm["details"]
+                y_t = [d["label"] for d in rm["details"]]
+                y_p = [d["probability"] for d in rm["details"]]
+                
+                # Sadece bu type icin y_true ve y_prob kaydet (grafikler icin)
+                rm["y_true"] = y_t
+                rm["y_prob"] = y_p
+                
+                best_f1 = -1
+                best_th = threshold
+                for th in [i/100.0 for i in range(1, 100)]:
+                    preds = [1 if p >= th else 0 for p in y_p]
+                    f1 = f1_score(y_t, preds, zero_division=0)
+                    if f1 > best_f1:
+                        best_f1 = f1
+                        best_th = th
+                
+                best_thresholds[t] = best_th
+                print(f"  {Colors.BLUE}→{Colors.RESET} {t.upper()} en iyi eşik: {Colors.YELLOW}{best_th:.2f}{Colors.RESET} (Maksimum F1: {best_f1:.4f})")
+                
+                # Recalculate metrics for this type
                 tp, fp, tn, fn = 0, 0, 0, 0
-                for d in details:
-                    pred = 1 if d["probability"] >= threshold else 0
+                for d in rm["details"]:
+                    pred = 1 if d["probability"] >= best_th else 0
                     d["prediction"] = pred
                     if d["label"] == 1 and pred == 1: tp += 1
                     elif d["label"] == 1 and pred == 0: fn += 1
                     elif d["label"] == 0 and pred == 1: fp += 1
                     elif d["label"] == 0 and pred == 0: tn += 1
                 rm.update(calculate_metrics(tp, fp, tn, fn))
-                global_tp += tp
-                global_fn += fn
+                rm["best_threshold"] = best_th
                 
-        # global metrics recalc
-        fp, tn = 0, 0
-        for p in global_y_prob[len(global_y_true) - sum([len(v) for v in type_negatives_map.values()]):]: # actually not needed, we can just recalculate from preds
-            pass
-        
-        global_fp = sum(1 for yt, pred in zip(global_y_true, preds) if yt == 0 and pred == 1)
-        global_tn = sum(1 for yt, pred in zip(global_y_true, preds) if yt == 0 and pred == 0)
+        # Global recalculation
+        global_tp, global_fp, global_tn, global_fn = 0, 0, 0, 0
+        for t in types:
+            if t in report["per_type"]:
+                rm = report["per_type"][t]
+                global_tp += rm["tp"]
+                global_fp += rm["fp"]
+                global_tn += rm["tn"]
+                global_fn += rm["fn"]
+    else:
+        # Save arrays even if not auto-thresh
+        for t in types:
+            if t in report["per_type"]:
+                rm = report["per_type"][t]
+                rm["y_true"] = [d["label"] for d in rm["details"]]
+                rm["y_prob"] = [d["probability"] for d in rm["details"]]
+                rm["best_threshold"] = threshold
 
     global_metrics = calculate_metrics(global_tp, global_fp, global_tn, global_fn)
     roc_auc, pr_auc = calculate_auc(global_y_true, global_y_prob)
@@ -421,8 +442,8 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
     print(f"{Colors.CYAN}{Colors.BOLD}{'='*85}{Colors.RESET}")
     
     # HEADER
-    print(f"{Colors.WHITE}{Colors.BOLD}{'TYPE':<10} | {'F1-SCORE':<8} | {'MCC':<8} | {'PR-AUC':<8} | {'AUC-ROC':<8} | {'TP':<5} | {'FP':<5} | {'TN':<5} | {'FN':<5}{Colors.RESET}")
-    print(f"{Colors.DIM}{'-' * 85}{Colors.RESET}")
+    print(f"{Colors.WHITE}{Colors.BOLD}{'TYPE':<10} | {'THRESH':<6} | {'PRECISION':<9} | {'RECALL':<8} | {'F1-SCORE':<8} | {'PR-AUC':<8} | {'AUC-ROC':<8} | {'TP':<5} | {'FP':<5} | {'TN':<5} | {'FN':<5}{Colors.RESET}")
+    print(f"{Colors.DIM}{'-' * 115}{Colors.RESET}")
     
     types_to_print = ["global"] + [t for t in types if t in report["per_type"]]
     
@@ -452,9 +473,15 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
         tn = f"{Colors.GREEN}{rm.get('tn',0)}{Colors.RESET}"
         fn = f"{Colors.RED}{rm.get('fn',0)}{Colors.RESET}"
         
-        print(f"{row_name:<19} | {f1:<8} | {mcc:<8} | {prauc:<8} | {aucroc:<17} | {tp:<14} | {fp:<14} | {tn:<14} | {fn:<14}")
+        th_val = rm.get('best_threshold', threshold)
+        th_str = f"{Colors.YELLOW}{th_val:.2f}{Colors.RESET}" if auto_thresh and t != "global" else f"{th_val:.2f}"
         
-    print(f"{Colors.CYAN}{Colors.BOLD}{'='*85}{Colors.RESET}\n") + "\n")
+        prec = f"{rm.get('precision', 0):.4f}"
+        rec = f"{rm.get('recall', 0):.4f}"
+        
+        print(f"{row_name:<19} | {th_str:<15} | {prec:<9} | {rec:<8} | {f1:<8} | {prauc:<8} | {aucroc:<17} | {tp:<14} | {fp:<14} | {tn:<14} | {fn:<14}")
+        
+    print(f"{Colors.CYAN}{Colors.BOLD}{'='*115}{Colors.RESET}\n") + "\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run automation tests on code clone models.")

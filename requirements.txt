@@ -34,6 +34,7 @@ shap>=0.42.0
 
 # Visualization
 matplotlib>=3.7.0
+seaborn>=0.12.0
 
 # Hardware-specific Optimizations (Intel CPU — opsiyonel, hata vermez)
 # Kurulumu başarısız olursa otomatik olarak atlanır (try/except main.py'de mevcut)
