@@ -7,6 +7,8 @@ import pickle
 import numpy as np
 import math
 import argparse
+from utils.logger import Log, Colors
+
 from tqdm import tqdm
 
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -80,7 +82,7 @@ def calculate_auc(y_true, y_prob):
     try:
         return round(roc_auc_score(y_true, y_prob), 4), round(average_precision_score(y_true, y_prob), 4)
     except Exception as e:
-        print(f"⚠️ AUC hesabı başarısız: {e}")
+        Log.warning(f"AUC hesabı başarısız: {e}")
         return 0.0, 0.0
 
 def load_pairs(dir_path, label):
@@ -103,7 +105,7 @@ def load_pairs(dir_path, label):
             continue
     return pairs
 
-def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thresh=False):
+def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=None, auto_thresh=False):
     if not os.path.isabs(test_dir):
         test_dir = os.path.join(_PROJECT_ROOT, test_dir)
 
@@ -128,16 +130,16 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
     ssl_pipeline = None
     ssl_pca = None
     if use_ssl:
-        print("  → Loading SSL pipeline for inference...")
+        Log.substep("Loading SSL pipeline for inference...")
         from vectorization.ssl_encoder import build_ssl_pipeline
         ssl_pipeline = build_ssl_pipeline(device="cpu") # Inference on CPU for testing by default
         _ssl_pca_path = os.path.join(exp_path, "ssl_pca.pkl")
         if os.path.exists(_ssl_pca_path):
             with open(_ssl_pca_path, "rb") as f:
                 ssl_pca = pickle.load(f)
-            print(f"  → ssl_pca loaded ({ssl_pca.n_components} components)")
+            Log.substep(f"ssl_pca loaded ({ssl_pca.n_components} components)")
         else:
-            print("  ⚠️ ssl_pca.pkl bulunamadi — eski 2-skaler mod")
+            Log.warning("ssl_pca.pkl bulunamadi — eski 2-skaler mod")
 
     char_vectorizer = None  # Deprecated
 
@@ -197,7 +199,7 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
     for t in types:
         positives = load_pairs(os.path.join(test_dir, t), label=1)
         if not positives:
-            print(f"⚠️ No positive pairs found for {t}. Skipping.")
+            Log.warning(f"No positive pairs found for {t}. Skipping.")
             continue
             
         # Generate Negatives for this specific Type
@@ -207,7 +209,7 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
         neg_details = []
         
         if t_negatives:
-            print(f"🚀 Evaluating {len(t_negatives)} Negatives specifically for {t}...")
+            Log.step(f"Evaluating {len(t_negatives)} Negatives specifically for {t}...")
             for p in tqdm(t_negatives, desc=f"{t} (Neg)"):
                 X_pair = build_pair_vector(
                     p['c1'], p['c2'],
@@ -383,7 +385,7 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
     report["global"] = global_metrics
 
     # Save Results
-    out_dir = os.path.join(_PROJECT_ROOT, "test_results", f"run_{int(time.time())}")
+    out_dir = os.path.join(_PROJECT_ROOT, "evaluation", "test_results", f"run_{int(time.time())}")
     os.makedirs(out_dir, exist_ok=True)
     
     with open(os.path.join(out_dir, "report.json"), "w") as f:
@@ -411,34 +413,48 @@ def run_automation(test_dir="test_clones", threshold=0.95, exp_id=None, auto_thr
                 for k in ["total_pairs", "precision", "recall", "f1_score", "accuracy", "mcc", "auc_roc", "pr_auc", "tp", "fp", "tn", "fn"]:
                     f.write(f"{k.ljust(20)}: {rm.get(k)}\n")
 
-    print(f"\n✅ Results saved to: {out_dir}")
+    Log.success(f"Results saved to: {out_dir}")
     
     # --- CONSOLE PRETTY PRINT ---
-    print("\n" + "="*85)
-    print(f" EXPERIMENT RESULTS: {os.path.basename(exp_path)} (Threshold: {threshold})")
-    print("="*85)
-    print(f"{'TYPE':<10} | {'F1-SCORE':<8} | {'MCC':<8} | {'PR-AUC':<8} | {'AUC-ROC':<8} | {'TP':<5} | {'FP':<5} | {'TN':<5} | {'FN':<5}")
-    print("-" * 85)
+    print(f"\n{Colors.CYAN}{Colors.BOLD}{'='*85}{Colors.RESET}")
+    print(f"{Colors.CYAN}{Colors.BOLD} 🧪 EXPERIMENT RESULTS: {os.path.basename(exp_path)} (Threshold: {threshold:.2f}) {Colors.RESET}")
+    print(f"{Colors.CYAN}{Colors.BOLD}{'='*85}{Colors.RESET}")
+    
+    # HEADER
+    print(f"{Colors.WHITE}{Colors.BOLD}{'TYPE':<10} | {'F1-SCORE':<8} | {'MCC':<8} | {'PR-AUC':<8} | {'AUC-ROC':<8} | {'TP':<5} | {'FP':<5} | {'TN':<5} | {'FN':<5}{Colors.RESET}")
+    print(f"{Colors.DIM}{'-' * 85}{Colors.RESET}")
     
     types_to_print = ["global"] + [t for t in types if t in report["per_type"]]
     
     for t in types_to_print:
         if t == "global":
             rm = report["global"]
-            row_name = "GLOBAL"
+            row_name = f"{Colors.MAGENTA}{Colors.BOLD}GLOBAL{Colors.RESET}"
         else:
             rm = report["per_type"][t]
-            row_name = t.upper()
+            row_name = f"{Colors.YELLOW}{t.upper()}{Colors.RESET}"
             
         f1 = f"{rm.get('f1_score', 0):.4f}"
         mcc = f"{rm.get('mcc', 0):.4f}"
         prauc = f"{rm.get('pr_auc', 0):.4f}"
-        aucroc = f"{rm.get('auc_roc', 0):.4f}"
-        tp, fp, tn, fn = rm.get("tp",0), rm.get("fp",0), rm.get("tn",0), rm.get("fn",0)
         
-        print(f"{row_name:<10} | {f1:<8} | {mcc:<8} | {prauc:<8} | {aucroc:<8} | {tp:<5} | {fp:<5} | {tn:<5} | {fn:<5}")
+        aucroc_val = rm.get('auc_roc', 0)
+        # Highlight high AUC-ROC with Green
+        if aucroc_val > 0.90:
+            aucroc = f"{Colors.GREEN}{aucroc_val:.4f}{Colors.RESET}"
+        elif aucroc_val > 0.80:
+            aucroc = f"{Colors.BLUE}{aucroc_val:.4f}{Colors.RESET}"
+        else:
+            aucroc = f"{aucroc_val:.4f}"
+            
+        tp = f"{Colors.GREEN}{rm.get('tp',0)}{Colors.RESET}"
+        fp = f"{Colors.RED}{rm.get('fp',0)}{Colors.RESET}"
+        tn = f"{Colors.GREEN}{rm.get('tn',0)}{Colors.RESET}"
+        fn = f"{Colors.RED}{rm.get('fn',0)}{Colors.RESET}"
         
-    print("="*85 + "\n")
+        print(f"{row_name:<19} | {f1:<8} | {mcc:<8} | {prauc:<8} | {aucroc:<17} | {tp:<14} | {fp:<14} | {tn:<14} | {fn:<14}")
+        
+    print(f"{Colors.CYAN}{Colors.BOLD}{'='*85}{Colors.RESET}\n") + "\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run automation tests on code clone models.")
@@ -451,4 +467,4 @@ if __name__ == "__main__":
     scenarios = ["original", "imbalanced", "balanced"] if args.scenario == "all" else [args.scenario]
     for sc in scenarios:
         print(f"\n{'='*50}\n 🧪 RUNNING SCENARIO: {sc.upper()}\n{'='*50}")
-        run_automation(test_dir=f"test_clones_{sc}", threshold=args.threshold, exp_id=args.exp_id, auto_thresh=args.auto_threshold)
+        run_automation(test_dir=f"evaluation/test_clones_{sc}", threshold=args.threshold, exp_id=args.exp_id, auto_thresh=args.auto_threshold)

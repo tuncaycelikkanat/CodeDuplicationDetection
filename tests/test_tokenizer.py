@@ -12,6 +12,8 @@ Testler 8 gruba ayrılmıştır:
   H) Type-2 Klon Tespiti için Kritik Testler
 """
 import sys, os
+from utils.logger import Log
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from preprocessing.tokenizer import tokenize, normalize_tokens, KEYWORDS

@@ -13,6 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.sparse import hstack, csr_matrix
 import shap
+from utils.logger import Log
+
 from rapidfuzz.distance import Levenshtein
 
 # Ensure project root is on sys.path for imports
@@ -97,9 +99,9 @@ svd_path = f"{EXP_PATH}/svd.pkl"
 if os.path.exists(svd_path):
     with open(svd_path, "rb") as f:
         svd_model = pickle.load(f)
-    print("   ✅ SVD model loaded")
+    Log.success(f"SVD model loaded" if "{" in "SVD model loaded" else "SVD model loaded")
 else:
-    print("   ⚠️  No SVD model found")
+    Log.warning(f"No SVD model found" if "{" in "No SVD model found" else "No SVD model found")
 
 # Load Stage1 model
 stage1_model = None
@@ -107,9 +109,9 @@ stage1_path = f"{EXP_PATH}/stage1_model.pkl"
 if os.path.exists(stage1_path):
     with open(stage1_path, "rb") as f:
         stage1_model = pickle.load(f)
-    print("   ✅ Stage-1 Lexical model loaded")
+    Log.success(f"Stage-1 Lexical model loaded" if "{" in "Stage-1 Lexical model loaded" else "Stage-1 Lexical model loaded")
 else:
-    print("   ⚠️  No Stage-1 Lexical model found")
+    Log.warning(f"No Stage-1 Lexical model found" if "{" in "No Stage-1 Lexical model found" else "No Stage-1 Lexical model found")
 
 # Load SSL pipeline (singleton — baslangiçta yuklenir, her requestte yeniden yuklenmez)
 ssl_pipeline = None
@@ -123,9 +125,9 @@ if os.path.exists(config_path):
         try:
             from vectorization.ssl_encoder import build_ssl_pipeline
             ssl_pipeline = build_ssl_pipeline(device="cpu")
-            print("   ✅ SSL pipeline loaded")
+            Log.success(f"SSL pipeline loaded" if "{" in "SSL pipeline loaded" else "SSL pipeline loaded")
         except Exception as e:
-            print(f"   ⚠️ SSL pipeline yuklenemedi: {e}")
+            Log.warning(f"SSL pipeline yuklenemedi: {e}" if "{" in "SSL pipeline yuklenemedi: {e}" else "SSL pipeline yuklenemedi: {e}")
         # ssl_pca yukle
         _ssl_pca_path = f"{EXP_PATH}/ssl_pca.pkl"
         if os.path.exists(_ssl_pca_path):
@@ -134,7 +136,7 @@ if os.path.exists(config_path):
             print(f"   ✅ SSL PCA loaded ({ssl_pca.n_components} components, "
                   f"explained var: {ssl_pca.explained_variance_ratio_.sum():.2%})")
         else:
-            print("   ⚠️ ssl_pca.pkl bulunamadi — eski 2-skaler mod kullanilacak")
+            Log.warning(f"ssl_pca.pkl bulunamadi — eski 2-skaler mod kullanilacak" if "{" in "ssl_pca.pkl bulunamadi — eski 2-skaler mod kullanilacak" else "ssl_pca.pkl bulunamadi — eski 2-skaler mod kullanilacak")
 
 
 
@@ -204,7 +206,7 @@ print(f"   📊 Total feature names: {len(FEATURE_NAMES)}")
 # ================= SHAP EXPLAINER =================
 print("   🔬 Initializing SHAP TreeExplainer...")
 explainer = shap.TreeExplainer(model)
-print("   ✅ SHAP explainer ready")
+Log.success(f"SHAP explainer ready" if "{" in "SHAP explainer ready" else "SHAP explainer ready")
 
 
 # ================= SCHEMA =================
@@ -316,7 +318,7 @@ def predict(pair: CodePair):
                 "features": shap_features
             }
         except Exception as e:
-            print(f"⚠️ SHAP explanation failed: {e}")
+            Log.warning(f"SHAP explanation failed: {e}" if "{" in "SHAP explanation failed: {e}" else "SHAP explanation failed: {e}")
             shap_data = None
 
         return {

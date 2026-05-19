@@ -1,5 +1,7 @@
 import numpy as np
 import scipy.sparse as sp
+from utils.logger import Log
+
 from xgboost import XGBClassifier, DMatrix
 
 

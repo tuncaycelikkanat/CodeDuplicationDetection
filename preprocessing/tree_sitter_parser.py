@@ -1,5 +1,7 @@
 import tree_sitter_cpp
 from tree_sitter import Language, Parser, Query, QueryCursor
+from utils.logger import Log
+
 
 # Singleton Language initialization
 CPP_LANGUAGE = Language(tree_sitter_cpp.language())

@@ -1,5 +1,7 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from config import TFIDF_MAX_FEATURES, TFIDF_NGRAM_RANGE, TFIDF_MIN_DF, TFIDF_MAX_DF
+from utils.logger import Log
+
 
 
 def build_tfidf_vectorizer():

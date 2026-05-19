@@ -1,5 +1,7 @@
 import numpy as np
 import math
+from utils.logger import Log
+
 from collections import Counter
 from typing import Dict, List, Optional, Tuple
 from scipy.sparse import hstack, csr_matrix
@@ -62,7 +64,7 @@ def generate_pairs(
     unique_labels = list(label_to_indices.keys())
 
     # ---- Step 1: Generate pair indices (vectorized with NumPy) ----
-    print("  → Generating pair indices (vectorized)...")
+    Log.substep("Generating pair indices (vectorized)...")
     np_rng = np.random.RandomState(random_state)
 
     all_i = np.empty(num_pairs, dtype=np.int32)
@@ -138,7 +140,7 @@ def generate_pairs(
 
     # ---- Hard Negative Mining: replace easy negatives ----
     if num_hard_neg > 0:
-        print(f"  → Hard negative mining (TF-IDF Cosine distance) - {num_hard_neg} pairs...")
+        Log.substep(f"Hard negative mining (TF-IDF Cosine distance) - {num_hard_neg} pairs...")
         hard_slots = np_rng.choice(neg_indices_mask, size=min(num_hard_neg, len(neg_indices_mask)), replace=False)
         src_indices = all_i[hard_slots]
         src_labels_arr = np.array([labels[idx] for idx in src_indices])
@@ -168,7 +170,7 @@ def generate_pairs(
 
     # ---- Hard Positive Mining: replace easy positives ----
     if num_hard_pos > 0:
-        print(f"  → Hard positive mining (TF-IDF Cosine distance) - {num_hard_pos} pairs...")
+        Log.substep(f"Hard positive mining (TF-IDF Cosine distance) - {num_hard_pos} pairs...")
         hard_pos_slots = np_rng.choice(pos_indices, size=min(num_hard_pos, len(pos_indices)), replace=False)
         src_indices = all_i[hard_pos_slots]
         src_labels_arr = np.array([labels[idx] for idx in src_indices])
@@ -198,7 +200,7 @@ def generate_pairs(
                 all_j[p] = cand_indices[farthest]
 
     # ---- Duplicate Pair Filtering ----
-    print("  → Filtering duplicate and self-pairs...")
+    Log.substep("Filtering duplicate and self-pairs...")
     # Force i < j for symmetry
     swap_mask = all_i > all_j
     all_i[swap_mask], all_j[swap_mask] = all_j[swap_mask], all_i[swap_mask]
@@ -223,13 +225,13 @@ def generate_pairs(
     num_pairs = len(all_i)
 
     # ---- Step 2: Batch token TF-IDF diff (sparse, vectorized) ----
-    print("  → Computing token TF-IDF diff (batch)...")
+    Log.substep("Computing token TF-IDF diff (batch)...")
     X_i_token = X_token[all_i]
     X_j_token = X_token[all_j]
     diff_matrix = abs(X_i_token - X_j_token)  # sparse matrix subtraction
 
     # ---- Step 3: Batch cosine similarity (token) ----
-    print("  → Computing token cosine similarity (batch)...")
+    Log.substep("Computing token cosine similarity (batch)...")
     cos_token = np.array(X_i_token.multiply(X_j_token).sum(axis=1)).ravel()
     norm_i = np.sqrt(np.array(X_i_token.multiply(X_i_token).sum(axis=1)).ravel())
     norm_j = np.sqrt(np.array(X_j_token.multiply(X_j_token).sum(axis=1)).ravel())
@@ -240,7 +242,7 @@ def generate_pairs(
     del X_i_token, X_j_token
 
     # ---- Step 4: Batch length ratio ----
-    print("  → Computing length ratio...")
+    Log.substep("Computing length ratio...")
     token_lengths = np.array([len(code.split()) for code in processed_codes], dtype=np.float32)
 
     len_i = token_lengths[all_i]
@@ -262,7 +264,7 @@ def generate_pairs(
 
     # ---- Step 7: AST feature ratios (if provided) ----
     if code_features is not None:
-        print("  → Computing AST feature ratios (batch)...")
+        Log.substep("Computing AST feature ratios (batch)...")
         cf_i = code_features[all_i]
         cf_j = code_features[all_j]
         max_cf = np.maximum(cf_i, cf_j)
@@ -276,7 +278,7 @@ def generate_pairs(
 
     # ---- Step 8: Control flow pattern similarity (parallelized) ----
     if cf_patterns is not None:
-        print("  → Computing CF pattern similarity (parallel batch)...")
+        Log.substep("Computing CF pattern similarity (parallel batch)...")
 
         def _cf_sim_chunk(start, end, idx_i, idx_j, patterns):
             result = np.empty(end - start, dtype=np.float32)
@@ -305,7 +307,7 @@ def generate_pairs(
 
     # ---- Step 9: Semantic similarity features (A1, A2, B3) ----
     if semantic_features is not None:
-        print("  → Computing semantic similarity features...")
+        Log.substep("Computing semantic similarity features...")
 
         lib_calls = semantic_features['library_calls']
         lib_categories = semantic_features['library_categories']
@@ -357,7 +359,7 @@ def generate_pairs(
         del sem_results, sem_matrix
 
         # Type Profile Cosine Similarity (Vectorized)
-        print("  → Computing type profile cosine similarity...")
+        Log.substep("Computing type profile cosine similarity...")
         type_profiles_mat = np.vstack(semantic_features['type_profiles'])
         tp_i = type_profiles_mat[all_i]
         tp_j = type_profiles_mat[all_j]
@@ -373,7 +375,7 @@ def generate_pairs(
 
     # ---- Step 9.5: SVD Differences (if provided) ----
     if X_svd is not None:
-        print("  → Computing SVD differences (batch)...")
+        Log.substep("Computing SVD differences (batch)...")
         svd_i = X_svd[all_i]
         svd_j = X_svd[all_j]
         svd_diff = np.abs(svd_i - svd_j)
@@ -385,7 +387,7 @@ def generate_pairs(
     # 2 skaler (cos+euclidean) yerine tam abs fark vektoru kullaniliyor:
     # model her boyuttaki farki ayri ayri ogrenir -> Type-4 icin cok daha zengin sinyal.
     if ssl_embeddings is not None:
-        print("  → Computing SSL embedding abs diff (batch)...")
+        Log.substep("Computing SSL embedding abs diff (batch)...")
         ssl_i = ssl_embeddings[all_i]   # (num_pairs, ssl_dim)
         ssl_j = ssl_embeddings[all_j]   # (num_pairs, ssl_dim)
         ssl_abs_diff = np.abs(ssl_i - ssl_j).astype(np.float32)
@@ -393,7 +395,7 @@ def generate_pairs(
         del ssl_i, ssl_j, ssl_abs_diff
 
     # ---- Step 10: Combine all features ----
-    print("  → Combining features...")
+    Log.substep("Combining features...")
     # We no longer append the 500 TF-IDF differences. We return only the dense extra features.
     result = np.hstack(extra_cols).astype(np.float32)
     del extra_cols, diff_matrix

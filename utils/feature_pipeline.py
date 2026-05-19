@@ -2,6 +2,8 @@ import os
 import sys
 import math
 import numpy as np
+from utils.logger import Log
+
 from typing import Optional, Tuple
 from scipy.sparse import hstack, csr_matrix
 from sklearn.metrics.pairwise import cosine_similarity

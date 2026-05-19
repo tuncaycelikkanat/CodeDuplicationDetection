@@ -22,6 +22,8 @@ Design decisions:
 """
 
 import re
+from utils.logger import Log
+
 
 # -- C/C++ Core Keywords -------------------------------------------------------
 KEYWORDS = frozenset({

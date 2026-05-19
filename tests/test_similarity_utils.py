@@ -2,6 +2,8 @@
 Unit testler: utils/similarity_utils.py
 """
 import sys, os
+from utils.logger import Log
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard, _tuple_bigram_jaccard

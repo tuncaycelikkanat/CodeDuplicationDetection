@@ -7,6 +7,8 @@ Simplified to focus strictly on features proven useful for semantic (Type-4) and
 import re
 from collections import Counter
 import numpy as np
+from utils.logger import Log
+
 from joblib import Parallel, delayed
 from preprocessing.tree_sitter_parser import get_parser
 

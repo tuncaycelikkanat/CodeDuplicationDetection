@@ -8,6 +8,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 
 from config import ENSEMBLE_SVD_START_IDX
+from utils.logger import Log
+
 
 def _make_col_pipeline(clf, transformers):
     selector = ColumnTransformer(transformers=transformers, remainder='drop')

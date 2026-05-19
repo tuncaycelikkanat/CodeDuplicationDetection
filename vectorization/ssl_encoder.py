@@ -2,6 +2,8 @@ import os
 import torch
 import numpy as np
 import hashlib
+from utils.logger import Log
+
 from typing import Optional, List
 from tqdm import tqdm
 
@@ -38,10 +40,10 @@ def extract_ssl_embeddings(
 
     # ---- Cache Loading ----
     if actual_cache_path is not None and os.path.exists(actual_cache_path):
-        print(f"  → Loading SSL embeddings from cache: {actual_cache_path}")
+        Log.substep(f"Loading SSL embeddings from cache: {actual_cache_path}")
         cached = np.load(actual_cache_path)
         if cached.shape[0] == len(codes):
-            print(f"  → Cache hit: {cached.shape}")
+            Log.substep(f"Cache hit: {cached.shape}")
             return cached.astype(np.float32)
 
     try:
@@ -49,14 +51,16 @@ def extract_ssl_embeddings(
     except ImportError:
         raise ImportError("Please install 'transformers' and 'torch' to use SSL embeddings.")
 
-    print(f"  → Loading SSL model: {model_name} on {device}...")
+    Log.substep(f"Loading SSL model: {model_name} on {device}...")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
+    # Suppress length warning since we do manual chunking later
+    tokenizer.model_max_length = int(1e9)
     model = AutoModel.from_pretrained(model_name).to(device)
     model.eval()
 
     embeddings = []
 
-    print(f"  → Extracting SSL embeddings (batch_size={batch_size}, chunking=True, pooling=Mean)...")
+    Log.substep(f"Extracting SSL embeddings (batch_size={batch_size}, chunking=True, pooling=Mean)...")
     for i in tqdm(range(0, len(codes), batch_size), desc="SSL Embeddings"):
         batch_codes = codes[i:i+batch_size]
 
@@ -128,7 +132,7 @@ def extract_ssl_embeddings(
     if actual_cache_path is not None and result.size > 0:
         os.makedirs(os.path.dirname(os.path.abspath(actual_cache_path)), exist_ok=True)
         np.save(actual_cache_path, result)
-        print(f"  → SSL embeddings saved to cache: {actual_cache_path}")
+        Log.substep(f"SSL embeddings saved to cache: {actual_cache_path}")
 
     return result
 

@@ -3,6 +3,8 @@ import json
 import re
 import matplotlib.pyplot as plt
 import pickle
+from utils.logger import Log
+
 
 from sklearn.metrics import (
     accuracy_score,

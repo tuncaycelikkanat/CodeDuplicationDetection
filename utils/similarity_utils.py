@@ -1,3 +1,4 @@
+from utils.logger import Log
 """
 Paylaşılan benzerlik helper fonksiyonları
 =========================================

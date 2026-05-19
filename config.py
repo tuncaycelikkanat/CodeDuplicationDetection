@@ -1,3 +1,4 @@
+from utils.logger import Log
 """
 Merkezi yapılandırma — CodeDuplicationDetection
 ================================================

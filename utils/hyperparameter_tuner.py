@@ -5,6 +5,8 @@ Memory-optimized: avoids double parallelism and uses gc between trials.
 
 import gc
 import optuna
+from utils.logger import Log
+
 from sklearn.model_selection import cross_val_score
 from xgboost import XGBClassifier
 from sklearn.ensemble import RandomForestClassifier

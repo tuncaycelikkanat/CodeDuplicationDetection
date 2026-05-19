@@ -14,6 +14,8 @@ import sys
 import json
 import argparse
 import re
+from utils.logger import Log
+
 from typing import List, Dict, Optional
 
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -87,7 +89,7 @@ def compare(exp_ids: Optional[List[int]] = None, base_dir: str = "experiments", 
         exps = [(eid, name, path) for eid, name, path in all_exps if eid in id_set]
         missing = id_set - {e[0] for e in exps}
         if missing:
-            print(f"⚠️  Bulunamayan deney ID'leri: {sorted(missing)}")
+            Log.warning(f"Bulunamayan deney ID'leri: {sorted(missing)}")
     else:
         exps = all_exps
 

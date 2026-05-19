@@ -2,6 +2,8 @@ import os
 import random
 import shutil
 import re
+from utils.logger import Log
+
 
 # 50 Harici C++ Algoritma ve Veri Yapısı (Zero Data Contamination)
 SEEDS = {
@@ -158,7 +160,7 @@ def apply_type3(code):
     return res.replace("{", "{\n").replace("}", "\n}\n").replace(";", ";\n")
 
 def generate_pairs(scenario="original"):
-    out_dir = f"test_clones_{scenario}"
+    out_dir = f"evaluation/test_clones_{scenario}"
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
     

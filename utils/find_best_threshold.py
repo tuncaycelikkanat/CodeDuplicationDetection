@@ -3,6 +3,8 @@ import sys
 import json
 import math
 import numpy as np
+from utils.logger import Log
+
 
 _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if _PROJECT_ROOT not in sys.path:
