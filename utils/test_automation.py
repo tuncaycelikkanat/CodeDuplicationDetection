@@ -357,7 +357,8 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
                 
                 best_f1 = -1
                 best_th = threshold
-                for th in [i/100.0 for i in range(1, 100)]:
+                thresholds = [i/100.0 for i in range(1, 99)] + [0.99 + i/1000.0 for i in range(10)]
+                for th in thresholds:
                     preds = [1 if p >= th else 0 for p in y_p]
                     f1 = f1_score(y_t, preds, zero_division=0)
                     if f1 > best_f1:
@@ -365,7 +366,7 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
                         best_th = th
                 
                 best_thresholds[t] = best_th
-                print(f"  {Colors.BLUE}→{Colors.RESET} {t.upper()} best threshold: {Colors.YELLOW}{best_th:.2f}{Colors.RESET} (Max F1: {best_f1:.4f})")
+                print(f"  {Colors.BLUE}→{Colors.RESET} {t.upper()} best threshold: {Colors.YELLOW}{best_th:.3f}{Colors.RESET} (Max F1: {best_f1:.4f})")
                 
                 # Recalculate metrics for this type
                 tp, fp, tn, fn = 0, 0, 0, 0
@@ -499,11 +500,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run automation tests on code clone models.")
     parser.add_argument("--exp-id", type=int, default=None, help="Specific experiment ID to test (e.g. 54). If not provided, uses latest.")
     parser.add_argument("--threshold", type=float, default=0.95, help="Classification threshold (default 0.95)")
-    parser.add_argument("--scenario", type=str, default="original", choices=["original", "imbalanced", "balanced", "all"], help="Test scenario folder to use")
+    parser.add_argument("--scenario", type=str, default="balanced", choices=["balanced", "imbalanced", "all"], help="Test scenario folder to use")
     parser.add_argument("--auto-threshold", action="store_true", help="Automatically find the best threshold using PR-AUC/F1")
     args = parser.parse_args()
     
-    scenarios = ["original", "imbalanced", "balanced"] if args.scenario == "all" else [args.scenario]
+    scenarios = ["balanced", "imbalanced"] if args.scenario == "all" else [args.scenario]
     for sc in scenarios:
         print(f"\n{'='*50}\n 🧪 RUNNING SCENARIO: {sc.upper()}\n{'='*50}")
         run_automation(test_dir=f"evaluation/test_clones_{sc}", threshold=args.threshold, exp_id=args.exp_id, auto_thresh=args.auto_threshold)

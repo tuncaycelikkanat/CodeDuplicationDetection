@@ -17,7 +17,7 @@ def main():
     parser.add_argument("--out", type=str, default="evaluation/model_comparison.json", help="Output JSON path")
     args = parser.parse_args()
 
-    scenarios = ["original", "imbalanced", "balanced"]
+    scenarios = ["balanced", "imbalanced"]
     
     # Big dictionary to hold all results
     comparison_data = {}

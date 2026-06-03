@@ -9,13 +9,13 @@ bu modülden import edin.
 
 # ── Cascade Architecture ──────────────────────────────────────────────────────
 # Kelime benzerliği bu eşiğin üzerindeyse XGBoost'a sormadan direkt klon say.
-CASCADE_THRESHOLD = 0.85
+CASCADE_THRESHOLD = 0.98
 # Daha agresif Type-3 tespiti için 0.70'e düşürülebilir (FP riski artar).
 # Daha yüksek Precision için 0.90'a çıkarılabilir (Type-3 Recall düşer).
 
 # Stage-1 (HistGradientBoosting) modelinin "kolay klon" kararı için eşik.
 # Bu değer main.py, test_automation.py ve web_demo/app.py tarafından paylaşılır.
-CASCADE_STAGE1_THRESHOLD = 0.85
+CASCADE_STAGE1_THRESHOLD = 0.98
 
 # ── Boyut Azaltma ─────────────────────────────────────────────────────────────
 SVD_N_COMPONENTS = 100  # TruncatedSVD bileşen sayısı (LSA) - Daha fazla varyans açıklamak için artırıldı
@@ -31,9 +31,9 @@ DEFAULT_PAIRS      = 800_000
 DEFAULT_SEED       = 42
 DEFAULT_TEST_SIZE  = 0.2
 DEFAULT_CV_FOLDS   = 5
-# Eğitim çiftlerinde klon oranı. Varsayılan 0.5 (dengeli).
-# Gerçekçi sınıf dağılımı simülasyonu için 0.1 kullanın.
-DEFAULT_POSITIVE_RATIO = 0.5
+# Eğitim çiftlerinde klon oranı. Varsayılan 0.5'ti (dengeli).
+# Gerçekçi sınıf dağılımı simülasyonu için 0.05'e (Imbalanced) çekildi.
+DEFAULT_POSITIVE_RATIO = 0.05
 HARD_MINING_RATIO  = 0.3  # Hard positive/negative mining oranı
 
 # ── Ensemble Mimarisi ─────────────────────────────────────────────────────────
