@@ -342,7 +342,7 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
     report["global_y_prob"] = global_y_prob
 
     if auto_thresh:
-        print(f"\n  {Colors.MAGENTA}[Auto-Threshold] Tip Bazlı Optimizasyon Başlıyor...{Colors.RESET}")
+        print(f"\n  {Colors.MAGENTA}[Auto-Threshold] Type-Based Optimization Starting...{Colors.RESET}")
         from sklearn.metrics import f1_score
         
         best_thresholds = {}
@@ -352,7 +352,7 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
                 y_t = [d["label"] for d in rm["details"]]
                 y_p = [d["probability"] for d in rm["details"]]
                 
-                # Sadece bu type icin y_true ve y_prob kaydet (grafikler icin)
+                # Save y_true and y_prob for this type
                 rm["y_true"] = y_t
                 rm["y_prob"] = y_p
                 
@@ -366,7 +366,7 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
                         best_th = th
                 
                 best_thresholds[t] = best_th
-                print(f"  {Colors.BLUE}→{Colors.RESET} {t.upper()} en iyi eşik: {Colors.YELLOW}{best_th:.2f}{Colors.RESET} (Maksimum F1: {best_f1:.4f})")
+                print(f"  {Colors.BLUE}→{Colors.RESET} {t.upper()} best threshold: {Colors.YELLOW}{best_th:.2f}{Colors.RESET} (Max F1: {best_f1:.4f})")
                 
                 # Recalculate metrics for this type
                 tp, fp, tn, fn = 0, 0, 0, 0
@@ -438,9 +438,10 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
     Log.success(f"Results saved to: {out_dir}")
     
     # --- CONSOLE PRETTY PRINT ---
-    print(f"\n{Colors.CYAN}{Colors.BOLD}{'='*85}{Colors.RESET}")
-    print(f"{Colors.CYAN}{Colors.BOLD} 🧪 EXPERIMENT RESULTS: {os.path.basename(exp_path)} (Threshold: {threshold:.2f}) {Colors.RESET}")
-    print(f"{Colors.CYAN}{Colors.BOLD}{'='*85}{Colors.RESET}")
+    print(f"\n{Colors.CYAN}{Colors.BOLD}{'='*115}{Colors.RESET}")
+    th_display = "AUTO" if auto_thresh else f"{threshold:.2f}"
+    print(f"{Colors.CYAN}{Colors.BOLD} 🧪 EXPERIMENT RESULTS: {os.path.basename(exp_path)} (Threshold: {th_display}) {Colors.RESET}")
+    print(f"{Colors.CYAN}{Colors.BOLD}{'='*115}{Colors.RESET}")
     
     # HEADER
     print(f"{Colors.WHITE}{Colors.BOLD}{'TYPE':<10} | {'THRESH':<6} | {'PRECISION':<9} | {'RECALL':<8} | {'F1-SCORE':<8} | {'PR-AUC':<8} | {'AUC-ROC':<8} | {'TP':<5} | {'FP':<5} | {'TN':<5} | {'FN':<5}{Colors.RESET}")
@@ -451,11 +452,15 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
     for t in types_to_print:
         if t == "global":
             rm = report["global"]
-            row_name = f"{Colors.MAGENTA}{Colors.BOLD}GLOBAL{Colors.RESET}"
+            row_name = "GLOBAL"
+            col_color = f"{Colors.MAGENTA}{Colors.BOLD}"
         else:
             rm = report["per_type"][t]
-            row_name = f"{Colors.YELLOW}{t.upper()}{Colors.RESET}"
+            row_name = t.upper()
+            col_color = Colors.YELLOW
             
+        col1 = f"{col_color}{row_name:<10}{Colors.RESET}"
+        
         f1 = f"{rm.get('f1_score', 0):.4f}"
         mcc = f"{rm.get('mcc', 0):.4f}"
         prauc = f"{rm.get('pr_auc', 0):.4f}"
@@ -469,21 +474,27 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
         else:
             aucroc = f"{aucroc_val:.4f}"
             
-        tp = f"{Colors.GREEN}{rm.get('tp',0)}{Colors.RESET}"
-        fp = f"{Colors.RED}{rm.get('fp',0)}{Colors.RESET}"
-        tn = f"{Colors.GREEN}{rm.get('tn',0)}{Colors.RESET}"
-        fn = f"{Colors.RED}{rm.get('fn',0)}{Colors.RESET}"
+        tp = f"{Colors.GREEN}{rm.get('tp',0):<5}{Colors.RESET}"
+        fp = f"{Colors.RED}{rm.get('fp',0):<5}{Colors.RESET}"
+        tn = f"{Colors.GREEN}{rm.get('tn',0):<5}{Colors.RESET}"
+        fn = f"{Colors.RED}{rm.get('fn',0):<5}{Colors.RESET}"
         
         th_val = rm.get('best_threshold', threshold)
-        th_str = f"{Colors.YELLOW}{th_val:.2f}{Colors.RESET}" if auto_thresh and t != "global" else f"{th_val:.2f}"
+        if auto_thresh and t == "global":
+            th_str = f"{Colors.YELLOW}{'AUTO':<6}{Colors.RESET}"
+        elif auto_thresh:
+            th_str = f"{Colors.YELLOW}{th_val:<6.2f}{Colors.RESET}"
+        else:
+            th_str = f"{th_val:<6.2f}"
         
         prec = f"{rm.get('precision', 0):.4f}"
         rec = f"{rm.get('recall', 0):.4f}"
         
-        print(f"{row_name:<19} | {th_str:<15} | {prec:<9} | {rec:<8} | {f1:<8} | {prauc:<8} | {aucroc:<17} | {tp:<14} | {fp:<14} | {tn:<14} | {fn:<14}")
+        print(f"{col1} | {th_str} | {prec:<9} | {rec:<8} | {f1:<8} | {prauc:<8} | {aucroc} | {tp} | {fp} | {tn} | {fn}")
         
     print(f"{Colors.CYAN}{Colors.BOLD}{'='*115}{Colors.RESET}\n")
     print(f"\n")
+    return report, out_dir
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run automation tests on code clone models.")

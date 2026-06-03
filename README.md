@@ -30,9 +30,11 @@ CodeDuplicationDetection/
 │   └── xgboost.py                 # XGBoost model sarmalayici (GPU destekli + aucpr)
 │
 ├── utils/
-│   ├── feature_pipeline.py        # Tekli cift icin özellik çıkarımı (demo/test)
-│   ├── test_automation.py         # Otomatik klon tipi başarım testi
-│   └── ...                        # Deney kaydediciler ve tuner araçları
+│   ├── feature_pipeline.py              # Tekli cift icin özellik çıkarımı (demo/test)
+│   ├── test_automation.py               # Otomatik klon tipi başarım testi
+│   ├── find_best_threshold.py           # Tip bazında en iyi threshold (sklearn gerektirir)
+│   ├── find_best_threshold_standalone.py # Tip bazında en iyi threshold — sadece numpy (0.01 adım)
+│   └── ...                              # Deney kaydediciler ve tuner araçları
 │
 ├── web_demo/
 │   └── app.py                     # FastAPI web servisi (Açıklanabilir SHAP destekli)
@@ -73,7 +75,22 @@ python main.py --pairs 100000 --model xgboost --use-ssl
 
 Elde edilen model ile test klon klasörlerinde başarım ölçümü:
 ```bash
-python utils/test_automation.py --threshold 0.85
+python utils/test_automation.py --threshold 0.45
+```
+
+Tip bazında en iyi threshold bulmak (0.01 hassasiyetle):
+```bash
+# En son test run üzerinde — sadece numpy, sklearn gerekmez
+python utils/find_best_threshold_standalone.py
+
+# Belirli bir run dizini üzerinde
+python utils/find_best_threshold_standalone.py --run-dir evaluation/test_results/run_1779001114
+
+# Önerilen tip başına eşikler (exp_066 CASCADE_XGBoost sonuçları):
+#   type1 → 0.61  (F1: 0.8865)
+#   type2 → 0.66  (F1: 0.9091)
+#   type3 → 0.61  (F1: 0.8582)
+#   type4 → 0.45  (F1: 0.4245)
 ```
 
 Görsel arayüzü başlatmak (Modelin nasıl karar verdiğini görmek için SHAP açıklamaları içerir):

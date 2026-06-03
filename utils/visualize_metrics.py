@@ -37,8 +37,8 @@ def plot_pr_curve(report, out_dir):
         pr_auc = auc(recall, precision)
         plt.plot(recall, precision, color='black', lw=3, linestyle='--', label=f'GLOBAL (PR-AUC = {pr_auc:.4f})')
 
-    plt.xlabel('Recall (Kapsayıcılık)', fontsize=14)
-    plt.ylabel('Precision (Hassasiyet)', fontsize=14)
+    plt.xlabel('Recall', fontsize=14)
+    plt.ylabel('Precision', fontsize=14)
     plt.title('Precision-Recall (PR) Curve', fontsize=16)
     plt.legend(loc="lower left", fontsize=12)
     plt.grid(True, alpha=0.3)

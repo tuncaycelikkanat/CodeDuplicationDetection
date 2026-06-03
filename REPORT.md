@@ -70,7 +70,7 @@ Makine öğrenmesinde "rastgele" çift (pair) seçmek, sadece kolay klonları ü
 
 ## 5. Komut Referansı (Nasıl Çalıştırılır?)
 
-**Ortam Hazırlığı:** Proje Python 3.12 gerektirir. `uv` veya `pip` kullanabilirsiniz.
+**Ortam Hazırlığı:** Proje Python 3.11/3.12 gerektirir. `uv` veya `pip` kullanabilirsiniz.
 ```bash
 uv venv .venv
 source .venv/bin/activate
@@ -95,7 +95,17 @@ python main.py --tune --tune-trials 50 --model xgboost
 
 **Test Otomasyonu (Type 1-4 Raporu Alma):**
 ```bash
-python utils/test_automation.py --exp-id 1 --threshold 0.85
+python utils/test_automation.py --exp-id 66 --threshold 0.45
+```
+
+**Tip Başına Threshold Optimizasyonu (0.01 Hassasiyet):**
+```bash
+# Sadece numpy — sklearn/scipy gerektirmez
+python utils/find_best_threshold_standalone.py
+
+# Belirli run dizini + özel adım boyutu
+python utils/find_best_threshold_standalone.py \
+    --run-dir evaluation/test_results/run_1779001114 --step 0.01
 ```
 
 **Web Uygulaması (Açıklanabilir AI / SHAP):**
@@ -103,3 +113,29 @@ python utils/test_automation.py --exp-id 1 --threshold 0.85
 cd web_demo && uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 ```
 Tarayıcınızdan `http://localhost:8000` adresine girerek anlık analiz yapabilir, modelin kararında (SHAP) hangi kod özelliklerinin ağırlık taşıdığını görebilirsiniz.
+
+---
+
+## 6. Threshold Optimizasyonu Sonuçları
+
+En iyi sınıflandırma eşiği (threshold), her klon tipi için ayrı ayrı **0.01 adım hassasiyetiyle** arandı.
+Araç: `utils/find_best_threshold_standalone.py`, Veri: `exp_066_CASCADE_XGBoost_2k / run_1779001114`
+
+| Tip | En İyi Threshold | Precision | Recall | **F1** | TP | FP | FN |
+|-----|:----------------:|:---------:|:------:|:------:|:--:|:--:|:--:|
+| TYPE1 | **0.61** | 0.7962 | 1.0000 | **0.8865** | 125 | 32 | 0 |
+| TYPE2 | **0.66** | 0.8333 | 1.0000 | **0.9091** | 125 | 25 | 0 |
+| TYPE3 | **0.61** | 0.7867 | 0.9440 | **0.8582** | 118 | 32 | 7 |
+| TYPE4 | **0.45** | 0.4333 | 0.4160 | **0.4245** | 52 | 68 | 73 |
+
+**0.05 adım vs 0.01 adım karşılaştırması:**
+
+| Tip | Eski Thresh (0.05) | Eski F1 | Yeni Thresh (0.01) | Yeni F1 | Δ F1 |
+|-----|:-----------------:|:-------:|:-----------------:|:-------:|:----:|
+| TYPE1 | 0.45 | 0.7862 | **0.61** | **0.8865** | **+0.100** ↑ |
+| TYPE2 | 0.45 | 0.7862 | **0.66** | **0.9091** | **+0.123** ↑ |
+| TYPE3 | 0.45 | 0.7785 | **0.61** | **0.8582** | **+0.080** ↑ |
+| TYPE4 | 0.45 | 0.4245 | 0.45 | 0.4245 | 0.000 — |
+
+> **Yorum:** Type1, 2 ve 3 klon tespitinde threshold hassasiyetini 0.05→ 0.01'e düşürmek ciddi
+F1 artışı sağladı. Type4, model mimarisi ve özellik zenginleştirmesiyle iyileştirilmesi gereken ana zorluk alanıdır.

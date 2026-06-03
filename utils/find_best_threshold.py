@@ -61,7 +61,7 @@ def find_best_threshold(run_dir=None):
             print(f"\n  {Colors.WHITE}{Colors.BOLD}| {'Thresh':<6} | {'Precision':<9} | {'Recall':<6} | {'F1-Score':<8} | {'TP':<4} | {'FP':<4} | {'TN':<4} | {'FN':<4} |{Colors.RESET}")
             print(f"  {Colors.DIM}|--------|-----------|--------|----------|------|------|------|------|{Colors.RESET}")
             
-            for thresh in np.arange(0.05, 1.00, 0.05):
+            for thresh in np.arange(0.01, 1.00, 0.01):
                 y_pred = (y_p >= thresh).astype(int)
                 
                 tp = int(np.sum((y_t == 1) & (y_pred == 1)))

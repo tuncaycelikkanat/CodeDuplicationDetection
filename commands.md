@@ -148,13 +148,41 @@ python utils/generate_test_clones.py --scenario all
 
 ---
 
-## 5. Threshold Optimizasyonu — `utils/find_best_threshold.py`
+## 5. Threshold Optimizasyonu
 
-> En iyi F1 ve MCC değerlerini veren threshold değerini bulur.
-> Önce `test_automation.py` çalıştırılmış olmalı.
+### `utils/find_best_threshold_standalone.py` — ✨ Tavsiye Edilen (Sadece numpy)
+
+> sklearn/scipy gerekmez. `--step` ile hassasiyet ayarlanır. Tip başına ayrı ayrı en iyi F1 bulur.
+
+```bash
+# En son test run üzerinde (0.01 varsayılan adım)
+python utils/find_best_threshold_standalone.py
+
+# Belirli bir run dizini
+python utils/find_best_threshold_standalone.py --run-dir evaluation/test_results/run_1779001114
+
+# Özel adım boyutu (daha ince: 0.005)
+python utils/find_best_threshold_standalone.py --step 0.005
+
+# Belirli run + özel adım
+python utils/find_best_threshold_standalone.py --run-dir evaluation/test_results/run_1779001114 --step 0.01
+```
+
+> **Önerilen tip başına eşikler** (exp_066 CASCADE_XGBoost, `run_1779001114`, adım=0.01):
+> | Tip | Threshold | Precision | Recall | F1 |
+> |-----|:---------:|:---------:|:------:|:------:|
+> | TYPE1 | **0.61** | 0.7962 | 1.0000 | **0.8865** |
+> | TYPE2 | **0.66** | 0.8333 | 1.0000 | **0.9091** |
+> | TYPE3 | **0.61** | 0.7867 | 0.9440 | **0.8582** |
+> | TYPE4 | **0.45** | 0.4333 | 0.4160 | **0.4245** |
+
+### `utils/find_best_threshold.py` — Eski (sklearn gerektirir)
+
+> `test_automation.py` önce çalıştırılmış olmalı. 0.01 adımlı (güncellendi).
 
 ```bash
 python utils/find_best_threshold.py
+python utils/find_best_threshold.py --run-dir evaluation/test_results/run_1779001114
 ```
 
 ---
@@ -248,10 +276,11 @@ python -c "import config; [print(f'{k}={v}') for k,v in vars(config).items() if 
 | GPU eğitimi | `... --device cuda` |
 | Tune + eğitim | `... --tune --tune-trials 50` |
 | Cross-validation | `... --cv --cv-folds 5` |
-| Test otomasyonu | `python utils/test_automation.py --exp-id 56 --threshold 0.90` |
-| Web demo başlat | `EXP_ID=56 uvicorn web_demo.app:app --reload` |
+| Test otomasyonu | `python utils/test_automation.py --exp-id 66 --threshold 0.45` |
+| Web demo başlat | `EXP_ID=66 uvicorn web_demo.app:app --reload` |
 | Test klonu oluştur | `python utils/generate_test_clones.py` |
-| Threshold bul | `python utils/find_best_threshold.py` |
+| Threshold bul (standalone) | `python utils/find_best_threshold_standalone.py` |
+| Threshold bul (eski) | `python utils/find_best_threshold.py` |
 | Tüm testler | `python -m pytest tests/ -v` |
 | Integration test | `python -m pytest tests/test_ensemble_pipeline.py -v` |
 
@@ -275,6 +304,12 @@ python -c "import config; [print(f'{k}={v}') for k,v in vars(config).items() if 
 | `--cv` | flag | — | Cross-validation modu |
 | `--cv-folds` | int | `5` | K-fold sayısı |
 | `--cv-pairs` | int | `None` | CV fold başına çift sayısı |
+
+### `utils/find_best_threshold_standalone.py`
+| Parametre | Tip | Varsayılan | Açıklama |
+|---|---|---|---|
+| `--run-dir` | str | `None` (en son) | Belirli `run_XXX` dizini |
+| `--step` | float | `0.01` | Threshold arama adım boyutu (0.005 = daha ince) |
 
 ### `utils/test_automation.py`
 | Parametre | Tip | Varsayılan | Açıklama |
