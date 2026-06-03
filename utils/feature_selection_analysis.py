@@ -15,44 +15,23 @@ if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
 from utils.logger import Log, Colors
-from utils.test_automation import get_experiment_path
+from utils.test_automation import get_experiment_path, load_pairs
 from utils.feature_pipeline import build_pair_vector
 
 def load_pairs_for_type(test_dir, t_name):
     """Loads positives and negatives for a specific type from test_dir."""
-    pairs = []
+    if not os.path.isabs(test_dir):
+        test_dir = os.path.join(_PROJECT_ROOT, test_dir)
+        
+    positives = load_pairs(os.path.join(test_dir, t_name), label=1)
+    negatives = load_pairs(os.path.join(test_dir, "negatives"), label=0)
     
-    # Load positives
-    pos_dir = os.path.join(test_dir, t_name)
-    if os.path.exists(pos_dir):
-        for f in os.listdir(pos_dir):
-            if f.endswith(".json"):
-                with open(os.path.join(pos_dir, f), "r") as fp:
-                    data = json.load(fp)
-                    data['label'] = 1
-                    pairs.append(data)
-                    
-    # Load negatives (assuming they are in 'negatives' or mapped)
-    # Balanced test set typically has 'negatives' folder or specific negs.
-    # In test_automation.py, we mapped negatives by taking subsets.
-    # We will just load all negatives and take a subset equal to positives.
-    neg_dir = os.path.join(test_dir, "negatives")
-    negs = []
-    if os.path.exists(neg_dir):
-        for f in os.listdir(neg_dir):
-            if f.endswith(".json"):
-                with open(os.path.join(neg_dir, f), "r") as fp:
-                    data = json.load(fp)
-                    data['label'] = 0
-                    negs.append(data)
-                    
     # Balance negatives
-    if len(pos_dir) > 0 and len(negs) >= len(pairs):
-        # Deterministic slice
-        negs = sorted(negs, key=lambda x: x.get('p_name', ''))[:len(pairs)]
+    if len(positives) > 0 and len(negatives) >= len(positives):
+        negatives = sorted(negatives, key=lambda x: x.get('p_name', ''))[:len(positives)]
     
-    pairs.extend(negs)
-    return pairs
+    positives.extend(negatives)
+    return positives
 
 def main():
     parser = argparse.ArgumentParser(description="Perform Feature Selection Analysis per Clone Type.")
