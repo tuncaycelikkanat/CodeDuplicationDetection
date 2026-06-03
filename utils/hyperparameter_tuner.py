@@ -3,8 +3,15 @@ Hyperparameter tuning with Optuna for XGBoost, Random Forest, and Linear SVM.
 Memory-optimized: avoids double parallelism and uses gc between trials.
 """
 
+import os
+import sys
 import gc
 import optuna
+
+_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
+
 from utils.logger import Log
 
 from sklearn.model_selection import cross_val_score
