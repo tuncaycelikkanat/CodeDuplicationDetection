@@ -511,7 +511,15 @@ def main():
     stage1_model = CalibratedClassifierCV(base_stage1, cv=3, method='isotonic')
     
     cos_tokens_train = X_train[:, 0]
-    easy_train_mask = (y_train == 0) | ((y_train == 1) & (cos_tokens_train > CASCADE_THRESHOLD))
+    pos_mask = y_train == 1
+    easy_pos_mask = pos_mask & (cos_tokens_train > CASCADE_THRESHOLD)
+    if easy_pos_mask.sum() < 10:
+        pos_indices = np.where(pos_mask)[0]
+        top_pos = pos_indices[np.argsort(cos_tokens_train[pos_indices])[::-1][:100]]
+        easy_pos_mask = np.zeros_like(pos_mask, dtype=bool)
+        easy_pos_mask[top_pos] = True
+
+    easy_train_mask = (y_train == 0) | easy_pos_mask
     
     X_train_stage1_easy = X_train[easy_train_mask, :STAGE1_FEATURE_COUNT]
     y_train_easy = y_train[easy_train_mask]
