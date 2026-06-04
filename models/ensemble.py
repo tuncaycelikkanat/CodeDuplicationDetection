@@ -65,7 +65,8 @@ def build_ensemble(random_state: int = 42, device: str = "cpu", svd_start_idx: O
     # SVM, 500k veri için RBF kernel ile çok yavaş olur. LinearSVC çok hızlıdır.
     # CalibratedClassifierCV, SVM'in olasılık (predict_proba) üretmesini sağlar.
     svm = LinearSVC(dual=False, random_state=random_state, max_iter=5000)
-    calibrated_svm = CalibratedClassifierCV(svm, cv=3, method='sigmoid')
+    # Büyük veri setlerinde 'isotonic' kalibrasyonu, 'sigmoid'den çok daha keskin sonuç verir.
+    calibrated_svm = CalibratedClassifierCV(svm, cv=3, method='isotonic')
     
     # Semantik özellikler (45'ten 52'ye kadar)
     pipe_svm = _make_col_pipeline(calibrated_svm, [
@@ -81,7 +82,7 @@ def build_ensemble(random_state: int = 42, device: str = "cpu", svd_start_idx: O
     
     clf = StackingClassifier(
         estimators=estimators,
-        final_estimator=LogisticRegression(C=0.1, max_iter=1000, random_state=random_state),
+        final_estimator=HistGradientBoostingClassifier(max_iter=100, random_state=random_state),
         cv=5,
         n_jobs=1  # Important: keeping n_jobs=1 because base models already use n_jobs=-1
     )
