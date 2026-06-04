@@ -49,7 +49,8 @@ def generate_pairs(
         [33..37] semantic Jaccard/cosine features   -- if semantic_features provided
         [38] type_profile_cosine
         [39..88] SVD diff (50 dims)                 -- if X_svd provided
-        [89..152] SSL PCA embedding abs diff        -- if ssl_embeddings provided (64 dims)
+        [89..216] SSL PCA embedding abs diff         -- if ssl_embeddings provided (128 dims)
+        [217..344] SSL PCA element-wise product       -- if ssl_embeddings provided (128 dims)
 
     Args:
         positive_ratio: Fraction of pairs that should be positive (clone) pairs.
@@ -382,17 +383,21 @@ def generate_pairs(
         extra_cols.append(svd_diff.astype(np.float32))
         del svd_i, svd_j, svd_diff
 
-    # ---- Step 9.6: SSL Embeddings Abs Diff (if provided) ----
+    # ---- Step 9.6: SSL Embeddings Abs Diff + Element-wise Product (if provided) ----
     # ssl_embeddings burada zaten PCA ile indirgenmis (N, SSL_PCA_COMPONENTS) formatindadir.
-    # 2 skaler (cos+euclidean) yerine tam abs fark vektoru kullaniliyor:
-    # model her boyuttaki farki ayri ayri ogrenir -> Type-4 icin cok daha zengin sinyal.
+    # Sentence-BERT / NLI literaturunden esinlenerek:
+    #   abs_diff = |emb_A - emb_B|  -> mesafe bilgisi
+    #   product  = emb_A * emb_B    -> yonsel etkilesim bilgisi
+    # Ikisi birlikte Type-4 icin cok daha zengin sinyal verir.
     if ssl_embeddings is not None:
-        Log.substep("Computing SSL embedding abs diff (batch)...")
+        Log.substep("Computing SSL embedding abs diff + element-wise product (batch)...")
         ssl_i = ssl_embeddings[all_i]   # (num_pairs, ssl_dim)
         ssl_j = ssl_embeddings[all_j]   # (num_pairs, ssl_dim)
         ssl_abs_diff = np.abs(ssl_i - ssl_j).astype(np.float32)
+        ssl_product = (ssl_i * ssl_j).astype(np.float32)
         extra_cols.append(ssl_abs_diff)
-        del ssl_i, ssl_j, ssl_abs_diff
+        extra_cols.append(ssl_product)
+        del ssl_i, ssl_j, ssl_abs_diff, ssl_product
 
     # ---- Step 10: Combine all features ----
     Log.substep("Combining features...")

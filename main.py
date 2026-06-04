@@ -6,7 +6,7 @@ import argparse
 import random
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import (
     CASCADE_THRESHOLD, CASCADE_STAGE1_THRESHOLD, STAGE1_FEATURE_COUNT,
@@ -179,7 +179,7 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         num_test_pairs = int(cv_pairs * test_ratio)
 
         if train_ssl is not None:
-            Log.substep("Fitting SSL PCA ({SSL_PCA_COMPONENTS} dims) for fold...")
+            Log.substep(f"Fitting SSL PCA ({SSL_PCA_COMPONENTS} dims) for fold...")
             from sklearn.decomposition import PCA
             ssl_pca = PCA(n_components=SSL_PCA_COMPONENTS, random_state=args.seed)
             train_ssl = ssl_pca.fit_transform(train_ssl).astype(np.float32)
@@ -235,9 +235,9 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
         y_train_easy = y_train[easy_train_mask]
         stage1_model.fit(X_train_stage1_easy, y_train_easy)
         
-        Log.substep("Filtering easy clones from CV Train set (threshold={CASCADE_STAGE1_THRESHOLD})...")
+        Log.substep(f"Filtering easy clones from CV Train set (threshold={CASCADE_STAGE1_THRESHOLD})...")
         X_train, y_train, n_removed = _apply_cascade_filter(X_train, y_train, stage1_model)
-        Log.substep("Filtered CV Train: {X_train.shape} (removed {n_removed} easy clones)")
+        Log.substep(f"Filtered CV Train: {X_train.shape} (removed {n_removed} easy clones)")
 
         if args.model == "ensemble":
             from models.ensemble import build_ensemble
@@ -247,7 +247,7 @@ def run_cross_validation(args, all_codes, labels, processed_codes,
             spw = (len(y_train) - pos_count) / pos_count
             model = build_xgboost(args.seed, device=args.device, scale_pos_weight=spw)
 
-        Log.substep("Training {model_name}...")
+        Log.substep(f"Training {model_name}...")
         model.fit(X_train, y_train, verbose=False)
 
         # Evaluate
@@ -315,7 +315,6 @@ def main():
             args.device = "cpu"
 
     Log.step(f"Using device: {args.device}")
-    Log.step(f"Using device: {args.device}")
 
     # Only apply Intel optimizations for CPU or XPU
     if args.device in ["cpu", "xpu"]:
@@ -374,7 +373,7 @@ def main():
         raw_ssl = extract_ssl_embeddings(
             all_codes, device=args.device, cache_path=args.ssl_cache
         )
-        Log.substep("SSL Embeddings shape: {raw_ssl.shape}  ({time.time() - t_phase_ssl:.1f}s)")
+        Log.substep(f"SSL Embeddings shape: {raw_ssl.shape}  ({time.time() - t_phase_ssl:.1f}s)")
 
         Log.substep("Keeping SSL embeddings raw (768 dims). PCA will be fitted per split to prevent leakage.")
         ssl_embeddings_all = raw_ssl
@@ -527,7 +526,7 @@ def main():
     
     Log.substep("Filtering EASY clones from Train set (Two-Stage approach)...")
     X_train, y_train, n_removed_train = _apply_cascade_filter(X_train, y_train, stage1_model)
-    Log.substep("Filtered Train matrix: {X_train.shape} (Removed {n_removed_train} easy clones via Stage-1)")
+    Log.substep(f"Filtered Train matrix: {X_train.shape} (Removed {n_removed_train} easy clones via Stage-1)")
 
     del X_train_token, train_code_features, train_cf_patterns, train_codes, train_semantic, X_train_svd, train_ssl
     gc.collect()
@@ -547,7 +546,7 @@ def main():
 
     Log.substep("Filtering EASY clones from Val set (Two-Stage approach)...")
     X_val, y_val, n_removed_val = _apply_cascade_filter(X_val, y_val, stage1_model)
-    Log.substep("Filtered Val matrix: {X_val.shape} (Removed {n_removed_val} easy clones via Stage-1)")
+    Log.substep(f"Filtered Val matrix: {X_val.shape} (Removed {n_removed_val} easy clones via Stage-1)")
 
     del X_val_token, val_code_features, val_cf_patterns, val_codes, val_semantic, X_val_svd, val_ssl
     gc.collect()
@@ -606,7 +605,7 @@ def main():
             model = build_fn(RANDOM_STATE, device=args.device)
 
     # <----------> TRAIN <---------->
-    Log.step("Training {model_name}...")
+    Log.step(f"Training {model_name}...")
     t_phase = time.time()
     
     if args.model == "xgboost":
@@ -633,7 +632,7 @@ def main():
     
     y_test_pred[easy_pos_mask_test] = 1  # Pre-filter easy clones
     
-    Log.substep("Stage-1 filtered {easy_pos_mask_test.sum()} Easy Pos immediately.")
+    Log.substep(f"Stage-1 filtered {easy_pos_mask_test.sum()} Easy Pos immediately.")
     
     hard_mask_test = ~easy_pos_mask_test
     if hard_mask_test.sum() > 0:

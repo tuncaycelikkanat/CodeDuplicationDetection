@@ -37,7 +37,7 @@ SEEDS = {
     "heapify": "void heapify(int arr[], int n, int i) { int lg=i, l=2*i+1, r=2*i+2; if(l<n && arr[l]>arr[lg]) lg=l; if(r<n && arr[r]>arr[lg]) lg=r; if(lg!=i) {int t=arr[i]; arr[i]=arr[lg]; arr[lg]=t; heapify(arr,n,lg);} }",
     "counting_sort": "void countSort(int arr[], int n) { int max=arr[0]; for(int i=1; i<n; i++) if(arr[i]>max) max=arr[i]; int count[max+1]; for(int i=0; i<=max; ++i) count[i]=0; for(int i=0; i<n; i++) count[arr[i]]++; int idx=0; for(int i=0; i<=max; i++) while(count[i]--) arr[idx++]=i; }",
     "matrix_mult": "void matMult(int a[10][10], int b[10][10], int res[10][10], int n) { for(int i=0; i<n; i++) for(int j=0; j<n; j++) {res[i][j]=0; for(int k=0; k<n; k++) res[i][j]+=a[i][k]*b[k][j];} }",
-    "sieve_eratosthenes": "void sieve(int n) { bool p[n+1]; memset(p,true,sizeof(p)); for(int p=2; p*p<=n; p++) if(p[p]) for(int i=p*p; i<=n; i+=p) p[i]=false; }",
+    "sieve_eratosthenes": "void sieve(int n) { bool is_p[n+1]; memset(is_p,true,sizeof(is_p)); for(int p=2; p*p<=n; p++) if(is_p[p]) for(int i=p*p; i<=n; i+=p) is_p[i]=false; }",
     "str_cmp": "int strCmp(char* s1, char* s2) { while(*s1 && (*s1==*s2)) {s1++; s2++;} return *(const unsigned char*)s1 - *(const unsigned char*)s2; }",
     "str_cat": "char* strCat(char* dest, const char* src) { char* rd=dest; while(*dest) dest++; while(*dest++=*src++); return rd; }",
     "str_cpy": "char* strCpy(char* d, const char* s) { char* saved=d; while(*s) *d++=*s++; *d=0; return saved; }",

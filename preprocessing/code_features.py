@@ -283,10 +283,39 @@ def _extract_single(code):
     
     return feats, cf, semantic
 
+def _extract_single_safe(code, idx=None):
+    """
+    _extract_single() sarmalayıcısı — hata durumunda sıfır vektör döndürür ve loglar.
+    Sessiz exception yutma yerine hangi kodun parse edilemediğini belirtir.
+    """
+    try:
+        return _extract_single(code)
+    except Exception as e:
+        import logging
+        logging.warning(
+            f"Feature extraction failed for code idx={idx} "
+            f"(len={len(code) if code else 0}): {type(e).__name__}: {e}"
+        )
+        num_features = len(FEATURE_NAMES)
+        zero_feats = [0.0] * num_features
+        empty_cf = ""
+        empty_semantic = {
+            'library_calls': {},
+            'library_categories': {},
+            'data_structs': frozenset(),
+            'io_pattern': '',
+            'math_ops': set(),
+            'skeleton': (),
+            'type_profile': np.zeros(9, dtype=np.float32),
+            'abstract_cf': ''
+        }
+        return zero_feats, empty_cf, empty_semantic
+
+
 def extract_all_features(raw_codes):
     print("Extracting simplified code features (parallel)...")
     results = Parallel(n_jobs=-1, backend='loky')(
-        delayed(_extract_single)(code) for code in raw_codes
+        delayed(_extract_single_safe)(code, idx) for idx, code in enumerate(raw_codes)
     )
 
     features = np.array([r[0] for r in results], dtype=np.float32)
@@ -304,3 +333,4 @@ def extract_all_features(raw_codes):
     }
 
     return features, cf_patterns, semantic_features
+

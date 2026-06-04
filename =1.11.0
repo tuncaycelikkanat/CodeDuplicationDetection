@@ -1,0 +1,21 @@
+Collecting scipy
+  Downloading scipy-1.17.1-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+Collecting numpy<2.7,>=1.26.4 (from scipy)
+  Downloading numpy-2.4.6-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Downloading scipy-1.17.1-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 2.3 MB/s eta 0:00:00
+Downloading numpy-2.4.6-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 1.4 MB/s eta 0:00:00
+Installing collected packages: numpy, scipy
+  Attempting uninstall: numpy
+    Found existing installation: numpy 2.4.3
+    Uninstalling numpy-2.4.3:
+      Successfully uninstalled numpy-2.4.3
+  Attempting uninstall: scipy
+    Found existing installation: scipy 1.17.1
+    Uninstalling scipy-1.17.1:
+      Successfully uninstalled scipy-1.17.1
+Successfully installed numpy-2.4.6 scipy-1.17.1
+
+[notice] A new release of pip is available: 24.3.1 -> 26.1.2
+[notice] To update, run: /home/tuncay/PycharmProjects/CodeDuplicationDetection/.venv/bin/python -m pip install --upgrade pip

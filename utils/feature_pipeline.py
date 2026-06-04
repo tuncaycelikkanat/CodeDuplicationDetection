@@ -13,15 +13,56 @@ from typing import Optional, Tuple
 from scipy.sparse import hstack, csr_matrix
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Project root for imports
-_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if _PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, _PROJECT_ROOT)
-
 from preprocessing.tokenizer import normalize_tokens, tokenize
 from preprocessing.code_features import _extract_single
 from rapidfuzz.distance import Levenshtein
 from utils.similarity_utils import _jaccard_sim, _string_bigram_jaccard, _tuple_bigram_jaccard
+
+
+# ================= SSL HELPER =================
+
+def _extract_single_ssl_embedding(code: str, ssl_tokenizer, ssl_model) -> np.ndarray:
+    """
+    Tek bir kod snippet'i için SSL (CodeBERT) embedding'i çıkarır.
+    Eğitimdeki ssl_encoder.py ile tutarlı: Mean Pooling + Chunking (510 token).
+    
+    Bu fonksiyon daha önce CLS token kullanıyordu — eğitim/inference uyumsuzluğuna
+    neden oluyordu. Artık eğitimdeki ile aynı yöntemi (Mean Pooling) kullanıyor.
+    """
+    import torch
+
+    device = next(ssl_model.parameters()).device
+
+    # Tokenize without special tokens (we add them manually per chunk)
+    encoded = ssl_tokenizer(code, add_special_tokens=False)
+    tokens = encoded["input_ids"]
+    if not tokens:
+        tokens = [ssl_tokenizer.unk_token_id]
+
+    # Chunking: 510 tokens per chunk (leaving room for CLS + SEP)
+    chunk_embeddings = []
+    for start in range(0, len(tokens), 510):
+        chunk_tokens = tokens[start:start + 510]
+        chunk_ids = [ssl_tokenizer.cls_token_id] + chunk_tokens + [ssl_tokenizer.sep_token_id]
+        attention_mask = [1] * len(chunk_ids)
+
+        input_ids = torch.tensor([chunk_ids], dtype=torch.long, device=device)
+        attn_mask = torch.tensor([attention_mask], dtype=torch.long, device=device)
+
+        with torch.no_grad():
+            outputs = ssl_model(input_ids=input_ids, attention_mask=attn_mask)
+            hidden = outputs.last_hidden_state  # (1, seq_len, 768)
+
+            # Mean Pooling (excluding padding — here there is no padding, but for consistency)
+            mask_exp = attn_mask.unsqueeze(-1).expand(hidden.size()).float()
+            sum_emb = torch.sum(hidden * mask_exp, dim=1)
+            sum_mask_val = torch.clamp(mask_exp.sum(dim=1), min=1e-9)
+            mean_pool = (sum_emb / sum_mask_val).cpu().numpy()  # (1, 768)
+            chunk_embeddings.append(mean_pool[0])
+
+    # Aggregate all chunks via mean (same as ssl_encoder.py)
+    return np.mean(chunk_embeddings, axis=0).astype(np.float32)  # (768,)
+
 
 # ================= PIPELINE =================
 
@@ -47,7 +88,8 @@ def build_pair_vector(
         [33..39] Semantic Jaccard x6 + abstract CF
         [40]     type_profile_cosine
         [41..90] svd_diff            (sadece svd_model verilmisse, 50 boyut)
-        [91..154] ssl_pca_diff       (sadece ssl_pipeline + ssl_pca verilmisse, 64 boyut)
+        [91..218] ssl_pca_abs_diff   (sadece ssl_pipeline + ssl_pca verilmisse, 128 boyut)
+        [219..346] ssl_pca_product   (sadece ssl_pipeline + ssl_pca verilmisse, 128 boyut)
 
     UYARI — ssl_pca: Egitimde fit edilmis PCA nesnesi.  ssl_pipeline ile birlikte
              verilmezse SSL ozellikleri feature vektorune eklenmez (boyut uyumsuzlugu).
@@ -129,44 +171,30 @@ def build_pair_vector(
         svd_diff = np.abs(svd1 - svd2)
         extra.extend(svd_diff.tolist())
 
-    # SSL ozellikleri (opsiyonel) — PCA ile indirgenmis abs diff vektoru
+    # SSL özellikleri (opsiyonel) — Mean Pooling + Chunking + PCA abs diff + element-wise product
+    # NOT: Eğitimdeki ssl_encoder.py ile tutarlı Mean Pooling kullanılır.
+    # Sentence-BERT / NLI literatüründen: concat(|u-v|, u*v) — hem mesafe hem yönsel etkileşim.
     if ssl_pipeline is not None and ssl_pca is not None:
         ssl_tokenizer, ssl_model = ssl_pipeline
-        import torch
-        inputs = ssl_tokenizer(
-            [code1, code2], return_tensors="pt",
-            max_length=512, truncation=True, padding=True
-        )
-        device = next(ssl_model.parameters()).device
-        inputs = {k: v.to(device) for k, v in inputs.items()}
-        with torch.no_grad():
-            outputs = ssl_model(**inputs)
-            cls_emb = outputs.last_hidden_state[:, 0, :].cpu().numpy()  # (2, 768)
-        emb1, emb2 = cls_emb[0:1], cls_emb[1:2]  # (1, 768) her biri
-        # PCA indirgeme (egitimde fit edilmis)
-        emb1_r = ssl_pca.transform(emb1).astype(np.float32)  # (1, ssl_dim)
-        emb2_r = ssl_pca.transform(emb2).astype(np.float32)  # (1, ssl_dim)
-        ssl_diff = np.abs(emb1_r - emb2_r)[0]                # (ssl_dim,)
+        emb1 = _extract_single_ssl_embedding(raw1, ssl_tokenizer, ssl_model)  # (768,)
+        emb2 = _extract_single_ssl_embedding(raw2, ssl_tokenizer, ssl_model)  # (768,)
+        # PCA indirgeme (eğitimde fit edilmiş)
+        emb1_r = ssl_pca.transform(emb1.reshape(1, -1)).astype(np.float32)  # (1, ssl_dim)
+        emb2_r = ssl_pca.transform(emb2.reshape(1, -1)).astype(np.float32)  # (1, ssl_dim)
+        ssl_diff = np.abs(emb1_r - emb2_r)[0]                               # (ssl_dim,)
+        ssl_product = (emb1_r * emb2_r)[0]                                   # (ssl_dim,)
         extra.extend(ssl_diff.tolist())
+        extra.extend(ssl_product.tolist())
     elif ssl_pipeline is not None and ssl_pca is None:
-        # Geriye donuk uyumluluk: PCA yoksa 2 skaler (eski davranis)
+        # Geriye dönük uyumluluk: PCA yoksa 2 skaler (eski davranış)
         ssl_tokenizer, ssl_model = ssl_pipeline
-        import torch
-        inputs = ssl_tokenizer(
-            [code1, code2], return_tensors="pt",
-            max_length=512, truncation=True, padding=True
-        )
-        device = next(ssl_model.parameters()).device
-        inputs = {k: v.to(device) for k, v in inputs.items()}
-        with torch.no_grad():
-            outputs = ssl_model(**inputs)
-            cls_emb = outputs.last_hidden_state[:, 0, :].cpu().numpy()
-            ssl1, ssl2 = cls_emb[0], cls_emb[1]
-            dot = np.dot(ssl1, ssl2)
-            norm1 = np.linalg.norm(ssl1)
-            norm2 = np.linalg.norm(ssl2)
-            ssl_cos = dot / (norm1 * norm2) if (norm1 * norm2) > 0 else 1.0
-            ssl_euclidean = float(np.linalg.norm(ssl1 - ssl2))
-            extra.extend([ssl_cos, ssl_euclidean])
+        emb1 = _extract_single_ssl_embedding(raw1, ssl_tokenizer, ssl_model)
+        emb2 = _extract_single_ssl_embedding(raw2, ssl_tokenizer, ssl_model)
+        dot = np.dot(emb1, emb2)
+        norm1 = np.linalg.norm(emb1)
+        norm2 = np.linalg.norm(emb2)
+        ssl_cos = dot / (norm1 * norm2) if (norm1 * norm2) > 0 else 1.0
+        ssl_euclidean = float(np.linalg.norm(emb1 - emb2))
+        extra.extend([ssl_cos, ssl_euclidean])
 
     return np.array([extra], dtype=np.float32)

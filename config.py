@@ -1,4 +1,3 @@
-from utils.logger import Log
 """
 Merkezi yapılandırma — CodeDuplicationDetection
 ================================================
@@ -45,7 +44,8 @@ HARD_MINING_RATIO  = 0.3  # Hard positive/negative mining oranı
 #   [45..51]  Semantic Jaccard x7
 #   [52]      Type profile cosine
 #   [53..152] SVD diff (SVD_N_COMPONENTS boyutunda)
-#   [153..216] SSL PCA diff (SSL_PCA_COMPONENTS boyutunda) — sadece --use-ssl ile
+#   [153..280] SSL PCA abs diff (SSL_PCA_COMPONENTS boyutunda) — sadece --use-ssl ile
+#   [281..408] SSL PCA element-wise product (SSL_PCA_COMPONENTS boyutunda) — sadece --use-ssl ile
 ENSEMBLE_SVD_START_IDX = 53
 
 # Stage-1 model için kullanılan özellik sayısı (lexical + AST + CF).
@@ -53,10 +53,11 @@ STAGE1_FEATURE_COUNT = 45
 
 # ── SSL Gömme Boyutu Azaltma ──────────────────────────────────────────────────
 # CodeBERT 768-D embedding'leri PCA ile bu boyuta indirgenir.
-# Bellek: SSL_PCA_COMPONENTS × N_pairs × 4 byte
-#   64  → ~200 MB (800K çift için) — önerilen
-#   128 → ~400 MB — daha iyi Type-4 için denenebilir
-SSL_PCA_COMPONENTS = 64
+# abs_diff + element-wise product ile toplam 2 × SSL_PCA_COMPONENTS feature üretilir.
+# Bellek: 2 × SSL_PCA_COMPONENTS × N_pairs × 4 byte
+#   128 → ~800 MB (800K çift için) — Type-4 iyileştirme için önerilen
+#   64  → ~400 MB — hafif kullanım
+SSL_PCA_COMPONENTS = 128
 
 # ── Donanım ───────────────────────────────────────────────────────────────────
 OMP_NUM_THREADS = 8

@@ -3,6 +3,7 @@ import sys
 import re
 import time
 import math
+import json
 import pickle
 
 import numpy as np
@@ -99,9 +100,9 @@ svd_path = f"{EXP_PATH}/svd.pkl"
 if os.path.exists(svd_path):
     with open(svd_path, "rb") as f:
         svd_model = pickle.load(f)
-    Log.success(f"SVD model loaded" if "{" in "SVD model loaded" else "SVD model loaded")
+    Log.success("SVD model loaded")
 else:
-    Log.warning(f"No SVD model found" if "{" in "No SVD model found" else "No SVD model found")
+    Log.warning("No SVD model found")
 
 # Load Stage1 model
 stage1_model = None
@@ -109,9 +110,9 @@ stage1_path = f"{EXP_PATH}/stage1_model.pkl"
 if os.path.exists(stage1_path):
     with open(stage1_path, "rb") as f:
         stage1_model = pickle.load(f)
-    Log.success(f"Stage-1 Lexical model loaded" if "{" in "Stage-1 Lexical model loaded" else "Stage-1 Lexical model loaded")
+    Log.success("Stage-1 Lexical model loaded")
 else:
-    Log.warning(f"No Stage-1 Lexical model found" if "{" in "No Stage-1 Lexical model found" else "No Stage-1 Lexical model found")
+    Log.warning("No Stage-1 Lexical model found")
 
 # Load SSL pipeline (singleton — baslangiçta yuklenir, her requestte yeniden yuklenmez)
 ssl_pipeline = None
@@ -125,9 +126,9 @@ if os.path.exists(config_path):
         try:
             from vectorization.ssl_encoder import build_ssl_pipeline
             ssl_pipeline = build_ssl_pipeline(device="cpu")
-            Log.success(f"SSL pipeline loaded" if "{" in "SSL pipeline loaded" else "SSL pipeline loaded")
+            Log.success("SSL pipeline loaded")
         except Exception as e:
-            Log.warning(f"SSL pipeline yuklenemedi: {e}" if "{" in "SSL pipeline yuklenemedi: {e}" else "SSL pipeline yuklenemedi: {e}")
+            Log.warning(f"SSL pipeline yuklenemedi: {e}")
         # ssl_pca yukle
         _ssl_pca_path = f"{EXP_PATH}/ssl_pca.pkl"
         if os.path.exists(_ssl_pca_path):
@@ -136,7 +137,7 @@ if os.path.exists(config_path):
             print(f"   ✅ SSL PCA loaded ({ssl_pca.n_components} components, "
                   f"explained var: {ssl_pca.explained_variance_ratio_.sum():.2%})")
         else:
-            Log.warning(f"ssl_pca.pkl bulunamadi — eski 2-skaler mod kullanilacak" if "{" in "ssl_pca.pkl bulunamadi — eski 2-skaler mod kullanilacak" else "ssl_pca.pkl bulunamadi — eski 2-skaler mod kullanilacak")
+            Log.warning("ssl_pca.pkl bulunamadi — eski 2-skaler mod kullanilacak")
 
 
 
@@ -191,10 +192,13 @@ def _build_feature_names():
         for i in range(svd_model.n_components):
             names.append(f"svd_diff_{i}")
 
-    # SSL PCA farklari
+    # SSL PCA abs diff
     if ssl_pipeline is not None and ssl_pca is not None:
         for i in range(ssl_pca.n_components):
             names.append(f"ssl_pca_diff_{i}")
+        # SSL PCA element-wise product
+        for i in range(ssl_pca.n_components):
+            names.append(f"ssl_pca_prod_{i}")
 
     return names
 
@@ -206,7 +210,7 @@ print(f"   📊 Total feature names: {len(FEATURE_NAMES)}")
 # ================= SHAP EXPLAINER =================
 print("   🔬 Initializing SHAP TreeExplainer...")
 explainer = shap.TreeExplainer(model)
-Log.success(f"SHAP explainer ready" if "{" in "SHAP explainer ready" else "SHAP explainer ready")
+Log.success("SHAP explainer ready")
 
 
 # ================= SCHEMA =================
@@ -243,7 +247,7 @@ def predict(pair: CodePair):
             raise HTTPException(status_code=400, detail="Both code snippets are required.")
 
         X_pair = build_pair_vector(
-            raw1, raw2, vectorizer, None, svd_model,
+            raw1, raw2, vectorizer, svd_model=svd_model,
             ssl_pipeline=ssl_pipeline, ssl_pca=ssl_pca
         )
 
@@ -318,7 +322,7 @@ def predict(pair: CodePair):
                 "features": shap_features
             }
         except Exception as e:
-            Log.warning(f"SHAP explanation failed: {e}" if "{" in "SHAP explanation failed: {e}" else "SHAP explanation failed: {e}")
+            Log.warning(f"SHAP explanation failed: {e}")
             shap_data = None
 
         return {
@@ -360,7 +364,7 @@ def predict_batch(batch: CodePairBatch):
             continue
         try:
             X_pair = build_pair_vector(
-                code1, code2, vectorizer, None, svd_model,
+                code1, code2, vectorizer, svd_model=svd_model,
                 ssl_pipeline=ssl_pipeline, ssl_pca=ssl_pca
             )
 
