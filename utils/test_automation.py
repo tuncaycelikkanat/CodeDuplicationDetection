@@ -208,53 +208,9 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
         neg_y_true, neg_y_prob = [], []
         neg_details = []
         
-        if t_negatives:
-            Log.step(f"Evaluating {len(t_negatives)} Negatives specifically for {t}...")
-            for p in tqdm(t_negatives, desc=f"{t} (Neg)"):
-                X_pair = build_pair_vector(
-                    p['c1'], p['c2'],
-                    vectorizer,
-                    svd_model=svd_model,
-                    ssl_pipeline=ssl_pipeline,
-                    ssl_pca=ssl_pca
-                )
+        from concurrent.futures import ThreadPoolExecutor, as_completed
 
-                cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
-
-                if stage1_model is not None:
-                    X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
-                    y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
-                    if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
-                        prob = 1.0
-                    else:
-                        prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
-                elif "CASCADE" in exp_path and cos_token > CASCADE_STAGE1_THRESHOLD:
-                    prob = 1.0
-                else:
-                    prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
-                    
-                pred = 1 if prob >= threshold else 0
-                
-                neg_details.append({
-                    "pair": p['p_name'],
-                    "label": p['label'],
-                    "probability": round(prob, 4),
-                    "prediction": pred
-                })
-                
-                neg_y_true.append(0)
-                neg_y_prob.append(prob)
-
-                if pred == 1: neg_fp += 1
-                else: neg_tn += 1
-
-        print(f"\n🚀 Evaluating {t} ({len(positives)} positives)...")
-        
-        tp, fp, tn, fn = 0, 0, 0, 0
-        y_true, y_prob = [], []
-        details = []
-
-        for p in tqdm(positives, desc=t):
+        def _process_pair(p):
             X_pair = build_pair_vector(
                 p['c1'], p['c2'],
                 vectorizer,
@@ -262,47 +218,54 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
                 ssl_pipeline=ssl_pipeline,
                 ssl_pca=ssl_pca
             )
-
             cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
-
             if stage1_model is not None:
                 X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
                 y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
                 if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
                     prob = 1.0
                 else:
-                    if hasattr(model, "predict_proba"):
-                        try:
-                            prob = float(model.predict_proba(X_pair)[0][1])
-                        except Exception as e:
-                            prob = float(model.predict(X_pair)[0])
-                    else:
-                        prob = float(model.predict(X_pair)[0])
+                    prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
             elif "CASCADE" in exp_path and cos_token > CASCADE_STAGE1_THRESHOLD:
                 prob = 1.0
             else:
-                if hasattr(model, "predict_proba"):
-                    try:
-                        prob = float(model.predict_proba(X_pair)[0][1])
-                    except:
-                        prob = float(model.predict(X_pair)[0])
-                else:
-                    prob = float(model.predict(X_pair)[0])
+                prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
                 
             pred = 1 if prob >= threshold else 0
-            
-            details.append({
+            return {
                 "pair": p['p_name'],
                 "label": p['label'],
                 "probability": round(prob, 4),
                 "prediction": pred
-            })
-            
-            y_true.append(p['label'])
-            y_prob.append(prob)
+            }
 
-            if pred == 1: tp += 1
-            else: fn += 1
+        if t_negatives:
+            Log.step(f"Evaluating {len(t_negatives)} Negatives specifically for {t}...")
+            with ThreadPoolExecutor(max_workers=8) as executor:
+                futures = {executor.submit(_process_pair, p): p for p in t_negatives}
+                for future in tqdm(as_completed(futures), total=len(t_negatives), desc=f"{t} (Neg)"):
+                    res = future.result()
+                    neg_details.append(res)
+                    neg_y_true.append(res['label'])
+                    neg_y_prob.append(res['probability'])
+                    if res['prediction'] == 1: neg_fp += 1
+                    else: neg_tn += 1
+
+        print(f"\n🚀 Evaluating {t} ({len(positives)} positives)...")
+        
+        tp, fp, tn, fn = 0, 0, 0, 0
+        y_true, y_prob = [], []
+        details = []
+
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            futures = {executor.submit(_process_pair, p): p for p in positives}
+            for future in tqdm(as_completed(futures), total=len(positives), desc=t):
+                res = future.result()
+                details.append(res)
+                y_true.append(res['label'])
+                y_prob.append(res['probability'])
+                if res['prediction'] == 1: tp += 1
+                else: fn += 1
             
         # Combine with pre-computed negatives for this type's report
         combined_tp = tp + neg_tp
