@@ -412,10 +412,12 @@ def main():
         sel = res["selection"]
         sel_50 = next((s for s in sel if "50" in str(s["threshold"])), None)
         sel_30 = next((s for s in sel if "30" in str(s["threshold"])), None)
+        val_50 = f"{sel_50['f1']:.4f}" if sel_50 else "N/A"
+        val_30 = f"{sel_30['f1']:.4f}" if sel_30 else "N/A"
         print(f"  {t:<8} {imp['xgb_f1']:.4f}    {imp['rf_f1']:.4f}    "
               f"{sel[0]['f1']:.4f}    "
-              f"{sel_50['f1']:.4f if sel_50 else 'N/A':<10} "
-              f"{sel_30['f1']:.4f if sel_30 else 'N/A':<10}")
+              f"{val_50:<10} "
+              f"{val_30:<10}")
 
     print(f"\n{Colors.GREEN}{Colors.BOLD}Analysis complete!{Colors.RESET}\n")
 
