@@ -56,13 +56,13 @@ def analyze_errors(report_path=None):
         f.write("# Error Analysis & Feature Importance\n\n")
         f.write("Bu rapor, modelin en yüksek özgüvenle (probability) yanıldığı **False Positive** (yanlış alarm) ve **False Negative** (kaçırılan klon) vakalarını inceler.\n\n")
         
-        test_dir = os.path.join(_PROJECT_ROOT, "dataset", "test")
+        possible_test_dirs = [
+            os.path.join(_PROJECT_ROOT, "evaluation", "test_clones"),
+            os.path.join(_PROJECT_ROOT, "evaluation", "test_clones_imbalanced"),
+            os.path.join(_PROJECT_ROOT, "evaluation", "test_clones_balanced"),
+            os.path.join(_PROJECT_ROOT, "dataset", "test")
+        ]
         
-        # Sadece tiplerin içindeki detayları al
-        if "per_type" not in report:
-            Log.error("No 'per_type' data in report.")
-            return
-            
         for t, metrics in report["per_type"].items():
             f.write(f"## {t.upper()}\n\n")
             details = metrics.get("details", [])
@@ -70,21 +70,20 @@ def analyze_errors(report_path=None):
                 continue
                 
             # FP and FN extraction
-            # FP: label=0, prediction=1
             fps = [d for d in details if d["label"] == 0 and d["prediction"] == 1]
-            # FN: label=1, prediction=0
             fns = [d for d in details if d["label"] == 1 and d["prediction"] == 0]
             
-            # Sort FPs by probability descending (Modelin en emin olduğu ama yanıldığı negatifler)
             fps = sorted(fps, key=lambda x: x["probability"], reverse=True)[:5]
-            
-            # Sort FNs by probability ascending (Modelin kesin negatif dediği ama aslında pozitif olanlar)
             fns = sorted(fns, key=lambda x: x["probability"])[:5]
             
-            # Load raw codes to compute features and show them
-            pos_pairs_dict = {p['p_name']: p for p in load_pairs(os.path.join(test_dir, t), label=1)}
-            # Negatives are loaded from the "negatives" folder, not the type folder!
-            neg_pairs_dict = {p['p_name']: p for p in load_pairs(os.path.join(test_dir, "negatives"), label=0)}
+            # Load raw codes
+            pos_pairs_dict = {}
+            neg_pairs_dict = {}
+            for t_dir in possible_test_dirs:
+                if os.path.exists(t_dir):
+                    pos_pairs_dict.update({p['p_name']: p for p in load_pairs(os.path.join(t_dir, t), label=1)})
+                    neg_pairs_dict.update({p['p_name']: p for p in load_pairs(os.path.join(t_dir, "negatives"), label=0)})
+
             
             def render_examples(title, examples, pairs_dict):
                 f.write(f"### {title}\n")
