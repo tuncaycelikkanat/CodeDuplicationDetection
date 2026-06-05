@@ -1,3 +1,4 @@
+import threading
 import tree_sitter_cpp
 from tree_sitter import Language, Parser, Query, QueryCursor
 from utils.logger import Log
@@ -159,11 +160,12 @@ class ASTParser:
             
         return _get_depth(tree.root_node)
 
-# Singleton instance for lazy loading (to support Joblib Multiprocessing)
-_ast_parser_instance = None
+# Thread-local singleton: her thread kendi parser instance'ını yönetir.
+# Joblib'in 'loky' / 'threading' backend'leriyle güvenli paralel çalışır.
+# Global singleton'dan farkı: race condition olmaz, lock gerekmez.
+_thread_local = threading.local()
 
 def get_parser():
-    global _ast_parser_instance
-    if _ast_parser_instance is None:
-        _ast_parser_instance = ASTParser()
-    return _ast_parser_instance
+    if not hasattr(_thread_local, 'parser'):
+        _thread_local.parser = ASTParser()
+    return _thread_local.parser

@@ -194,55 +194,54 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
         end_idx = (i + 1) * chunk_size if i < len(types) - 1 else len(negatives_shuffled)
         type_negatives_map[t] = negatives_shuffled[start_idx:end_idx]
 
-    global_tp, global_fp, global_tn, global_fn = 0, 0, 0, 0
-    global_y_true, global_y_prob = [], []
-    for t in types:
-        positives = load_pairs(os.path.join(test_dir, t), label=1)
-        if not positives:
-            Log.warning(f"No positive pairs found for {t}. Skipping.")
-            continue
-            
-        # Generate Negatives for this specific Type
-        t_negatives = type_negatives_map.get(t, [])
-        neg_tp, neg_fp, neg_tn, neg_fn = 0, 0, 0, 0
-        neg_y_true, neg_y_prob = [], []
-        neg_details = []
-        
-        from concurrent.futures import ThreadPoolExecutor, as_completed
+    from concurrent.futures import ThreadPoolExecutor, as_completed
 
-        def _process_pair(p):
-            X_pair = build_pair_vector(
-                p['c1'], p['c2'],
-                vectorizer,
-                svd_model=svd_model,
-                ssl_pipeline=ssl_pipeline,
-                ssl_pca=ssl_pca
-            )
-            cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
-            if stage1_model is not None:
-                X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
-                y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
-                if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
-                    prob = 1.0
-                else:
-                    prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
-            elif "CASCADE" in exp_path and cos_token > CASCADE_STAGE1_THRESHOLD:
+    def _process_pair(p, threshold):
+        X_pair = build_pair_vector(
+            p['c1'], p['c2'],
+            vectorizer,
+            svd_model=svd_model,
+            ssl_pipeline=ssl_pipeline,
+            ssl_pca=ssl_pca
+        )
+        cos_token = _get_scalar(X_pair, COS_TOKEN_IDX)
+        if stage1_model is not None:
+            X_stage1 = X_pair[:, :STAGE1_FEATURE_COUNT]
+            y_prob_stage1 = float(stage1_model.predict_proba(X_stage1)[0][1])
+            if y_prob_stage1 >= CASCADE_STAGE1_THRESHOLD:
                 prob = 1.0
             else:
                 prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
-                
-            pred = 1 if prob >= threshold else 0
-            return {
-                "pair": p['p_name'],
-                "label": p['label'],
-                "probability": round(prob, 4),
-                "prediction": pred
-            }
+        elif "CASCADE" in exp_path and cos_token > CASCADE_STAGE1_THRESHOLD:
+            prob = 1.0
+        else:
+            prob = float(model.predict_proba(X_pair)[0][1]) if hasattr(model, "predict_proba") else float(model.predict(X_pair)[0])
+            
+        pred = 1 if prob >= threshold else 0
+        return {
+            "pair": p['p_name'],
+            "label": p['label'],
+            "probability": round(prob, 4),
+            "prediction": pred
+        }
 
+    def _evaluate_type(t, threshold):
+        """Evaluate a single clone type — both positives and negatives."""
+        positives = load_pairs(os.path.join(test_dir, t), label=1)
+        if not positives:
+            Log.warning(f"No positive pairs found for {t}. Skipping.")
+            return t, None
+
+        t_negatives = type_negatives_map.get(t, [])
+        neg_fp, neg_tn = 0, 0
+        neg_y_true, neg_y_prob = [], []
+        neg_details = []
+
+        # Negatives
         if t_negatives:
             Log.step(f"Evaluating {len(t_negatives)} Negatives specifically for {t}...")
             with ThreadPoolExecutor(max_workers=8) as executor:
-                futures = {executor.submit(_process_pair, p): p for p in t_negatives}
+                futures = {executor.submit(_process_pair, p, threshold): p for p in t_negatives}
                 for future in tqdm(as_completed(futures), total=len(t_negatives), desc=f"{t} (Neg)"):
                     res = future.result()
                     neg_details.append(res)
@@ -251,14 +250,14 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
                     if res['prediction'] == 1: neg_fp += 1
                     else: neg_tn += 1
 
+        # Positives
         print(f"\n🚀 Evaluating {t} ({len(positives)} positives)...")
-        
-        tp, fp, tn, fn = 0, 0, 0, 0
+        tp, fn = 0, 0
         y_true, y_prob = [], []
         details = []
 
         with ThreadPoolExecutor(max_workers=8) as executor:
-            futures = {executor.submit(_process_pair, p): p for p in positives}
+            futures = {executor.submit(_process_pair, p, threshold): p for p in positives}
             for future in tqdm(as_completed(futures), total=len(positives), desc=t):
                 res = future.result()
                 details.append(res)
@@ -266,37 +265,64 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
                 y_prob.append(res['probability'])
                 if res['prediction'] == 1: tp += 1
                 else: fn += 1
-            
-        # Combine with pre-computed negatives for this type's report
-        combined_tp = tp + neg_tp
-        combined_fp = fp + neg_fp
-        combined_tn = tn + neg_tn
-        combined_fn = fn + neg_fn
-        
-        combined_y_true = y_true + neg_y_true
-        combined_y_prob = y_prob + neg_y_prob
-        
+
+        return t, {
+            "tp": tp, "fp": 0, "tn": 0, "fn": fn,
+            "neg_fp": neg_fp, "neg_tn": neg_tn,
+            "y_true": y_true, "y_prob": y_prob,
+            "neg_y_true": neg_y_true, "neg_y_prob": neg_y_prob,
+            "details": details, "neg_details": neg_details,
+            "positives_count": len(positives),
+        }
+
+    global_tp, global_fp, global_tn, global_fn = 0, 0, 0, 0
+    global_y_true, global_y_prob = [], []
+
+    # Tüm 4 tipi paralel çalıştır
+    type_results = {}
+    with ThreadPoolExecutor(max_workers=min(4, len(types))) as type_executor:
+        type_futures = {type_executor.submit(_evaluate_type, t, threshold): t for t in types}
+        for future in as_completed(type_futures):
+            t, result = future.result()
+            if result is None:
+                continue
+            type_results[t] = result
+
+    # Sonuçları sırayla topla (deterministik çıktı için)
+    for t in types:
+        if t not in type_results:
+            continue
+        r = type_results[t]
+
+        combined_tp = r["tp"]
+        combined_fp = r["neg_fp"]
+        combined_tn = r["neg_tn"]
+        combined_fn = r["fn"]
+
+        combined_y_true = r["y_true"] + r["neg_y_true"]
+        combined_y_prob = r["y_prob"] + r["neg_y_prob"]
+
         metrics = calculate_metrics(combined_tp, combined_fp, combined_tn, combined_fn)
         roc_auc, pr_auc = calculate_auc(combined_y_true, combined_y_prob)
         metrics["auc_roc"] = roc_auc
         metrics["pr_auc"] = pr_auc
-        
+
         report["per_type"][t] = {
-            "total_pairs": len(positives) + len(negatives),
-            "positive_pairs": len(positives),
+            "total_pairs": r["positives_count"] + len(negatives),
+            "positive_pairs": r["positives_count"],
             "negative_pairs": len(negatives),
             **metrics,
-            "details": details + neg_details
+            "details": r["details"] + r["neg_details"]
         }
-        
-        global_tp += tp
-        global_fp += neg_fp
-        global_tn += neg_tn
-        global_fn += fn
 
-        # Collect global prob tracking directly here
-        global_y_true.extend(y_true + neg_y_true)
-        global_y_prob.extend(y_prob + neg_y_prob)
+        global_tp += r["tp"]
+        global_fp += r["neg_fp"]
+        global_tn += r["neg_tn"]
+        global_fn += r["fn"]
+
+        global_y_true.extend(combined_y_true)
+        global_y_prob.extend(combined_y_prob)
+
 
 
     # Save true labels and probabilities for visualization

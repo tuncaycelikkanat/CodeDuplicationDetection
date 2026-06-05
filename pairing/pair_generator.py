@@ -142,63 +142,66 @@ def generate_pairs(
     # ---- Hard Negative Mining: replace easy negatives ----
     if num_hard_neg > 0:
         Log.substep(f"Hard negative mining (TF-IDF Cosine distance) - {num_hard_neg} pairs...")
+        from sklearn.metrics.pairwise import cosine_similarity as sklearn_cos
         hard_slots = np_rng.choice(neg_indices_mask, size=min(num_hard_neg, len(neg_indices_mask)), replace=False)
         src_indices = all_i[hard_slots]
         src_labels_arr = np.array([labels[idx] for idx in src_indices])
 
-        for k, p in enumerate(hard_slots):
-            src_lbl = src_labels_arr[k]
-            src_lbl_idx = label_to_idx[src_lbl]  # O(1)
+        # Group by (src_label, other_label) to batch cosine similarity
+        for src_lbl in set(src_labels_arr):
+            src_mask = src_labels_arr == src_lbl
+            src_lbl_idx = label_to_idx[src_lbl]
+            group_slots = hard_slots[src_mask]
+            group_src_indices = src_indices[src_mask]
+
+            # Pick a single "other" label per source label for the whole group
             other_lbl = unique_labels[(src_lbl_idx + np_rng.randint(1, n_labels)) % n_labels]
             cand_indices = label_cand_indices[other_lbl]
-            
-            if len(cand_indices) > 0:
-                src_vec = X_token[src_indices[k]]
-                cand_vecs = X_token[cand_indices]
-                
-                # Compute true cosine similarity (since tf-idf vectors aren't strictly L2 normalized here)
-                dot_prods = src_vec.dot(cand_vecs.T).toarray()[0]
-                norm_src = np.sqrt((src_vec.data ** 2).sum())
-                norm_cands = np.sqrt(cand_vecs.power(2).sum(axis=1)).A1
-                denoms = norm_src * norm_cands
-                denoms[denoms == 0] = 1.0
-                sims = dot_prods / denoms
-                
-                # Find the MOST SIMILAR (closest) in TF-IDF space in a DIFFERENT class
-                # This simulates extremely deceptive negatives (e.g. they share the same keywords but solve different problems)
-                closest = np.argmax(sims)
-                all_j[p] = cand_indices[closest]
+            if len(cand_indices) == 0:
+                continue
+
+            # Batch cosine similarity: (n_src_group, n_cands)
+            src_vecs = X_token[group_src_indices]  # sparse (n_group, vocab)
+            cand_vecs = X_token[cand_indices]       # sparse (n_cands, vocab)
+            sims = sklearn_cos(src_vecs, cand_vecs)  # (n_group, n_cands)
+
+            # For each source pick the MOST similar candidate
+            closest = np.argmax(sims, axis=1)  # (n_group,)
+            all_j[group_slots] = cand_indices[closest]
+
 
     # ---- Hard Positive Mining: replace easy positives ----
     if num_hard_pos > 0:
         Log.substep(f"Hard positive mining (TF-IDF Cosine distance) - {num_hard_pos} pairs...")
+        from sklearn.metrics.pairwise import cosine_similarity as sklearn_cos
         hard_pos_slots = np_rng.choice(pos_indices, size=min(num_hard_pos, len(pos_indices)), replace=False)
         src_indices = all_i[hard_pos_slots]
         src_labels_arr = np.array([labels[idx] for idx in src_indices])
 
-        for k, p in enumerate(hard_pos_slots):
-            src_lbl = src_labels_arr[k]
+        # Group by src_label to batch cosine similarity within same class
+        for src_lbl in set(src_labels_arr):
+            src_mask = src_labels_arr == src_lbl
+            group_slots = hard_pos_slots[src_mask]
+            group_src_indices = src_indices[src_mask]
             cand_indices = label_cand_indices[src_lbl]
-            
-            # Find the LEAST SIMILAR (farthest) in TF-IDF space in the SAME class
-            # This simulates Type-4 clones much better than just length differences
-            if len(cand_indices) > 1:
-                src_vec = X_token[src_indices[k]]
-                cand_vecs = X_token[cand_indices]
-                
-                # Compute dot product (since tf-idf vectors aren't L2 normalized now, we need true cosine)
-                # Note: The vectorizer has norm=None now, so we compute cosine sim manually
-                dot_prods = src_vec.dot(cand_vecs.T).toarray()[0]
-                norm_src = np.sqrt((src_vec.data ** 2).sum())
-                norm_cands = np.sqrt(cand_vecs.power(2).sum(axis=1)).A1
-                denoms = norm_src * norm_cands
-                denoms[denoms == 0] = 1.0
-                sims = dot_prods / denoms
-                
-                # Prevent picking itself
-                sims[cand_indices == src_indices[k]] = np.inf
-                farthest = np.argmin(sims)
-                all_j[p] = cand_indices[farthest]
+            if len(cand_indices) <= 1:
+                continue
+
+            # Batch cosine similarity: (n_group, n_cands)
+            src_vecs = X_token[group_src_indices]  # sparse
+            cand_vecs = X_token[cand_indices]       # sparse
+            sims = sklearn_cos(src_vecs, cand_vecs)  # (n_group, n_cands)
+
+            # Prevent picking itself: set self-similarity to +inf before argmin
+            for local_k, global_src_idx in enumerate(group_src_indices):
+                self_pos = np.where(cand_indices == global_src_idx)[0]
+                if len(self_pos) > 0:
+                    sims[local_k, self_pos[0]] = np.inf
+
+            # For each source pick the LEAST similar (farthest) candidate
+            farthest = np.argmin(sims, axis=1)  # (n_group,)
+            all_j[group_slots] = cand_indices[farthest]
+
 
     # ---- Duplicate Pair Filtering ----
     Log.substep("Filtering duplicate and self-pairs...")
