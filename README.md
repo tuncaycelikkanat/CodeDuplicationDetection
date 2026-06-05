@@ -78,6 +78,12 @@ Elde edilen model ile test klon klasörlerinde başarım ölçümü:
 python utils/test_automation.py --threshold 0.45
 ```
 
+Hata Analizi ve Tip Bazlı Özellik Önemliliği Çıkarma (False Positive/Negative):
+```bash
+# En son test sonuçlarını otomatik bulur, analiz eder ve .md / .csv raporları oluşturur
+python utils/analyze_errors.py
+```
+
 Tip bazında en iyi threshold bulmak (0.01 hassasiyetle):
 ```bash
 # En son test run üzerinde — sadece numpy, sklearn gerekmez

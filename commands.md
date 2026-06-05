@@ -277,6 +277,7 @@ python -c "import config; [print(f'{k}={v}') for k,v in vars(config).items() if 
 | Tune + eğitim | `... --tune --tune-trials 50` |
 | Cross-validation | `... --cv --cv-folds 5` |
 | Test otomasyonu | `python utils/test_automation.py --exp-id 66 --threshold 0.45` |
+| Hata ve Özellik Analizi | `python utils/analyze_errors.py` |
 | Web demo başlat | `EXP_ID=66 uvicorn web_demo.app:app --reload` |
 | Test klonu oluştur | `python utils/generate_test_clones.py` |
 | Threshold bul (standalone) | `python utils/find_best_threshold_standalone.py` |
@@ -286,7 +287,24 @@ python -c "import config; [print(f'{k}={v}') for k,v in vars(config).items() if 
 
 ---
 
-## 10. Tüm Parametreler Referansı
+## 10. Hata ve Özellik Analizi (Error Analysis) — `utils/analyze_errors.py`
+
+> En son test çalışmasının (veya belirtilen testin) sonuçlarını analiz eder. Type-1, 2, 3 ve 4 için en kötü False Positive (yanlış alarm) ve False Negative (kaçırılan klon) vakalarını çıkarır. Ayrıca her tip için ayrı ayrı `permutation_importance` (özellik önemlilik) hesaplar.
+
+```bash
+# En son test sonuçlarını otomatik bulur ve analiz eder
+python utils/analyze_errors.py
+
+# Analiz sonucu şu dosyalar oluşturulur:
+# 1. error_analysis_and_features.md (Markdown detay raporu)
+# 2. feature_importance_type1.csv (Tip-1 özellik önemliliği)
+# 3. feature_importance_type2.csv (Tip-2 özellik önemliliği)
+# ... vb.
+```
+
+---
+
+## 11. Tüm Parametreler Referansı
 
 ### `main.py`
 | Parametre | Tip | Varsayılan | Açıklama |

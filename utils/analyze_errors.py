@@ -12,8 +12,7 @@ if _PROJECT_ROOT not in sys.path:
 
 from utils.logger import Log
 from utils.feature_pipeline import build_pair_vector
-from pairing.pair_generator import load_pairs
-from config import COS_TOKEN_IDX
+from utils.test_automation import load_pairs
 from sklearn.inspection import permutation_importance
 import joblib
 
@@ -84,7 +83,8 @@ def analyze_errors(report_path=None):
             
             # Load raw codes to compute features and show them
             pos_pairs_dict = {p['p_name']: p for p in load_pairs(os.path.join(test_dir, t), label=1)}
-            neg_pairs_dict = {p['p_name']: p for p in load_pairs(os.path.join(test_dir, t), label=0)}
+            # Negatives are loaded from the "negatives" folder, not the type folder!
+            neg_pairs_dict = {p['p_name']: p for p in load_pairs(os.path.join(test_dir, "negatives"), label=0)}
             
             def render_examples(title, examples, pairs_dict):
                 f.write(f"### {title}\n")
