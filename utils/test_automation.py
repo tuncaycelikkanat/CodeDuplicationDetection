@@ -225,19 +225,23 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
             "prediction": pred
         }
 
-    def _evaluate_type(t, threshold):
-        """Evaluate a single clone type — both positives and negatives."""
+    global_tp, global_fp, global_tn, global_fn = 0, 0, 0, 0
+    global_y_true, global_y_prob = [], []
+
+    # Tipler SIRAYLA işlenir — temiz progress bar çıktısı için.
+    # Hız kazanımı iç ThreadPoolExecutor (çift başına 8 thread) üzerinden gelir.
+    for t in types:
         positives = load_pairs(os.path.join(test_dir, t), label=1)
         if not positives:
             Log.warning(f"No positive pairs found for {t}. Skipping.")
-            return t, None
+            continue
 
         t_negatives = type_negatives_map.get(t, [])
         neg_fp, neg_tn = 0, 0
         neg_y_true, neg_y_prob = [], []
         neg_details = []
 
-        # Negatives
+        # Negatives — iç thread'lerle paralel
         if t_negatives:
             Log.step(f"Evaluating {len(t_negatives)} Negatives specifically for {t}...")
             with ThreadPoolExecutor(max_workers=8) as executor:
@@ -250,7 +254,7 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
                     if res['prediction'] == 1: neg_fp += 1
                     else: neg_tn += 1
 
-        # Positives
+        # Positives — iç thread'lerle paralel
         print(f"\n🚀 Evaluating {t} ({len(positives)} positives)...")
         tp, fn = 0, 0
         y_true, y_prob = [], []
@@ -266,41 +270,13 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
                 if res['prediction'] == 1: tp += 1
                 else: fn += 1
 
-        return t, {
-            "tp": tp, "fp": 0, "tn": 0, "fn": fn,
-            "neg_fp": neg_fp, "neg_tn": neg_tn,
-            "y_true": y_true, "y_prob": y_prob,
-            "neg_y_true": neg_y_true, "neg_y_prob": neg_y_prob,
-            "details": details, "neg_details": neg_details,
-            "positives_count": len(positives),
-        }
+        combined_tp = tp
+        combined_fp = neg_fp
+        combined_tn = neg_tn
+        combined_fn = fn
 
-    global_tp, global_fp, global_tn, global_fn = 0, 0, 0, 0
-    global_y_true, global_y_prob = [], []
-
-    # Tüm 4 tipi paralel çalıştır
-    type_results = {}
-    with ThreadPoolExecutor(max_workers=min(4, len(types))) as type_executor:
-        type_futures = {type_executor.submit(_evaluate_type, t, threshold): t for t in types}
-        for future in as_completed(type_futures):
-            t, result = future.result()
-            if result is None:
-                continue
-            type_results[t] = result
-
-    # Sonuçları sırayla topla (deterministik çıktı için)
-    for t in types:
-        if t not in type_results:
-            continue
-        r = type_results[t]
-
-        combined_tp = r["tp"]
-        combined_fp = r["neg_fp"]
-        combined_tn = r["neg_tn"]
-        combined_fn = r["fn"]
-
-        combined_y_true = r["y_true"] + r["neg_y_true"]
-        combined_y_prob = r["y_prob"] + r["neg_y_prob"]
+        combined_y_true = y_true + neg_y_true
+        combined_y_prob = y_prob + neg_y_prob
 
         metrics = calculate_metrics(combined_tp, combined_fp, combined_tn, combined_fn)
         roc_auc, pr_auc = calculate_auc(combined_y_true, combined_y_prob)
@@ -308,17 +284,17 @@ def run_automation(test_dir="evaluation/test_clones", threshold=0.95, exp_id=Non
         metrics["pr_auc"] = pr_auc
 
         report["per_type"][t] = {
-            "total_pairs": r["positives_count"] + len(negatives),
-            "positive_pairs": r["positives_count"],
+            "total_pairs": len(positives) + len(negatives),
+            "positive_pairs": len(positives),
             "negative_pairs": len(negatives),
             **metrics,
-            "details": r["details"] + r["neg_details"]
+            "details": details + neg_details
         }
 
-        global_tp += r["tp"]
-        global_fp += r["neg_fp"]
-        global_tn += r["neg_tn"]
-        global_fn += r["fn"]
+        global_tp += tp
+        global_fp += neg_fp
+        global_tn += neg_tn
+        global_fn += fn
 
         global_y_true.extend(combined_y_true)
         global_y_prob.extend(combined_y_prob)
